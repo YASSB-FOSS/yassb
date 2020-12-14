@@ -9,7 +9,7 @@ YASSB is built with core web technologies. Anyone who knows the fundamentals of 
 YASSB is simple, yet powerful, it supports:
 - composition of web pages by injecting HTML code snippets from reusable HTML components (e.g. `header`);
 - rendering of multiple or single HTML pages from MarkDown and Text files, with support of Front Matter, as seen in Hugo, Jekyll and others.
-- generation at compilation time of dynamically defined components via custom renderers or built-in renderers;
+- generation at compilation time of dynamically defined components via built-in or custom directives and renderers;
 - `renderers` defined in vanilla JS/TS, or JSX/TSX (for example with [`renderToStaticMarkup`](https://reactjs.org/docs/react-dom-server.html#rendertostaticmarkup) from [`react-dom/server`](https://reactjs.org/docs/react-dom-server.html));
 - i18n and localization (multi-language sites).
 
@@ -49,15 +49,15 @@ or
 
 YASSB generates the full website with compressed `html` and minified `js` and `css`. All additional static assets are also copied to the `out` folder.
 
-For the options that can be passed to YASSB see [configuration]({{url-to="configuration"}}).
+For the options that can be passed to YASSB see [configuration](https://yassb-foss.github.io/guides/setup/configuration.html).
 
 ### `watch`: website development
 
 YASSB builds all the files in your project and watches for any changes. On each change, YASSB recompiles the project. To save time, only assets that need to be recompiled are processed.
 
-While in watch mode, the processed website is served on `http://localhost:[PORT]`. By default port `3000` is used, unless a custom value is provided under `devServerPort` in the [configuration]({{url-to="configuration"}}).
+While in watch mode, the processed website is served on `http://localhost:[PORT]`. By default port `3000` is used, unless a custom value is provided under `devServerPort` in the [configuration](https://yassb-foss.github.io/guides/setup/configuration.html).
 
-For the full list of options that can be passed to YASSB see the [configuration]({{url-to="configuration"}}).
+For the full list of options that can be passed to YASSB see the [configuration](https://yassb-foss.github.io/guides/setup/configuration.html).
 
 ### Serving on localhost
 
@@ -65,7 +65,7 @@ The `serve` command is also available to serve the website locally without recom
 
     yassb serve
 
-This will launch the server on `http://localhost:[PORT]`. By default port `3000` is used, unless a custom value is provided under `devServerPort` in the [configuration]({{url-to="configuration"}}).
+This will launch the server on `http://localhost:[PORT]`. By default port `3000` is used, unless a custom value is provided under `devServerPort` in the [configuration](https://yassb-foss.github.io/guides/setup/configuration.html).
 
 Please note that the server is very limited and should not be used as-is in production.
 
@@ -75,7 +75,7 @@ A YASSB project in it's simplest form is just HTML pages. Plain and simple.
 
 More complex sites can be composed, alongside with HTML files, also with many more file formats, including MarkDown and JSON. Additionally, `custom directives` and `custom renderers` can be used to automatically generate and populate your files.
 
-A typical YASSB project is organized in different folders. The following structure is mandatory, but all folder/file names can be personalised when [configuring YASSB]({{url-to="configuration"}}):
+A typical YASSB project is organized in different folders. The following structure is mandatory, but all folder/file names can be personalised when [configuring YASSB](https://yassb-foss.github.io/guides/setup/configuration.html):
 
 |Default name|Child of|Description
 |----|--------|-------------
@@ -103,13 +103,13 @@ Because YASSB works with `HTML` files, any page you put in your `pages` is alrea
 
 Each `html` file in this folder will become a page on your website. In this folder you should put the index file of your website (`index.html`), and any other individual page you might want to have on your website (e.g. `about.html`, `contact.html`, `products/awesome-thing.html`, etc.).
 
-To reuse the same HTML code across multiple pages, you can put HTML snippets in dedicated HTML files in `components` (e.g. `header.component.html`). These are injected into pages at compilation time by the [`component` directive]({{url-to="component-directive"}}).
+To reuse the same HTML code across multiple pages, you can put HTML snippets in dedicated HTML files in `components` (e.g. `header.component.html`). These are injected into pages at compilation time by the [`component` directive](https://yassb-foss.github.io/guides/directives/component-directive.html).
 
-If you have lists of things, instead of manually typing them, you can generate the lists with the [`create-from-data-source` directive]({{url-to="create-from-data-source-directive"}}). The data source JSON files must placed in the folder `data-sources`. [Custom renderes]({{url-to="custom-renderers"}}) (JS/TS/JSX/TSX functions) can be provided to generate any kind of list/layout.
+If you have lists of things, instead of manually typing them, you can generate the lists with the [`create-from-data-source` directive](https://yassb-foss.github.io/guides/directives/create-from-data-source-directive.html). The data source JSON files must placed in the folder `data-sources`. [Custom renderes](https://yassb-foss.github.io/guides/renderers/custom-renderers.html) (JS/TS/JSX/TSX functions) can be provided to generate any kind of list/layout.
 
-If you have some text that you'd like to write in MarkDown (e.g. blog posts), you'll place the template for the pages to be generated in `pages-to-generate`. For each .md file provided (from anywhere on your disk), the [`generate-from-files` directive]({{url-to="generate-from-files-directive"}}) will create a new HTML file with the content of the .md file processed as html.
+If you have some text that you'd like to write in MarkDown (e.g. blog posts), you'll place the template for the pages to be generated in `pages-to-generate`. For each .md file provided (from anywhere on your disk), the [`generate-from-files` directive](https://yassb-foss.github.io/guides/directives/generate-from-files-directive.html) will create a new HTML file with the content of the .md file processed as html.
 
-Because generating files might create a lot of fles, you will probably want to create custom indexes. To do so, you will only need to add to any HTML file the [`public-file-list` directive](XXX) to specify the path for which you want to create a list of file found at such path. [Custom renderes]({{url-to="custom-renderers"}}) (JS/TS/JSX/TSX functions) can be provided to generate any kind of layout.
+Because generating files might create a lot of fles, you will probably want to create custom indexes. To do so, you will only need to add to any HTML file the [`public-file-list` directive](https://yassb-foss.github.io/guides/directives/custom-directives.html) to specify the path for which you want to create a list of file found at such path. [Custom renderes](https://yassb-foss.github.io/guides/renderers/custom-renderers.html) (JS/TS/JSX/TSX functions) can be provided to generate any kind of layout.
 
 ## Development
 
