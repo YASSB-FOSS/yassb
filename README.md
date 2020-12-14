@@ -1,7 +1,3 @@
----
-title: YASSB - Yet Another Static Site Builder
-excerpt: YASSB is a static website builder. It processes HTML, SCSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown (with optional Front Matter data) and many more files of your choice and combines them in beautiful static HTML files.
----
 # YASSB - Yet Another Static Site Builder
 
 ## What is YASSB
