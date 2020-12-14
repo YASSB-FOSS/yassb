@@ -6,11 +6,6 @@ window['toggleNavbar'] = (collapseID) => {
   document.getElementById(collapseID).classList.toggle("block");
 }
 
-window.document.addEventListener("DOMContentLoaded", () => {
-  // If late; I mean on time.
-  if (document.readyState === "interactive" || document.readyState === "complete") {
-  }
-});
 multiplyHeadsAsBodyRows();
 
 window.onresize = setHeights;

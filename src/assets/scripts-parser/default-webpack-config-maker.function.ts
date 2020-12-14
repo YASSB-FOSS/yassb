@@ -12,7 +12,6 @@ import { Configuration } from 'webpack';
  * @returns webpack configuration to be passed to webpack
  */
 export function defaultWebpackConfigMaker(file: string, path: string, filename: string): Configuration {
-  const configFile = resolve(WORKING_DIR.base, 'tsconfig.json');
   return {
     entry: {
       file
@@ -31,18 +30,12 @@ export function defaultWebpackConfigMaker(file: string, path: string, filename: 
     module: {
       rules: [
         {
-          test: /\.tsx$/,
-          loader: 'ts-loader',
-          options: {
-            configFile
-          }
+          test: /\.ts$|\.tsx$/,
+          loader: 'ts-loader'
         },
         {
-          test: /\.jsx$/,
-          loader: 'ts-loader',
-          options: {
-            configFile
-          }
+          test: /\.js$|\.jsx$/,
+          loader: 'ts-loader'
         }
       ]
     },

@@ -25,9 +25,11 @@ function callWebPack(): void {
   const configToUse = (config.has('webpackConfig')) ? config.get('webpackConfig') : defaultConfig;
 
   try {
-    webpack([configToUse], () => {
- logDone('scripts');
-});
+    webpack([configToUse], (err: Error) => {
+      if (err)
+        console.log('webpack ~ err', err);
+      logDone('scripts');
+    });
   } catch (error) {
     console.log('TCL: error', error);
   }

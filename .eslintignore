@@ -5,3 +5,4 @@ definitions-bundler.plugin.ts
 landing/dist/**/*
 tsconfig.json
 config/**
+landing/src/app/**

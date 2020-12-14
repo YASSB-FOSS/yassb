@@ -11,6 +11,5 @@ export const FILES_TO_CREATE = {
   'src/app/styles/styles.scss': require('./dummy-data/styles.scss'),
   'src/app/scripts/main.ts': require('./dummy-data/scripts.txt'),
   'package.json': require('./dummy-data/package.txt'),
-  'tsconfig.json': require('./dummy-data/tsconfig.txt'),
   'config/default.ts': require('./dummy-data/default.txt')
 };
