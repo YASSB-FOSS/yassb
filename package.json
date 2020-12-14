@@ -1,5 +1,5 @@
 {
-  "name": "yassb",
+  "name": "yassb-web",
   "version": "0.9.0",
   "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
   "scripts": {
