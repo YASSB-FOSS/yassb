@@ -1,0 +1,12 @@
+{
+  "name": "PROJECT_NAME",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "yassb build",
+    "watch": "yassb watch",
+    "serve": "yassb serve"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.0"
+  }
+}

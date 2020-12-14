@@ -1,0 +1,14 @@
+{
+  "inputFiles": [
+    "./src"
+  ],
+  "mode": "modules",
+  "theme": "yassb-docs-template",
+  "out": "landing/dist/docs",
+  "includeDeclarations": true,
+  "excludeExternals": true,
+  "name": "YASSB",
+  "includeVersion": false,
+  "readme": "none",
+  "hideGenerator": true
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "label": "Core",
+    "data": [
+      "built-in & custom directives",
+      "built-in & custom renderers",
+      "\"native\" JS/TS/JSX/TSX support",
+      "scss processing",
+      "sitemap generation",
+      "live reloading in watch mode"
+    ]
+  },
+  {
+    "label": "Supported data sources",
+    "data": [
+      "HTML",
+      "MarkDown",
+      "TXT",
+      "JSON"
+    ]
+  },
+  {
+    "label": "Customization",
+    "data": [
+      "Configuration based on [config](https://www.npmjs.com/package/config)",
+      "WebPack custom configurations",
+      "MarkDown parsing options",
+      "Front Matter parsing options",
+      "HTML minification options",
+      "Styles custom parsers (e.g. TailwindCSS)"
+    ]
+  },
+  {
+    "label": "Internationalization (i18n)",
+    "data": [
+      "Multi-language sites",
+      "HTML content translation",
+      "HTML attributes translation",
+      "Localization of dates"
+    ]
+  }
+]

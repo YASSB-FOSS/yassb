@@ -1,0 +1,22 @@
+[
+  {
+    "icon": "fas fa-rocket text-2xl -ml-1 -mb-1",
+    "title": "Ready for production",
+    "content": "YASSB comes with everything you need to build a production-ready static web site. HTML. From prototyping to packaging styles and scripts, everything is taken care of, ready to ship."
+  },
+  {
+    "icon": "fas fa-puzzle-piece text-2xl -mr-1 -mt-1",
+    "title": "Extendable as you need",
+    "content": "YASSB can be extended with custom renderers and directives, written in JavaScript or TypeScript with JSX and TSX support out-of-the-box. Every step of the build process can be customized as well."
+  },
+  {
+    "icon": "fab fa-js-square text-2xl",
+    "title": "In a language you know",
+    "content": "YASSB is shipped as a regular JavaScript node package and is entirely written in TypeScript. Everything runs on well known technologies, popular libraries and reliable packages, like Webpack and alikes."
+  },
+  {
+    "icon": "fas fa-bolt text-2xl",
+    "title": "Built for speed",
+    "content": "YASSB runs on the latest LTS version of node and takes full advantage of its capabilties. During development the watch mode recompiles the project selectively, and with live reload your browser is refreshed instantly."
+  }
+]

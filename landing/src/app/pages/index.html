@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- component="head/head.component.html" -->
+  <title>YASSB | Yet Another Static Site Builder</title>
+</head>
+
+<body class="text-gray-800 antialiased">
+  <!-- component="navbar/navbar.component.html" -->
+  <main>
+    <div class="relative pt-16 pb-32 flex content-center items-center justify-center" style="min-height: 65vh;">
+      <div class="absolute top-0 w-full h-full bg-center bg-cover" style='background-image: url("/assets/images/pexels-mnm-zameer-3308588-min.jpg");'>
+        <span id="blackOverlay" class="w-full h-full absolute opacity-40 bg-black"></span>
+      </div>
+      <div class="container relative mx-auto">
+        <div class="items-center flex flex-wrap">
+          <div class="w-full lg:w-8/12 px-4 ml-auto mr-auto text-center">
+            <h1 class="text-white font-semibold text-5xl leading-tight">
+              YASSB<br>Yet Another Static Site Builder
+            </h1>
+            <p class="mt-4 text-xl text-gray-300">
+              YASSB processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites, like this one!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden" style="height: 70px; transform: translateZ(0px);">
+        <svg class="absolute bottom-0 overflow-hidden" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1" viewBox="0 0 2560 100" x="0" y="0">
+          <polygon class="text-gray-400 fill-current" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+    </div>
+    <section class="pb-20 bg-gray-400 -mt-24">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-wrap">
+          <div class="w-full lg:w-4/12 px-4 text-center">
+            <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
+              <div class="px-4 py-5 flex-auto">
+                <div class="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-yellow-500">
+                  <i class="fas fa-download"></i>
+                </div>
+                <h6 class="text-xl font-semibold">Install YASSB Globally</h6>
+                <p class="mt-2 mb-4 text-gray-600">
+                  <!-- component="instructions/installation.md" -->
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="w-full lg:w-4/12 px-4 text-center">
+            <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
+              <div class="px-4 py-5 flex-auto">
+                <div class="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-blue-400">
+                  <i class="far fa-folder-open"></i>
+                </div>
+                <h6 class="text-xl font-semibold">Create a new project</h6>
+                <p class="mt-2 mb-4 text-gray-600">
+                  <!-- component="instructions/new-project.md" -->
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="w-full lg:w-4/12 px-4 text-center">
+            <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
+              <div class="px-4 py-5 flex-auto">
+                <div class="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-green-400">
+                  <i class="fas fa-code"></i>
+                </div>
+                <h6 class="text-xl font-semibold">Build your static website</h6>
+                <!-- component="instructions/builds.md" -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- START NEW -->
+        <div class="container px-5 py-24 mx-auto">
+          <div class="flex flex-col text-center w-full mb-20">
+            <h1 class="sm:text-4xl text-4xl font-medium title-font text-gray-900">Made for <b>web</b> developers</h1>
+          </div>
+          <div class="flex flex-wrap -m-4">
+            <!-- create-from-data-source="show-off-card.json" renderer="showOffCards" -->
+          </div>
+        </div>
+        <!--
+        <div class="flex flex-wrap items-center mt-16">
+          <div class="w-full lg:w-5/12 px-4 mr-auto ml-auto">
+            <div class="text-gray-600 p-3 text-center inline-flex items-center justify-center w-16 h-16 mb-6 shadow-lg rounded-full bg-gray-100">
+              <i class="fas fa-code-branch text-xl"></i>
+            </div>
+            <h3 class="text-3xl mb-2 font-semibold leading-normal">
+              Ready for production, extendable as you need
+            </h3>
+            <p class="text-lg font-light leading-relaxed mt-4 mb-4 text-gray-700">
+              YASSB comes with everything you need to build a production-ready static web site. HTML, styles and scripts are are
+              all taken care of, ready to ship.
+            </p>
+            <p class="text-lg font-light leading-relaxed mt-0 mb-4 text-gray-700">
+              For more flexibility, YASSB can be extended with custom renderers and directives, written in JavaScript or TypeScript with JSX
+              and TSX support out-of-the-box. Every step of the build process can be customized as well.
+            </p>
+            <a href="/guides" class="font-bold text-gray-800 mt-8">Check the guides to get started!</a>
+          </div>
+          <div class="w-full lg:w-4/12 px-4 mr-auto ml-auto mt-12 lg:mt-24">
+            <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-pink-600">
+              <blockquote class="relative p-8 mb-4">
+                <h4 class="text-xl font-bold text-white">
+                  Open Source & Open Project
+                </h4>
+                <p class="text-md font-light mt-2 text-white text-justify">
+                  YASSB is fully Open Source under the MIT license, if you like it consider giving it a <i class="far fa-star"></i> on GitHub.<br>Contributions in the form of PR and issues are encouraged, and if you'd like to get
+                  involved you are also welcome to become a mainainer.
+                </p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      -->
+      </div>
+    </section>
+    <section class="relative py-20">
+      <div class="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20" style="height: 80px; transform: translateZ(0px);">
+        <svg class="absolute bottom-0 overflow-hidden" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1" viewBox="0 0 2560 100" x="0" y="0">
+          <polygon class="text-white fill-current" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+      <div class="container mx-auto px-4">
+        <div class="flex flex-wrap justify-center text-center mb-2">
+          <div class="w-full lg:w-6/12 px-4">
+            <h2 class="text-5xl font-semibold">As <i>easy</i> as writing HTML <b>comments</b></h2>
+            <img src="/assets/images/examples/index-html.png" alt="Example of a index.html page">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- component="landing/features.component.html" -->
+
+    <!-- component="landing/read-the-docs.html" -->
+
+  </main>
+  <!-- component="footer.component.html" -->
+</body>
+
+</html>
