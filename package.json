@@ -13,6 +13,7 @@
     "build-landing": "npm run docs && npm run build",
     "deploy": "bohr-cglg --action=newRelease && npm run build-yassb && bohr-cglg --action=closeRelease && npm run do-no-run-this-deploy-directly",
     "do-no-run-this-deploy-directly": "",
+    "publishToNpm": "npm publish",
     "docs": "typedoc",
     "tsc": "tsc && tscpaths -p tsconfig.json -s ./src -o ./lib"
   },
