@@ -12,7 +12,7 @@ export default {
   username,
   workingDir: {
     base: 'landing',
-    out: 'dist',
+    out: 'YASSB-FOSS.github.io',
     styles: 'styles/styles.css'
   },
   stylesParser: buildTailwind,

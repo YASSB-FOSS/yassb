@@ -13,6 +13,16 @@ YASSB is simple, yet powerful, it supports:
 - `renderers` defined in vanilla JS/TS, or JSX/TSX (for example with [`renderToStaticMarkup`](https://reactjs.org/docs/react-dom-server.html#rendertostaticmarkup) from [`react-dom/server`](https://reactjs.org/docs/react-dom-server.html));
 - i18n and localization (multi-language sites).
 
+## Demo, guides and docs
+
+For a complete description and technical details on what YASSB can do for you, check out:
+
+- a working [Demo](https://yassb-foss.github.io/) of the landing page for this project, built with YASSB!
+- the [guides](https://yassb-foss.github.io/guides/) with many explanations and examples of what you can do with YASSB;
+- the complete [docs](https://yassb-foss.github.io/docs/) with the technical details of how YASSB works under the hood.
+
+Or else, keep reading below for a quick tour on how to get started and the basics on how to use YASSB.
+
 ## Installation
 
     npm i -g yassb-web
@@ -134,3 +144,11 @@ Then run
 And visit che localhost at port 3000.
 
 Happy coding!
+
+## I need more info!
+
+Check out:
+
+- a working [Demo](https://yassb-foss.github.io/) of the landing page for this project, built with YASSB!
+- the [guides](https://yassb-foss.github.io/guides/) with many explanations and examples of what you can do with YASSB;
+- the complete [docs](https://yassb-foss.github.io/docs/) with the technical details of how YASSB works under the hood.

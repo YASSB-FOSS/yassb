@@ -4,7 +4,7 @@
   ],
   "mode": "modules",
   "theme": "yassb-docs-template",
-  "out": "landing/dist/docs",
+  "out": "landing/YASSB-FOSS.github.io/docs",
   "includeDeclarations": true,
   "excludeExternals": true,
   "name": "YASSB",

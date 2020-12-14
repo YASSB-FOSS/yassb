@@ -9,3 +9,5 @@ test-project
 bundle/
 lib/
 lib-esm/
+landing/YASSB-FOSS.github.io
+package-lock.json
