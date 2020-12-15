@@ -17,7 +17,7 @@ const command = process.argv[0] === 'node' ? process.argv[3] : process.argv[2];
  *
  * @supports `build` || `watch`
  */
-function executeYassb(): void {
+export function start(): void {
 
   switch (command) {
     case 'build':
@@ -41,4 +41,4 @@ function executeYassb(): void {
   }
 }
 
-executeYassb();
+start();

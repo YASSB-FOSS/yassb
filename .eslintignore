@@ -6,3 +6,4 @@ landing/dist/**/*
 tsconfig.json
 config/**
 landing/src/app/**
+bin.js

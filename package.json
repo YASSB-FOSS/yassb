@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
   "scripts": {
     "licenses": "npm-license --json save-licenses.json",
@@ -18,11 +18,12 @@
     "tsc": "tsc && tscpaths -p tsconfig.json -s ./src -o ./lib"
   },
   "files": [
+    "bin.js",
     "bundle/**/*"
   ],
   "main": "bundle/index.js",
   "bin": {
-    "yassb": "bundle/index.js"
+    "yassb": "./bin.js"
   },
   "homepage": "https://yassb-foss.github.io/",
   "repository": {
