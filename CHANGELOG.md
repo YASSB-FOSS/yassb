@@ -7,6 +7,11 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [0.9.6] - 2020-12-16
+### Changed
+- improved execution of the watch command.
+- code refactoring of the watcher.
+
 ## [0.9.5] - 2020-12-16
 ### Added
 - Added changelog.

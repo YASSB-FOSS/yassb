@@ -4,6 +4,20 @@
   "temp": [],
   "changes": [
     {
+      "version": "0.9.6",
+      "date": "2020-12-16",
+      "items": [
+        {
+          "type": "changed",
+          "value": "improved execution of the watch command"
+        },
+        {
+          "type": "changed",
+          "value": "code refactoring of the watcher"
+        }
+      ]
+    },
+    {
       "version": "0.9.5",
       "date": "2020-12-16",
       "items": [

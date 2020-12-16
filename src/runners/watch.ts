@@ -2,6 +2,7 @@ import { setupYassb } from '@yassb/config/setup.function';
 import { WORKING_DIR } from '@yassb/config/working-dir.constant';
 import { buildAll } from '@yassb/runners/build';
 import { devServer, socketConnectionStore } from '@yassb/runners/server';
+import { YassbConfig } from '@yassb/yassb';
 import * as watcher from 'watch';
 
 /**
@@ -9,42 +10,126 @@ import * as watcher from 'watch';
  */
 export function watch(): void {
   const config = setupYassb();
-  devServer(config, doWatch);
+  devServer(config, DoWatch);
 }
 
 /**
  * Actually listens to any change in the project folder and respawns the build process onchanges.
  * To speed up things excludes from the build provess assets that do not need to be changed.
  */
-const doWatch = (): void => {
+class DoWatch {
+  /**
+   * Determines if it's the first time we are running the watcher.
+   */
+  private firstRun = true;
+  /**
+   * Determines that we are in watch mode.
+   */
+  private isWatching = true;
 
-  let firstRun = true;
-  const isWatching = true;
+  /**
+   * Creates an instance of do watch.
+   *
+   * @param config full YASSB configuration object.
+   */
+  constructor(
+    private config: YassbConfig
+  ) { }
 
-  watcher.watchTree(WORKING_DIR.src, { interval: 1 }, async (file, curr, prev) => {
-    if (!firstRun && socketConnectionStore.conn)
+  /**
+   * Inits do watch by first calling a full build process, and then initiating the watch function.
+   * We first do a non-watched build process to ensure everything is running smoothly.
+   * In a future update we could start directly with the watcher.
+   */
+  public async init(): Promise<void> {
+    await buildAll({ isWatching: true });
+    this.watch();
+  }
+
+  /**
+   * Watchs the `src` folder as defined in the config object and runs the builder on changes.
+   */
+  private watch(): void {
+    watcher.watchTree(this.config.workingDir.src, { interval: 1 }, async (file, curr, prev) => {
+
+      if (this.firstRun === true)
+        return this.firstRun = false;
+
+      this.sendStartRebuildMessage();
+
+      const runStyles = this.shouldRunStyles(file);
+      const runScripts = this.shouldRunScripts(file);
+      const skipTexts = this.shouldSkipTexts(runScripts, runStyles);
+
+      await buildAll({ runScripts, runStyles, skipTexts, isWatching: this.isWatching });
+
+      this.sendReloadMessage();
+
+      this.firstRun = false;
+    });
+  }
+
+  /**
+   * Sends to the browser via the WebSocket connection the message the the rebuild process has started.
+   */
+  private sendStartRebuildMessage(): void {
+    if (!this.firstRun && socketConnectionStore.conn)
       socketConnectionStore.conn.send(JSON.stringify({ msg: 'Changes detected. Rebuilding...', type: 'start' }));
+  }
 
-    const runStyles = (shouldDo('.scss', file) || shouldDo('.css', file)) ? true : false;
-    const runScripts = (
-      shouldDo('.ts', file) || shouldDo('.js', file) ||
-      shouldDo('.tsx', file) || shouldDo('.jsx', file)
+  /**
+   * Determins if the file changes is a stylesheet and if styles should run.
+   *
+   * @param file the file that has changed.
+   * @returns true if the file changed is a stylesheet.
+   */
+  private shouldRunStyles(file: watcher.FileOrFiles): boolean {
+    return (this.shouldDo('.scss', file) || this.shouldDo('.css', file)) ? true : false;
+  }
+
+  /**
+   * Determins if the file changes is a script and if scripts should run.
+   *
+   * @param file the file that has changed.
+   * @returns true if the file changed is a script.
+   */
+  private shouldRunScripts(file: watcher.FileOrFiles): boolean {
+    return (
+      this.shouldDo('.ts', file) || this.shouldDo('.js', file) ||
+      this.shouldDo('.tsx', file) || this.shouldDo('.jsx', file)
     ) ? true : false;
+  }
 
-    const skipTexts = (!firstRun && (runScripts || runStyles)) ? true : false;
+  /**
+   * Determines if it is unnecessary to rebuild text files
+   *
+   * @param runScripts whether we need to run scripts.
+   * @param runStyles whether we need to run styles.
+   * @returns true if it's not the first run and we are rebuilding either scripts or styles.
+   */
+  private shouldSkipTexts(runScripts: boolean, runStyles: boolean): boolean {
+    return (!this.firstRun && (runScripts || runStyles)) ? true : false;
+  }
 
-    await buildAll({ runScripts, runStyles, skipTexts, isWatching });
-
-    if (!firstRun && socketConnectionStore.conn)
+  /**
+   * Sends a message to the browser via the WebSocket connection to reload the page at the end of the build process.
+   */
+  private sendReloadMessage(): void {
+    if (!this.firstRun && socketConnectionStore.conn)
       socketConnectionStore.conn.send(JSON.stringify({ msg: 'Rebuild done. Reloading...', type: 'end' }));
+  }
 
-    firstRun = false;
-  });
-
+  /**
+   * Determines if the changed file is of a given type to determine if we need to rebuild certain assets.
+   *
+   * @param extension extension that we are looking for.
+   * @param fileName the file that has changed.
+   * @returns true if the file that has changed has the extension that we are looking for.
+   */
   // eslint-disable-next-line @typescript-eslint/tslint/config
-  function shouldDo(extension: '.ts' | '.js' | '.tsx' | '.jsx' | '.scss' | '.css', fileName): boolean {
+  private shouldDo(extension: '.ts' | '.js' | '.tsx' | '.jsx' | '.scss' | '.css', fileName): boolean {
     switch (true) {
-      case firstRun:
+      case this.firstRun:
       case !fileName:
       case typeof fileName !== 'string':
       case fileName.endsWith(extension):

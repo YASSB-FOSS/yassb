@@ -28,7 +28,7 @@ export function start(): void {
       break;
     case 'serve':
       const config = setupYassb();
-      devServer(config, () => console.log('Serving on localhost'));
+      devServer(config);
       break;
     case 'new':
       const projectName = process.argv[0] === 'node' ? process.argv[4] : process.argv[3];

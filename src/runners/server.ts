@@ -18,7 +18,7 @@ export const socketConnectionStore: { conn: WebSocket } = {
  * @param config used to determine the out folder.
  * @param watcher the fucntion that actually watches for changes and invokes the build process.
  */
-export function devServer(config: YassbConfig, watcher: () => void): void {
+export function devServer(config: YassbConfig, watcher?: new (arg: YassbConfig) => { init(): Promise<void> }): void {
 
   const nameOfOutFolder = relative(process.cwd(), config.workingDir.out);
   const app = express();
@@ -43,13 +43,15 @@ export function devServer(config: YassbConfig, watcher: () => void): void {
   // For live reloading
   const ws = new Server({ port: 3001 });
   ws.on('connection', (conn: WebSocket) => {
-    console.log('Live reload connected to client');
+    console.log('Live reload connected to browser');
     socketConnectionStore.conn = conn;
   });
 
   app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}\n`);
-    watcher();
+
+    if (watcher)
+      new watcher(config).init();
   });
 
 }
