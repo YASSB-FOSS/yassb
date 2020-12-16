@@ -33,13 +33,17 @@ export function devServer(config: YassbConfig, watcher: () => void): void {
 
   app.use(express.static(nameOfOutFolder));
   // not found in static files, so default to index.html
-  app.use((req, res) => res.sendFile(`${config.workingDir.out}/index.html`));
+  if (LANGS.length)
+    app.use((req, res) => res.sendFile(`${config.workingDir.out}/${LANGS[0]}/index.html`));
+  else
+    app.use((req, res) => res.sendFile(`${config.workingDir.out}/index.html`));
 
   const port = config.devServerPort || 3000;
 
   // For live reloading
   const ws = new Server({ port: 3001 });
   ws.on('connection', (conn: WebSocket) => {
+    console.log('Live reload connected to client');
     socketConnectionStore.conn = conn;
   });
 
