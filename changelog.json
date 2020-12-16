@@ -5,6 +5,10 @@
     {
       "type": "changed",
       "value": "improved log message for HTML build step with language details (if i18n is enabled)"
+    },
+    {
+      "type": "changed",
+      "value": "improved the README"
     }
   ],
   "changes": [

@@ -4,7 +4,7 @@
 
 YASSB is a static website builder. It processes HTML, SCSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown (with optional Front Matter data) and many more files of your choice and combines them in beautiful static HTML files.
 
-YASSB is built with core web technologies. Anyone who knows the fundamentals of web languages can use it. YASSB itself is built with TypeScript, and is shipped with all its typings in JavaScript as a UMD, so it runs "natively" in node. It can be easily extended with TypeScript/Javascript functions to tailor it to your needs.
+YASSB is built with TypeScript, and is shipped, with all its TS definitions, in JavaScript as a Universal Module (`umd`), so it runs "natively" in node. It can be easily extended with TypeScript/Javascript functions to tailor it to your needs.
 
 YASSB is simple, yet powerful, it supports:
 - composition of web pages by injecting HTML code snippets from reusable HTML components (e.g. `header`);
