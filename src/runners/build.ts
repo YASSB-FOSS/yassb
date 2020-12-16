@@ -57,7 +57,8 @@ export async function doTextsSources(config: YassbConfig): Promise<void> {
  * @param [lang] the language being processed.
  */
 export function doHtml(config: YassbConfig, lang?: string): void {
-  logStep('.html');
+  const message = lang ? `.html for lang ${lang}` : '.html';
+  logStep(message);
   copyPages(lang);
   new SitemapGenerator(config).make();
   new FilesContentInjector(config).make(lang);
