@@ -2,7 +2,8 @@ import { workingDirSetter } from '@yassb/config/working-dir-setter.function';
 import { WORKING_DIR } from '@yassb/config/working-dir.constant';
 import { FILES_TO_CREATE } from '@yassb/new-makers/files-to-create.const';
 import { camelToKebabCase } from '@yassb/tools/strings-formatters/camel-to-kebab-case.function';
-import { ensureDirSync, writeFileSync } from 'fs-extra';
+import { writeFile } from 'fs';
+import { ensureDirSync } from 'fs-extra';
 import { resolve } from 'path';
 
 /**
@@ -10,10 +11,18 @@ import { resolve } from 'path';
  */
 export class NewProjectMaker {
 
+  /**
+   * Creates an instance of new project maker.
+   *
+   * @param projectName the name of the project, to be used for naming the container folder and the project name in package.json.
+   */
   constructor(
     private projectName: string
   ) { }
 
+  /**
+   * Inits new project maker.
+   */
   public init(): void {
     this.normalizeName();
     this.setDirs();
@@ -60,7 +69,10 @@ export class NewProjectMaker {
    */
   private createFile(fileRelativePath: string, fileContents: string): void {
     const absolutePath = resolve(WORKING_DIR.base, fileRelativePath);
-    writeFileSync(absolutePath, fileContents.replace('PROJECT_NAME', this.projectName));
+    writeFile(absolutePath, fileContents.replace('PROJECT_NAME', this.projectName), (err: Error) => {
+      if (err)
+        console.error(err);
+    });
   }
 
 }

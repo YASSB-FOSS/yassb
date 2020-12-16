@@ -9,6 +9,10 @@
     {
       "type": "changed",
       "value": "improved the README"
+    },
+    {
+      "type": "changed",
+      "value": "made the creation of new files async when creating a new project"
     }
   ],
   "changes": [
