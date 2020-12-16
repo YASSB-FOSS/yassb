@@ -17,6 +17,10 @@
     {
       "type": "added",
       "value": "Added issues templates"
+    },
+    {
+      "type": "changed",
+      "value": "switched to changelog-flow for releases management."
     }
   ],
   "changes": [
