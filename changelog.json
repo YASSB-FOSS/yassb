@@ -13,6 +13,10 @@
     {
       "type": "changed",
       "value": "made the creation of new files async when creating a new project"
+    },
+    {
+      "type": "added",
+      "value": "Added issues templates"
     }
   ],
   "changes": [
