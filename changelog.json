@@ -21,6 +21,10 @@
     {
       "type": "changed",
       "value": "switched to changelog-flow for releases management."
+    },
+    {
+      "type": "removed",
+      "value": "removed dependency to codelyzer"
     }
   ],
   "changes": [
