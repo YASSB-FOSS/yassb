@@ -45,20 +45,6 @@ const yassbConfig: webpack.Configuration = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        loader: 'ts-loader',
-        options: {
-          configFile: 'tsconfig.json'
-        }
-      },
-      {
-        test: /\.tsx$/,
-        loader: 'ts-loader',
-        options: {
-          configFile: 'tsconfig.json'
-        }
-      },
-      {
         test: /\.html$/,
         loader: 'html-loader',
         options: {
@@ -70,6 +56,14 @@ const yassbConfig: webpack.Configuration = {
         loader: 'raw-loader',
         options: {
           esModule: false,
+        }
+      },
+      {
+        test: /\.ts$|\.tsx$/,
+        loader: 'ts-loader',
+        options: {
+          configFile: 'tsconfig.json',
+          happyPackMode: true
         }
       }
     ]

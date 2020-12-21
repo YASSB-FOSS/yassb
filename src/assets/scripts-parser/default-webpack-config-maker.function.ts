@@ -30,12 +30,23 @@ export function defaultWebpackConfigMaker(file: string, path: string, filename: 
     module: {
       rules: [
         {
-          test: /\.ts$|\.tsx$/,
-          loader: 'ts-loader'
-        },
-        {
-          test: /\.js$|\.jsx$/,
-          loader: 'ts-loader'
+          test: /\.ts$|\.tsx$|\.js$|\.jsx$/,
+          use: [
+            {
+              loader: 'thread-loader',
+              options: {
+                // there should be 1 cpu for the fork-ts-checker-webpack-plugin
+                workers: require('os').cpus().length > 4 ? require('os').cpus().length - 2 : require('os').cpus().length - 1
+              }
+            },
+            {
+              loader: 'ts-loader',
+              options: {
+                configFile: 'tsconfig.json',
+                happyPackMode: true
+              }
+            }
+          ]
         }
       ]
     },

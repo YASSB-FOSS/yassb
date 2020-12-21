@@ -1,10 +1,10 @@
-# YASSB - Yet Another Static Site Builder
-
-## What is YASSB
+# YASSB (*Yet Another Static Site Builder*)
 
 YASSB is a static website builder. It processes HTML, SCSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown (with optional Front Matter data) and many more files of your choice and combines them in beautiful static HTML files.
 
-YASSB is built with TypeScript, and is shipped, with all its TS definitions, in JavaScript as a Universal Module (`umd`), so it runs "natively" in node. It can be easily extended with TypeScript/Javascript functions to tailor it to your needs.
+YASSB is built with TypeScript, and is shipped, with all its definitions, in JavaScript as a Universal Module (`umd`), so it runs "natively" in node. It can be easily extended with TypeScript/Javascript functions to tailor it to your needs.
+
+## Core features
 
 YASSB is simple, yet powerful, it supports:
 - composition of web pages by injecting HTML code snippets from reusable HTML components (e.g. `header`);
@@ -75,25 +75,7 @@ A YASSB project in it's simplest form is just HTML pages. Plain and simple.
 
 More complex sites can be composed, alongside with HTML files, also with many more file formats, including MarkDown and JSON. Additionally, `custom directives` and `custom renderers` can be used to automatically generate and populate your files.
 
-A typical YASSB project is organized in different folders. The following structure is mandatory, but all folder/file names can be personalised when [configuring YASSB](https://yassb-foss.github.io/guides/setup/configuration.html):
-
-|Default name|Child of|Description
-|----|--------|-------------
-| ./ | [n/a] | Root folder
-| src|./ | Contains the whole YASSB project
-| assets|./src/ | Website assets. It's cloned in `out`. Scripts and Styles are also placed here
-| i18n|./src/ | Contains the localization files ([lang].json) with translation strings
-| app|./src/ | Contains all the files processed by YASSB
-| pages|./src/app/ | HTML pages of the web site (excluded those to be generated automatically)
-| components|./src/app/ | Contains HTML files with fragments to be injected into pages (e.g. `footer`)
-| data-sources|./src/app/ | Contains the JSON files with the data to generate iterable items
-| pages-to-generate|./src/app/ | HTML templates to be used when creating pages from .md files
-| scripts/main.ts|./src/app/ | Entry file to be processd by webpack. Can end with: `.js` | `.ts`
-| styles/style.scss|./src/app/ | Entry file to be processd by node-sass. Can end with: `.css` | `.scss`
-| out|./ | Destination dir of the compiled project - defaults to `dist/public`
-| js|./out/assets/ | Destination dir of minified JS file, retains the same name of the entry file + version + min.js
-| css|./out/assets/ | Destination di of minified css file, retains the same name of the entry file + version + min.css
-
+A typical YASSB project is organized in different folders and subfolders. The predefined structure of a project can be fully personalised when [configuring YASSB](https://yassb-foss.github.io/guides/setup/configuration.html).
 
 ## How web pages are generated
 

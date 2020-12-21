@@ -10,7 +10,7 @@ A YASSB project in it's simplest form is just HTML pages. Plain and simple.
 
 More complex sites can be composed, alongside with HTML files, also with many more file formats, including MarkDown and JSON. Additionally, `custom directives` and `custom renderers` can be used to automatically generate and populate your files.
 
-A typical YASSB project is organized in different folders. The following structure is mandatory, but all folder/file names can be personalised when [configuring YASSB]({{url-to="configuration"}}):
+A typical YASSB project is organized in different folders. The following structure is encouraged, but all folder/file names can be personalised in the [configuration]({{url-to="configuration"}}):
 
 |Default name|Child of|Description
 |----|--------|-------------
@@ -29,6 +29,42 @@ A typical YASSB project is organized in different folders. The following structu
 | js|./out/assets/ | Destination dir of minified JS file, retains the same name of the entry file + version + min.js
 | css|./out/assets/ | Destination di of minified css file, retains the same name of the entry file + version + min.css
 
+## Custom project structure
+
+You can change the project structure and the folder names in the [configuration]({{url-to="configuration"}}). 
+
+At run time, all folders are resolved relative to the folder of which they are a `child of` in the predefined project structure. For example, the folder `components` is resolved relative to the folder `./src/app`.
+
+So if you rename in the configuration the `components` folder to something else, for example `fragments`, the final folder will be resolved to `./src/app/fragments`.
+
+Example:
+
+    // config/default.js
+    
+    module.exports {
+      workingDir: {
+        components: 'fragments'
+      }
+    }
+
+    // result ./src/app/fragments
+
+Because folders are resolved as relative paths, you can alter the structure of the project when setting custom folder names. For example, if you want the `fragments` folder to be a child of the `./src` folder, instead of the `./src/app` folder, you can do the following:
+
+
+    // config/default.js
+
+    module.exports {
+      workingDir: {
+        components: '../fragments'
+      }
+    }
+
+    // result ./src/fragments
+
+In this way you can even reference folders that are outside of the `root folder` of the project, for example by passing `../../../../shared-code/components`.
+
+This can be very handy to reuse the same folder in multiple projects (for example the `components` folder), or to store your source files (MarkDown, JSON, etc.) anywhere on your disk.
 
 ## How web pages are generated
 

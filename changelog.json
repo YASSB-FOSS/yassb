@@ -25,6 +25,14 @@
     {
       "type": "removed",
       "value": "removed dependency to codelyzer"
+    },
+    {
+      "type": "changed",
+      "value": "improved README intro"
+    },
+    {
+      "type": "changed",
+      "value": "clarified in the guides how to define a custom project structure"
     }
   ],
   "changes": [
