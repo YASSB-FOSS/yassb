@@ -1,41 +1,46 @@
 {
   "title": "Changelog",
   "description": "All notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\nThis file has been automatially generated with [@bohr/changelogger](https://github.com/bohr-app/changelogger)",
-  "temp": [
-    {
-      "type": "changed",
-      "value": "improved log message for HTML build step with language details (if i18n is enabled)"
-    },
-    {
-      "type": "changed",
-      "value": "improved the README"
-    },
-    {
-      "type": "changed",
-      "value": "made the creation of new files async when creating a new project"
-    },
-    {
-      "type": "added",
-      "value": "Added issues templates"
-    },
-    {
-      "type": "changed",
-      "value": "switched to changelog-flow for releases management."
-    },
-    {
-      "type": "removed",
-      "value": "removed dependency to codelyzer"
-    },
-    {
-      "type": "changed",
-      "value": "improved README intro"
-    },
-    {
-      "type": "changed",
-      "value": "clarified in the guides how to define a custom project structure"
-    }
-  ],
+  "temp": [],
   "changes": [
+    {
+      "version": "1.0.0",
+      "date": "2021-01-17",
+      "items": [
+        {
+          "type": "changed",
+          "value": "improved log message for HTML build step with language details (if i18n is enabled)"
+        },
+        {
+          "type": "changed",
+          "value": "improved the README"
+        },
+        {
+          "type": "changed",
+          "value": "made the creation of new files async when creating a new project"
+        },
+        {
+          "type": "added",
+          "value": "Added issues templates"
+        },
+        {
+          "type": "changed",
+          "value": "switched to changelog-flow for releases management."
+        },
+        {
+          "type": "removed",
+          "value": "removed dependency to codelyzer"
+        },
+        {
+          "type": "changed",
+          "value": "improved README intro"
+        },
+        {
+          "type": "changed",
+          "value": "clarified in the guides how to define a custom project structure"
+        }
+      ]
+    },
     {
       "version": "0.9.6",
       "date": "2020-12-16",
