@@ -12,7 +12,7 @@
     "build-landing": "node bundle/index.js build",
     "watch-landing": "node bundle/index.js watch",
     "serve-landing": "node bundle/index.js serve",
-    "build-docs-landing": "npm run docs && npm run build",
+    "build-docs-landing": "npm run docs && npm run build-landing",
     "test-new": "node bundle/index.js new testProject",
     "build-test": "set NODE_APP_INSTANCE=2&& node bundle/index.js build"
   },

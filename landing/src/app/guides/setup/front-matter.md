@@ -49,7 +49,7 @@ Example:
 
 Note that there is only one set of curly brackets, to avoid confusion with the double curly brackets synthax of [directives]({{url-to="directives/index"}}).
 
-The strategy to insert valuesdiffers depending on their type or key:
+The strategy to insert values differs depending on their type or key:
 
 - `typeof === string`: inserted as is;
 - `key === date`: parsed to a formatted date. The locale is the one bein processed if i18n is enabled, else it's `en`.
