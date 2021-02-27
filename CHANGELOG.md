@@ -7,6 +7,11 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.0.3] - 2021-02-27
+### Changed
+- improved deploy process by building licenses first.
+- improved UI of landing.
+
 ## [1.0.2] - 2021-02-27
 ### Added
 - added code quality badge.
