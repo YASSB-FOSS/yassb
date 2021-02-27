@@ -1,13 +1,30 @@
 {
   "title": "Changelog",
   "description": "All notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\nThis file has been automatially generated with [@bohr/changelogger](https://github.com/bohr-app/changelogger)",
-  "temp": [
-    {
-      "type": "fixed",
-      "value": "Fixed typo in guides"
-    }
-  ],
+  "temp": [],
   "changes": [
+    {
+      "version": "1.0.1",
+      "date": "2021-02-27",
+      "items": [
+        {
+          "type": "fixed",
+          "value": "Fixed typo in guides"
+        },
+        {
+          "type": "changed",
+          "value": "improved Readme"
+        },
+        {
+          "type": "added",
+          "value": "Added npm node and license badges"
+        },
+        {
+          "type": "fixed",
+          "value": "fixed css formatting"
+        }
+      ]
+    },
     {
       "version": "1.0.0",
       "date": "2021-01-17",

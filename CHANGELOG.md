@@ -7,6 +7,17 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.0.1] - 2021-02-27
+### Added
+- Added npm node and license badges.
+
+### Changed
+- improved Readme.
+
+### Fixed
+- Fixed typo in guides.
+- fixed css formatting.
+
 ## [1.0.0] - 2021-01-17
 ### Added
 - Added issues templates.

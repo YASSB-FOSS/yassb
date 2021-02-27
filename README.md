@@ -1,3 +1,7 @@
+[![npm version](https://badge.fury.io/js/yassb-web.svg?style=flat)](https://badge.fury.io/js/yassb-web)
+[![Node version](https://img.shields.io/node/v/yassb-web.svg?style=flat)](http://nodejs.org/download/)
+[![Node version](https://img.shields.io/npm/l/yassb-web?style=flat)](http://nodejs.org/download/)
+
 # YASSB (*Yet Another Static Site Builder*)
 
 YASSB is a static website builder. It processes HTML, SCSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown (with optional Front Matter data) and many more files of your choice and combines them in beautiful static HTML files.
@@ -7,21 +11,22 @@ YASSB is built with TypeScript, and is shipped, with all its definitions, in Jav
 ## Core features
 
 YASSB is simple, yet powerful, it supports:
-- composition of web pages by injecting HTML code snippets from reusable HTML components (e.g. `header`);
-- rendering of multiple or single HTML pages from MarkDown and Text files, with support of Front Matter, as seen in Hugo, Jekyll and others.
-- generation at compilation time of dynamically defined components via built-in or custom directives and renderers;
-- `renderers` defined in vanilla JS/TS, or JSX/TSX (for example with [`renderToStaticMarkup`](https://reactjs.org/docs/react-dom-server.html#rendertostaticmarkup) from [`react-dom/server`](https://reactjs.org/docs/react-dom-server.html));
-- i18n and localization (multi-language sites).
+  - composition of web pages by injecting HTML components (e.g. injection of `<header> ... </header>` defined in `components/header.html`);
+  - rendering of multiple or single HTML pages from MarkDown and Text files, with support of Front Matter, as seen in Hugo, Jekyll and others.
+  - generation at compilation time of dynamically defined components via built-in or custom directives and renderers;
+  - `renderers` defined in vanilla JS/TS, or JSX/TSX (for example with [`renderToStaticMarkup`](https://reactjs.org/docs/react-dom-server.html#rendertostaticmarkup) from [`react-dom/server`](https://reactjs.org/docs/react-dom-server.html));
+  - i18n and localization (multi-language sites).
 
 ## Demo, guides and docs
 
+Keep reading below for a quick tour on how to get started and the basics on how to use YASSB.
+
 For a complete description and technical details on what YASSB can do for you, check out:
 
-- a working [Demo](https://yassb-foss.github.io/) of the landing page for this project, built with YASSB!
-- the [guides](https://yassb-foss.github.io/guides/) with many explanations and examples of what you can do with YASSB;
-- the complete [docs](https://yassb-foss.github.io/docs/) with the technical details of how YASSB works under the hood.
+  - a working [Demo](https://yassb-foss.github.io/) of the landing page for this project, built with YASSB!
+  - the [guides](https://yassb-foss.github.io/guides/) with many explanations and examples of what you can do with YASSB;
+  - the complete [docs](https://yassb-foss.github.io/docs/) with the technical details of how YASSB works under the hood.
 
-Or else, keep reading below for a quick tour on how to get started and the basics on how to use YASSB.
 
 ## Installation
 
@@ -127,10 +132,10 @@ And visit che localhost at port 3000.
 
 Happy coding!
 
-## I need more info!
+## I need more info
 
 Check out:
 
-- a working [Demo](https://yassb-foss.github.io/) of the landing page for this project, built with YASSB!
-- the [guides](https://yassb-foss.github.io/guides/) with many explanations and examples of what you can do with YASSB;
-- the complete [docs](https://yassb-foss.github.io/docs/) with the technical details of how YASSB works under the hood.
+  - a working [Demo](https://yassb-foss.github.io/) of the landing page for this project, built with YASSB!
+  - the [guides](https://yassb-foss.github.io/guides/) with many explanations and examples of what you can do with YASSB;
+  - the complete [docs](https://yassb-foss.github.io/docs/) with the technical details of how YASSB works under the hood.

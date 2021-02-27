@@ -40,7 +40,8 @@ const yassbConfig: webpack.Configuration = {
     filename: '[name].js',
     library: 'YASSB',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    globalObject: 'this'
   },
   module: {
     rules: [
