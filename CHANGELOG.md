@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.0.2] - 2021-02-27
+### Added
+- added code quality badge.
+
 ## [1.0.1] - 2021-02-27
 ### Added
 - Added npm node and license badges.

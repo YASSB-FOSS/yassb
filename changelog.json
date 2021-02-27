@@ -4,6 +4,16 @@
   "temp": [],
   "changes": [
     {
+      "version": "1.0.2",
+      "date": "2021-02-27",
+      "items": [
+        {
+          "type": "added",
+          "value": "added code quality badge"
+        }
+      ]
+    },
+    {
       "version": "1.0.1",
       "date": "2021-02-27",
       "items": [

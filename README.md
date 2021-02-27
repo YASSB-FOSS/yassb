@@ -1,6 +1,7 @@
-[![npm version](https://badge.fury.io/js/yassb-web.svg?style=flat)](https://badge.fury.io/js/yassb-web)
-[![Node version](https://img.shields.io/node/v/yassb-web.svg?style=flat)](http://nodejs.org/download/)
-[![Node version](https://img.shields.io/npm/l/yassb-web?style=flat)](http://nodejs.org/download/)
+[![npm version](https://badge.fury.io/js/yassb-web.svg)](https://www.npmjs.com/package/yassb-web)
+[![Node version](https://img.shields.io/node/v/yassb-web.svg)](https://www.npmjs.com/package/yassb-web)
+[![Node version](https://img.shields.io/npm/l/yassb-web)](https://www.npmjs.com/package/yassb-web)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ba8104457f424974b286a998bea7e9a8)](https://www.codacy.com/gh/YASSB-FOSS/yassb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=YASSB-FOSS/yassb&amp;utm_campaign=Badge_Grade)
 
 # YASSB (*Yet Another Static Site Builder*)
 
@@ -11,6 +12,7 @@ YASSB is built with TypeScript, and is shipped, with all its definitions, in Jav
 ## Core features
 
 YASSB is simple, yet powerful, it supports:
+
   - composition of web pages by injecting HTML components (e.g. injection of `<header> ... </header>` defined in `components/header.html`);
   - rendering of multiple or single HTML pages from MarkDown and Text files, with support of Front Matter, as seen in Hugo, Jekyll and others.
   - generation at compilation time of dynamically defined components via built-in or custom directives and renderers;
