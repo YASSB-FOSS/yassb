@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
   "engines": {
     "node": ">=8.0.0"
@@ -19,7 +19,7 @@
     "test-new": "node bundle/index.js new testProject",
     "build-test": "set NODE_APP_INSTANCE=2&& node bundle/index.js build",
     "serve-test": "cd test-project/public && http-server",
-    "deploy-landing": "build-docs-landing && cd landing/YASSB-FOSS.github.io && npm run deploy"
+    "deploy-landing": "npm run build-docs-landing && cd landing/YASSB-FOSS.github.io && npm run deploy"
   },
   "files": [
     "bin.js",

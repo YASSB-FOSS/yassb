@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.0.4] - 2021-02-27
+### Fixed
+- fixed script in package.json.
+
 ## [1.0.3] - 2021-02-27
 ### Changed
 - improved deploy process by building licenses first.

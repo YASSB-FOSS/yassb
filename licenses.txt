@@ -10199,7 +10199,7 @@ THE SOFTWARE.
 
 The following NPM packages may be included in this product:
 
- - yassb-web@1.0.2
+ - yassb-web@1.0.3
 
 These packages each contain the following license and notice below:
 
