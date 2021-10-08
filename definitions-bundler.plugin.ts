@@ -21,8 +21,6 @@ export class DefinitionsBundler {
   public process(): void {
     this.setBasePath();
     this.listOfFiles = new ListFiles(this.basePath, file => file.endsWith('.d.ts')).init();
-    console.log('this.listOfFiles');
-    console.log(this.listOfFiles);
     this.listOfFiles.forEach(file => this.handleFile(file));
     this.addImports();
     this.addContents();
