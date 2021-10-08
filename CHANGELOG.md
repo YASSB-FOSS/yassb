@@ -7,6 +7,13 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.0.5] - 2021-10-08
+### Added
+- Atted typings for clean-css.
+
+### Fixed
+- fixed wildcard LANG not being replaced.
+
 ## [1.0.4] - 2021-02-27
 ### Fixed
 - fixed script in package.json.
