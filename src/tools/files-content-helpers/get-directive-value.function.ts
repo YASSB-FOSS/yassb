@@ -28,8 +28,8 @@ export interface DirectiveData {
  * @param baseDir full absolute base path to resolve the relative path passed to the directive.
  * @returns all the directive values found as a DirectiveData object.
  */
-export function getDirectiveValues(fullDirectiveString: string, configOptions: YassbConfig, directiveName: SupportedDirectives, baseDir: keyof typeof WORKING_DIR): DirectiveData {
-  const directiveProps = new DirectivePropsGetter(fullDirectiveString, configOptions).parse();
+export function getDirectiveValues(fullDirectiveString: string, configOptions: YassbConfig, directiveName: SupportedDirectives, baseDir: keyof typeof WORKING_DIR, lang?: string): DirectiveData {
+  const directiveProps = new DirectivePropsGetter(fullDirectiveString, configOptions, lang).parse();
   const directiveMainValue = directiveProps[directiveName] as string;
 
   if (!directiveMainValue)

@@ -105,7 +105,7 @@ export class DirectivesParser {
    * Currently there are no check to prevent infinite loops. It would be nice if there were.
    */
   private handleComponent(componentFullString: string): string {
-    const directiveData = getDirectiveValues(componentFullString, this.config, SupportedDirectives.component, 'components');
+    const directiveData = getDirectiveValues(componentFullString, this.config, SupportedDirectives.component, 'components', this.lang);
 
     const extension = canProcessFileExtension(componentFullString, directiveData.fullPath, directiveData.directiveMainValue);
     if (!extension)

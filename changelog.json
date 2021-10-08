@@ -5,6 +5,10 @@
     {
       "type": "added",
       "value": "Atted typings for clean-css"
+    },
+    {
+      "type": "fixed",
+      "value": "fixed wildcard LANG not being replaced"
     }
   ],
   "changes": [
