@@ -21,7 +21,7 @@ const yassbConfig: webpack.Configuration = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     plugins: [
-      new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })
+      new TsconfigPathsPlugin({ configFile: "./tsconfig.json", logLevel: 'INFO' })
     ]
   },
   plugins: [
