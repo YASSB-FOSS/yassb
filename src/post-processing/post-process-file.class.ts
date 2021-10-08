@@ -110,7 +110,7 @@ export class PostProcessFile {
    * @param fileData Front Matter data retrieved from the store for the current file.
    */
   private injectFrontMatterData(fileData: FrontMatterData): void {
-    if (Object.keys(fileData))
+    if (typeof fileData === 'object' && Object.keys(fileData))
       this.fileContents = new FrontMatterInjector(this.fileContents, fileData).inject();
   }
 
