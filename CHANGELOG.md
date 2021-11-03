@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.0] - 2021-11-03
+### Added
+- added language and excerpt, if set, to the data passed to FrontMatterDataStore.
+
 ## [1.0.5] - 2021-10-08
 ### Added
 - Atted typings for clean-css.

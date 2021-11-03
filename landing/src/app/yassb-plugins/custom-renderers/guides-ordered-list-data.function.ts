@@ -1,6 +1,5 @@
-import { GrayMatterFile, read } from 'gray-matter';
 import { FilePathsForPublicFileList } from '../../../../../bundle';
-import { FrontMatterData, FrontMatterDataStore } from '../../../../../bundle';
+import { FrontMatterDataStore } from '../../../../../bundle';
 
 export interface GuidesOrderedListData {
   categories: any[];

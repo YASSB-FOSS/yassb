@@ -52,6 +52,12 @@ export class TextFormatterParser {
 
     this.content = new Converter(showdownOptions).makeHtml(this.parsedContent.content);
 
+    if (this.parsedContent.data && !this.parsedContent.data.excerpt && this.parsedContent.excerpt)
+      this.parsedContent.data.excerpt = this.parsedContent.excerpt;
+
+    if (this.parsedContent.data && !this.parsedContent.data.language && this.parsedContent.language)
+      this.parsedContent.data.language = this.parsedContent.language;
+
     return { content: this.content, data: this.parsedContent.data };
   }
 
