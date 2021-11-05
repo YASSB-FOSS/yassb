@@ -70,7 +70,7 @@ export interface YassbDirectiveConstructable {
  * @property `fileContents` HTML code of the entire page, as already processed by built-in directives.
  * @property `lang` the current language being processed, `undefined` if i18n is no enabled.
  * @property `config` the YASSB configuration object.
- * @property `matchedDirectives` the Array os the full string of the html code invoking the directive as matched by the `CustomDirectiveDeclaration['regex']`
+ * @property `matchedDirectives` the Array of the full string of the html code invoking the directive as matched by the `CustomDirectiveDeclaration['regex']`
  */
 export interface YassbDirectiveProps {
   fileFullPath: string;
