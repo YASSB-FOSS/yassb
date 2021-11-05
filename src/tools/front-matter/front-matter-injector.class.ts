@@ -50,8 +50,11 @@ export class FrontMatterInjector {
    */
   private stingify(value: string | Object | Array<unknown>, identifier: string): string {
 
+    if (this.isDate(value))
+      return value.toISOString();
+
     if (identifier === 'date')
-      return new Date(value as string).toLocaleDateString(); // TODO with i18n
+      return new Date(value as string).toISOString();
 
     switch (typeof value) {
       case 'string':
@@ -59,6 +62,13 @@ export class FrontMatterInjector {
       default:
         return JSON.stringify(value);
     }
+  }
+
+  /**
+   * Determines if a value is a Date
+   */
+  private isDate(value: any): value is Date {
+    return value instanceof Date;
   }
 
 }

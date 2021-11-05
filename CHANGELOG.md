@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.8] - 2021-11-05
+### Changed
+- date are now injected as a ISO string.
+
 ## [1.1.7] - 2021-11-05
 ### Fixed
 - not minimizing file when post processing a file just generated.
