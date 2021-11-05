@@ -23,6 +23,14 @@
     ],
     "description": "Inserts a YASSB directive for compenents"
   },
+  "YASSB date formatter": {
+    "scope": "html,txt,markdown,javascript,typescript,handlebars",
+    "prefix": "y-date-formatter",
+    "body": [
+      "<!-- date-formatter=\"$1\" format=\"$2\" -->"
+    ],
+    "description": "Inserts a YASSB directive for compenents"
+  },
   "YASSB data source": {
     "scope": "html,txt,markdown,javascript,typescript,handlebars",
     "prefix": "y-data-source",

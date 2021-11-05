@@ -1,4 +1,5 @@
 import { setupYassb } from '@yassb/config/setup.function';
+import { YassbBaseDirective as YassbBaseDir } from '@yassb/directives/yassb-base-directive.class';
 import { NewProjectMaker } from '@yassb/new-makers/new-project-maker.class';
 import { buildAll } from '@yassb/runners/build';
 import { devServer } from '@yassb/runners/server';
@@ -36,9 +37,10 @@ export function start(): void {
         return console.error('ERROR: you must provide a name for the project. Example: yassb new MyProject');
       new NewProjectMaker(projectName).init();
       break;
-    default:
-      console.error('No command passed to YASSB. Supported commands are:\n`build`\n`watch`\n`serve`\n`new [projectname]`');
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const YassbBaseDirective = YassbBaseDir;
 
 start();

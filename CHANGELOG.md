@@ -7,6 +7,11 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.1] - 2021-11-05
+### Fixed
+- fixed typo in comment.
+- exporting YassbBaseDirective so custom directives can import it and extend it .
+
 ## [1.1.0] - 2021-11-03
 ### Added
 - added language and excerpt, if set, to the data passed to FrontMatterDataStore.
