@@ -66,7 +66,7 @@ export class TemplateToHtmlFiles {
    */
   public init(): void {
     this.templateContents = readFileSync(this.pathToTemplate, 'utf8');
-    this.extractCompnents(this.templateContents);
+    this.extractComponents(this.templateContents);
 
     if (!this.directiveFullString) {
       console.error(`ERROR: no directive \`generate-from-files\` found in template ${this.pathToTemplate}. Template skipped.`);
@@ -87,7 +87,7 @@ export class TemplateToHtmlFiles {
    *
    * @param text The full text of the template
    */
-  private extractCompnents(text: string): void {
+  private extractComponents(text: string): void {
     const arrComponents = extractDirectives(text, TemplateToHtmlFiles.regex);
     if (Array.isArray(arrComponents))
       this.directiveFullString = arrComponents[0];
