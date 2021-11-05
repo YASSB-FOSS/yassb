@@ -10225,7 +10225,7 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - yassb-web@1.1.1
+ - yassb-web@1.1.2
 
 This package contains the following license and notice below:
 

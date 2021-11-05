@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.3] - 2021-11-05
+### Changed
+- improved how code is packaged for npm to serve modules in subdirs.
+
 ## [1.1.2] - 2021-11-05
 ### Changed
 - moved single exports to tools to use index only for CLI commands.
