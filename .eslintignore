@@ -1,6 +1,8 @@
 src/new-makers/dummy-data/**
 bundle/**
+tools.js
 webpack.yassb.config.ts
+webpack.yassb-tools.config.ts
 definitions-bundler.plugin.ts
 landing/dist/**/*
 tsconfig.json

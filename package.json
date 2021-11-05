@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
   "engines": {
     "node": ">=8.0.0"
@@ -8,6 +8,7 @@
   "scripts": {
     "licenses": "generate-license-file --input package.json --output licenses.txt",
     "build-yassb": "webpack --config webpack.yassb.config.ts --progress",
+    "build-tools": "webpack --config webpack.yassb-tools.config.ts --progress",
     "publishToNpm": "npm publish",
     "deploy": "npm run licenses && cglg --action=newRelease && npm run build-yassb && cglg --action=closeRelease && npm run do-no-run-this-deploy-directly",
     "do-no-run-this-deploy-directly": "npm run publishToNpm",
@@ -24,6 +25,7 @@
   },
   "files": [
     "bin.js",
+    "tools.js",
     "bundle/**/*",
     "licenses.txt"
   ],
@@ -105,6 +107,7 @@
     "precss": "^4.0.0",
     "raw-loader": "^4.0.2",
     "tailwindcss": "^2.0.3",
+    "tsconfig-paths": "^3.11.0",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
     "tscpaths": "^0.0.9",
     "typedoc": "^0.19.2",

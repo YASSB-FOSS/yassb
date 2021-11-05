@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.2] - 2021-11-05
+### Changed
+- moved single exports to tools to use index only for CLI commands.
+
 ## [1.1.1] - 2021-11-05
 ### Fixed
 - fixed typo in comment.

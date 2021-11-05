@@ -4,6 +4,16 @@
   "temp": [],
   "changes": [
     {
+      "version": "1.1.2",
+      "date": "2021-11-05",
+      "items": [
+        {
+          "type": "changed",
+          "value": "moved single exports to tools to use index only for CLI commands"
+        }
+      ]
+    },
+    {
       "version": "1.1.1",
       "date": "2021-11-05",
       "items": [
