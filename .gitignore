@@ -11,3 +11,4 @@ lib/
 lib-esm/
 landing/YASSB-FOSS.github.io
 package-lock.json
+tools.js
