@@ -31,7 +31,7 @@ export class PostProcessFile {
     private pathToFile: string,
     private config: YassbConfig,
     private isWatching: boolean,
-    private shouldRunCustomPostProcessors: boolean = true
+    private shouldRunFinalPostProcessing: boolean = true
   ) { }
 
   /**
@@ -42,7 +42,13 @@ export class PostProcessFile {
   public init(): void {
     this.setFileContents();
     this.setFileData();
-    this.postProcessFile();
+    this.injectFrontMatterData(this.fileData);
+
+    // If should run final post processing if false it means that we are processing a file just generated from a template
+    if (this.shouldRunFinalPostProcessing)
+      this.postProcessFile();
+
+    this.saveToDiskFinalVersionOfFile();
   }
 
   /**
@@ -63,25 +69,30 @@ export class PostProcessFile {
   }
 
   /**
-   * Handles the logic to post process each file by calling the methods in charge of the actions to be performed.
+   * Injects Front Matter data if any was fond in the file.
+   *
+   * @param fileData Front Matter data retrieved from the store for the current file.
    */
-  private postProcessFile(): void {
-
-    this.injectFrontMatterData(this.fileData);
-
-    if (this.shouldRunCustomPostProcessors)
-      this.runCustomPostProcessors();
-
-    this.prepareCodeForSaving();
-
-    this.saveToDiskFinalVersionOfFile();
+  private injectFrontMatterData(fileData: FrontMatterData): void {
+    if (typeof fileData === 'object' && Object.keys(fileData))
+      this.fileContents = new FrontMatterInjector(this.fileContents, fileData).inject();
   }
 
   /**
-   * Saves to disk the final version of file
+   * Handles the logic to post process each file by calling the methods in charge of the actions to be performed.
    */
-  private saveToDiskFinalVersionOfFile(): void {
-    writeFileSync(this.pathToFile, this.fileContents);
+  private postProcessFile(): void {
+    this.runCustomPostProcessors();
+    this.prepareCodeForSaving();
+  }
+
+  /**
+   * Runs custom post processors if set in congig.
+   */
+  private runCustomPostProcessors(): void {
+    this.config.postProcessors.forEach(postProcessor => {
+      this.fileContents = postProcessor(this.fileContents);
+    });
   }
 
   /**
@@ -98,22 +109,10 @@ export class PostProcessFile {
   }
 
   /**
-   * Runs custom post processors if set in congig.
+   * Saves to disk the final version of file
    */
-  private runCustomPostProcessors(): void {
-    this.config.postProcessors.forEach(postProcessor => {
-      this.fileContents = postProcessor(this.fileContents);
-    });
-  }
-
-  /**
-   * Injects Front Matter data if any was fond in the file.
-   *
-   * @param fileData Front Matter data retrieved from the store for the current file.
-   */
-  private injectFrontMatterData(fileData: FrontMatterData): void {
-    if (typeof fileData === 'object' && Object.keys(fileData))
-      this.fileContents = new FrontMatterInjector(this.fileContents, fileData).inject();
+  private saveToDiskFinalVersionOfFile(): void {
+    writeFileSync(this.pathToFile, this.fileContents);
   }
 
 }
