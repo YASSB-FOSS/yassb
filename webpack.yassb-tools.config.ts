@@ -2,7 +2,6 @@ import { readJSONSync } from 'fs-extra';
 import { join } from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import * as webpack from 'webpack';
-import { DefinitionsBundler } from './definitions-bundler.plugin';
 
 const packageConfig = readJSONSync('./package.json', { encoding: 'utf-8' });
 
@@ -29,7 +28,7 @@ const yassbConfig: webpack.Configuration = {
   },
   externals,
   output: {
-    path: __dirname,
+    path: join(__dirname, 'bundle'),
     filename: 'tools.js',
     library: 'YASSB',
     libraryTarget: 'umd',

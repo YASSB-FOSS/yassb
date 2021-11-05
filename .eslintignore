@@ -4,6 +4,7 @@ tools.js
 webpack.yassb.config.ts
 webpack.yassb-tools.config.ts
 definitions-bundler.plugin.ts
+npm-package-files-copier.class.ts
 landing/dist/**/*
 tsconfig.json
 config/**

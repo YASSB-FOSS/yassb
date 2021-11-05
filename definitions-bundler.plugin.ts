@@ -27,6 +27,8 @@ export class DefinitionsBundler {
     this.listEmptyDirs();
     this.writeResult();
     this.removeEmptyDirs();
+    this.cleanBundle();
+    this.copyIndexToTools();
   }
 
   private setBasePath() {
@@ -34,6 +36,7 @@ export class DefinitionsBundler {
   }
 
   public handleFile(pathToFile: string): void {
+    console.log('handleFile ~ pathToFile', pathToFile);
     let content = readFileSync(pathToFile, 'utf8');
     content = content.replace(/^import { .*? } from '@yassb.*?';/gm, '');
     const imports = content.match(/^import { .*? } from '.*?';/gm);
@@ -75,6 +78,25 @@ export class DefinitionsBundler {
     this.emptyDirs.forEach(dirPath => {
       removeSync(dirPath);
     });
+  }
+
+  /**
+   * Delete all files in the bundle directory that do not include index in the file name
+   */
+  private cleanBundle(): void {
+    const files = readdirSync(this.basePath);
+    files.forEach(file => {
+      if (!file.includes('index'))
+        removeSync(resolve(this.basePath, file));
+    });
+  }
+
+  /**
+   * Creates a copy of index.d.ts in the bundle directory named tools.d.ts
+   */
+  private copyIndexToTools(): void {
+    const index = readFileSync(resolve(this.basePath, 'index.d.ts'), 'utf8');
+    writeFileSync(resolve(this.basePath, 'tools.d.ts'), index);
   }
 
 }

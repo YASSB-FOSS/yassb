@@ -26,6 +26,9 @@
       ]
     }
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "config",
     "landing",
