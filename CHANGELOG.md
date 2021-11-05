@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.6] - 2021-11-05
+### Changed
+- converted post processor to sync.
+
 ## [1.1.5] - 2021-11-05
 ### Changed
 - running post processor also after a new file is generated from a template to inject matter data before directives are invoked.

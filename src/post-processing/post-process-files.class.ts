@@ -11,11 +11,6 @@ import { resolve } from 'path';
 export class PostProcessFiles {
 
   /**
-   * To speed up things post processing is async.
-   * All promises are stored and returned in an Array to wait with `Promise.all`.
-   */
-  private arrPromises: Array<Promise<void>> = [];
-  /**
    * List of files to post process.
    */
   private htmlFiles: Array<string> = [];
@@ -33,17 +28,13 @@ export class PostProcessFiles {
 
   /**
    * Do post process files by creating the list of file with `ListFiles` and then delegating the actions for each file to `PostProcessFile`.
-   * All promises returned by `PostProcessFile` are pushed to an Array and returned so the calling process can wait if necessary.
-   *
-   * @returns all the promises in an Array.
    */
-  public do(): Promise<Array<void>> {
+  public do(): void {
     this.htmlFiles = new ListFiles(WORKING_DIR.out, file => file.endsWith('.html') || file.endsWith('.htm')).init();
     this.htmlFiles.forEach(pathToFile => {
-      this.arrPromises.push(new PostProcessFile(pathToFile, this.config, this.isWatching).init());
+      new PostProcessFile(pathToFile, this.config, this.isWatching).init();
     });
     this.removeSiteMap();
-    return Promise.all(this.arrPromises);
   }
 
   /**

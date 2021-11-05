@@ -3,7 +3,7 @@ import { FrontMatterHandler } from '@yassb/tools/front-matter/front-matter-handl
 import { FrontMatterInjector } from '@yassb/tools/front-matter/front-matter-injector.class';
 import { FrontMatterData } from '@yassb/tools/front-matter/front-matter-store.const';
 import { YassbConfig } from '@yassb/yassb';
-import { readFile, writeFile } from 'fs-extra';
+import { readFileSync, writeFileSync } from 'fs-extra';
 import { minify } from 'html-minifier';
 
 /**
@@ -39,8 +39,8 @@ export class PostProcessFile {
    *
    * @returns init
    */
-  public async init(): Promise<void> {
-    await this.setFileContents();
+  public init(): void {
+    this.setFileContents();
     this.setFileData();
     this.postProcessFile();
   }
@@ -50,8 +50,8 @@ export class PostProcessFile {
    *
    * @returns file contents
    */
-  private async setFileContents(): Promise<void> {
-    this.fileContents = await readFile(this.pathToFile, 'utf8');
+  private setFileContents(): void {
+    this.fileContents = readFileSync(this.pathToFile, 'utf8');
   }
 
   /**
@@ -69,7 +69,8 @@ export class PostProcessFile {
 
     this.injectFrontMatterData(this.fileData);
 
-    this.runCustomPostProcessors();
+    if (this.shouldRunCustomPostProcessors)
+      this.runCustomPostProcessors();
 
     this.prepareCodeForSaving();
 
@@ -80,7 +81,7 @@ export class PostProcessFile {
    * Saves to disk the final version of file
    */
   private saveToDiskFinalVersionOfFile(): void {
-    writeFile(this.pathToFile, this.fileContents);
+    writeFileSync(this.pathToFile, this.fileContents);
   }
 
   /**

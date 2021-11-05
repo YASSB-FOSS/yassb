@@ -24,9 +24,9 @@ export function doCopyAssets(): void {
  *
  * @param config
  */
-export function doStyles(config: YassbConfig): void {
+export function doStyles(config: YassbConfig): Promise<void> {
   logStep('styles');
-  new StylesParser(config).parse();
+  return new StylesParser(config).parse();
 }
 
 /**
@@ -71,9 +71,9 @@ export function doHtml(config: YassbConfig, lang?: string): void {
  * @param config the full YASSB configuration Object
  * @param isWatching whether or not we are in watch mode, to avoid unnecessary steps during development.
  */
-export async function postProcessing(config: YassbConfig, isWatching: boolean): Promise<void> {
+export function postProcessing(config: YassbConfig, isWatching: boolean): void {
   logStep('Post processing');
-  await new PostProcessFiles(config, isWatching).do();
+  new PostProcessFiles(config, isWatching).do();
   logDone('Post processing');
 }
 
@@ -84,7 +84,7 @@ export async function postProcessing(config: YassbConfig, isWatching: boolean): 
  */
 // eslint-disable-next-line @typescript-eslint/tslint/config
 export async function buildAll({ runScripts = true, runStyles = true, skipTexts = false, isWatching = false } = {}): Promise<Array<void>> {
-  const promises = [];
+  const promises: Array<Promise<void>> = [];
   const config = setupYassb();
 
   console.log('Building...');
@@ -102,7 +102,7 @@ export async function buildAll({ runScripts = true, runStyles = true, skipTexts 
     else
       doHtml(config);
 
-    promises.push(postProcessing(config, isWatching));
+    postProcessing(config, isWatching);
   }
 
   if (!config.skipsStyles && runStyles)
