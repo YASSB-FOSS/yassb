@@ -25,12 +25,13 @@ export class PostProcessFile {
    *
    * @param pathToFile full absolute path to the file being processed
    * @param config full YASSB configuration object
-   * @param isWatching determins if in watch mode to skip roduction-only steps
+   * @param isWatching determins if in watch mode to skip production-only steps
    */
   constructor(
     private pathToFile: string,
     private config: YassbConfig,
-    private isWatching: boolean
+    private isWatching: boolean,
+    private shouldRunCustomPostProcessors: boolean = true
   ) { }
 
   /**

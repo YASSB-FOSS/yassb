@@ -1,6 +1,7 @@
 import { SupportedDirectives } from '@yassb/config/supported-directives.const';
 import { WORKING_DIR } from '@yassb/config/working-dir.constant';
 import { extractDirectives } from '@yassb/directives/tools/extract-directives.function';
+import { PostProcessFile } from '@yassb/post-processing/post-process-file.class';
 import { ListFiles } from '@yassb/tools/file-system-helpers/list-files.class';
 import { getDirectiveValues } from '@yassb/tools/files-content-helpers/get-directive-value.function';
 import { TextFormatterParser } from '@yassb/tools/files-content-helpers/text-formatter-parser.class';
@@ -119,6 +120,7 @@ export class TemplateToHtmlFiles {
     const fullPath = resolve(pathOut, fileName);
     FrontMatterHandler.set(fullPath, data);
     writeFileSync(fullPath, newFileHtmlContents);
+    new PostProcessFile(fullPath, this.configOptions, false, false).init();
   }
 
   /**
