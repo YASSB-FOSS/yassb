@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-const start = require('./bundle/index');
+const start = require('./index');

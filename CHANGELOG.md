@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.4] - 2021-11-05
+### Fixed
+- fixed import in bin.js.
+
 ## [1.1.3] - 2021-11-05
 ### Changed
 - improved how code is packaged for npm to serve modules in subdirs.
