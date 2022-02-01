@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.9] - 2022-02-01
+### Changed
+- updated dependencies for compatibility with Node 17.
+
 ## [1.1.8] - 2021-11-05
 ### Changed
 - date are now injected as a ISO string.

@@ -31,6 +31,80 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
+The following NPM package may be included in this product:
+
+ - @gar/promisify@1.1.2
+
+This package contains the following license and notice below:
+
+# @gar/promisify
+
+### Promisify an entire object or class instance
+
+This module leverages es6 Proxy and Reflect to promisify every function in an
+object or class instance.
+
+It assumes the callback that the function is expecting is the last
+parameter, and that it is an error-first callback with only one value,
+i.e. `(err, value) => ...`. This mirrors node's `util.promisify` method.
+
+In order that you can use it as a one-stop-shop for all your promisify
+needs, you can also pass it a function.  That function will be
+promisified as normal using node's built-in `util.promisify` method.
+
+[node's custom promisified
+functions](https://nodejs.org/api/util.html#util_custom_promisified_functions)
+will also be mirrored, further allowing this to be a drop-in replacement
+for the built-in `util.promisify`.
+
+### Examples
+
+Promisify an entire object
+
+```javascript
+
+const promisify = require('@gar/promisify')
+
+class Foo {
+  constructor (attr) {
+    this.attr = attr
+  }
+
+  double (input, cb) {
+    cb(null, input * 2)
+  }
+
+const foo = new Foo('baz')
+const promisified = promisify(foo)
+
+console.log(promisified.attr)
+console.log(await promisified.double(1024))
+```
+
+Promisify a function
+
+```javascript
+
+const promisify = require('@gar/promisify')
+
+function foo (a, cb) {
+  if (a !== 'bad') {
+    return cb(null, 'ok')
+  }
+  return cb('not ok')
+}
+
+const promisified = promisify(foo)
+
+// This will resolve to 'ok'
+promisified('good')
+
+// this will reject
+promisified('bad')
+```
+
+-----------
+
 The following NPM packages may be included in this product:
 
  - @nodelib/fs.scandir@2.1.5
@@ -66,11 +140,75 @@ SOFTWARE.
 
 The following NPM packages may be included in this product:
 
- - @types/eslint-scope@3.7.1
- - @types/eslint@7.28.0
+ - @npmcli/fs@1.1.0
+ - gauge@4.0.0
+ - npmlog@6.0.0
+
+These packages each contain the following license and notice below:
+
+<!-- This file is automatically added by @npmcli/template-oss. Do not edit. -->
+
+ISC License
+
+Copyright npm, Inc.
+
+Permission to use, copy, modify, and/or distribute this
+software for any purpose with or without fee is hereby
+granted, provided that the above copyright notice and this
+permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND NPM DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO
+EVENT SHALL NPM BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE
+USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - @npmcli/move-file@1.1.2
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+Copyright (c) npm, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM packages may be included in this product:
+
+ - @types/eslint-scope@3.7.3
+ - @types/eslint@8.4.1
  - @types/estree@0.0.50
  - @types/json-schema@7.0.9
+ - @types/minimist@1.2.2
  - @types/node@16.10.3
+ - @types/normalize-package-data@2.4.1
 
 These packages each contain the following license and notice below:
 
@@ -681,6 +819,7 @@ The following NPM packages may be included in this product:
 
  - accepts@1.3.7
  - mime-types@2.1.33
+ - mime-types@2.1.34
 
 These packages each contain the following license and notice below:
 
@@ -736,7 +875,7 @@ This plugin is released under an MIT License.
 
 The following NPM package may be included in this product:
 
- - acorn@8.5.0
+ - acorn@8.7.0
 
 This package contains the following license and notice below:
 
@@ -761,6 +900,264 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - agent-base@6.0.2
+
+This package contains the following license and notice below:
+
+agent-base
+==========
+### Turn a function into an [`http.Agent`][http.Agent] instance
+[![Build Status](https://github.com/TooTallNate/node-agent-base/workflows/Node%20CI/badge.svg)](https://github.com/TooTallNate/node-agent-base/actions?workflow=Node+CI)
+
+This module provides an `http.Agent` generator. That is, you pass it an async
+callback function, and it returns a new `http.Agent` instance that will invoke the
+given callback function when sending outbound HTTP requests.
+
+#### Some subclasses:
+
+Here's some more interesting uses of `agent-base`.
+Send a pull request to list yours!
+
+ * [`http-proxy-agent`][http-proxy-agent]: An HTTP(s) proxy `http.Agent` implementation for HTTP endpoints
+ * [`https-proxy-agent`][https-proxy-agent]: An HTTP(s) proxy `http.Agent` implementation for HTTPS endpoints
+ * [`pac-proxy-agent`][pac-proxy-agent]: A PAC file proxy `http.Agent` implementation for HTTP and HTTPS
+ * [`socks-proxy-agent`][socks-proxy-agent]: A SOCKS proxy `http.Agent` implementation for HTTP and HTTPS
+
+
+Installation
+------------
+
+Install with `npm`:
+
+``` bash
+$ npm install agent-base
+```
+
+
+Example
+-------
+
+Here's a minimal example that creates a new `net.Socket` connection to the server
+for every HTTP request (i.e. the equivalent of `agent: false` option):
+
+```js
+var net = require('net');
+var tls = require('tls');
+var url = require('url');
+var http = require('http');
+var agent = require('agent-base');
+
+var endpoint = 'http://nodejs.org/api/';
+var parsed = url.parse(endpoint);
+
+// This is the important part!
+parsed.agent = agent(function (req, opts) {
+  var socket;
+  // `secureEndpoint` is true when using the https module
+  if (opts.secureEndpoint) {
+    socket = tls.connect(opts);
+  } else {
+    socket = net.connect(opts);
+  }
+  return socket;
+});
+
+// Everything else works just like normal...
+http.get(parsed, function (res) {
+  console.log('"response" event!', res.headers);
+  res.pipe(process.stdout);
+});
+```
+
+Returning a Promise or using an `async` function is also supported:
+
+```js
+agent(async function (req, opts) {
+  await sleep(1000);
+  // etc…
+});
+```
+
+Return another `http.Agent` instance to "pass through" the responsibility
+for that HTTP request to that agent:
+
+```js
+agent(function (req, opts) {
+  return opts.secureEndpoint ? https.globalAgent : http.globalAgent;
+});
+```
+
+
+API
+---
+
+## Agent(Function callback[, Object options]) → [http.Agent][]
+
+Creates a base `http.Agent` that will execute the callback function `callback`
+for every HTTP request that it is used as the `agent` for. The callback function
+is responsible for creating a `stream.Duplex` instance of some kind that will be
+used as the underlying socket in the HTTP request.
+
+The `options` object accepts the following properties:
+
+  * `timeout` - Number - Timeout for the `callback()` function in milliseconds. Defaults to Infinity (optional).
+
+The callback function should have the following signature:
+
+### callback(http.ClientRequest req, Object options, Function cb) → undefined
+
+The ClientRequest `req` can be accessed to read request headers and
+and the path, etc. The `options` object contains the options passed
+to the `http.request()`/`https.request()` function call, and is formatted
+to be directly passed to `net.connect()`/`tls.connect()`, or however
+else you want a Socket to be created. Pass the created socket to
+the callback function `cb` once created, and the HTTP request will
+continue to proceed.
+
+If the `https` module is used to invoke the HTTP request, then the
+`secureEndpoint` property on `options` _will be set to `true`_.
+
+
+License
+-------
+
+(The MIT License)
+
+Copyright (c) 2013 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[http-proxy-agent]: https://github.com/TooTallNate/node-http-proxy-agent
+[https-proxy-agent]: https://github.com/TooTallNate/node-https-proxy-agent
+[pac-proxy-agent]: https://github.com/TooTallNate/node-pac-proxy-agent
+[socks-proxy-agent]: https://github.com/TooTallNate/node-socks-proxy-agent
+[http.Agent]: https://nodejs.org/api/http.html#http_class_http_agent
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - agentkeepalive@4.2.0
+
+This package contains the following license and notice below:
+
+The MIT License
+
+Copyright(c) node-modules and other contributors.
+Copyright(c) 2012 - 2015 fengmk2 <fengmk2@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM packages may be included in this product:
+
+ - aggregate-error@3.1.0
+ - ansi-regex@4.1.0
+ - ansi-regex@5.0.1
+ - ansi-styles@3.2.1
+ - ansi-styles@4.3.0
+ - array-union@2.1.0
+ - camelcase-keys@6.2.2
+ - camelcase@5.3.1
+ - chalk@2.4.2
+ - chalk@4.1.2
+ - clean-stack@2.2.0
+ - create-html-element@3.0.0
+ - env-paths@2.2.1
+ - escape-goat@2.1.1
+ - find-up@3.0.0
+ - find-up@4.1.0
+ - globby@11.0.4
+ - hard-rejection@2.1.0
+ - has-flag@3.0.0
+ - has-flag@4.0.0
+ - html-tags@3.1.0
+ - import-cwd@3.0.0
+ - import-from@3.0.0
+ - indent-string@4.0.0
+ - is-fullwidth-code-point@3.0.0
+ - locate-path@3.0.0
+ - locate-path@5.0.0
+ - p-limit@2.3.0
+ - p-locate@3.0.0
+ - p-locate@4.1.0
+ - p-try@2.2.0
+ - path-exists@4.0.0
+ - path-key@3.1.1
+ - path-type@4.0.0
+ - quick-lru@4.0.1
+ - read-pkg-up@7.0.1
+ - read-pkg@5.2.0
+ - redent@3.0.0
+ - resolve-from@5.0.0
+ - shebang-regex@3.0.0
+ - slash@3.0.0
+ - string-width@3.1.0
+ - string-width@4.2.3
+ - stringify-attributes@2.0.0
+ - strip-ansi@5.2.0
+ - strip-ansi@6.0.1
+ - strip-indent@3.0.0
+ - supports-color@5.5.0
+ - supports-color@7.2.0
+ - trim-newlines@3.0.1
+ - type-fest@0.5.2
+ - type-fest@0.6.0
+ - type-fest@0.8.1
+ - wrap-ansi@5.1.0
+ - yn@3.1.1
+
+These packages each contain the following license and notice below:
+
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -854,112 +1251,25 @@ THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
-
- - amdefine@1.0.1
-
-This package contains the following license and notice below:
-
-amdefine is released under two licenses: new BSD, and MIT. You may pick the
-license that best suits your development needs. The text of both licenses are
-provided below.
-
-
-The "New" BSD License:
-----------------------
-
-Copyright (c) 2011-2016, The Dojo Foundation
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-  * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-  * Neither the name of the Dojo Foundation nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-
-MIT License
------------
-
-Copyright (c) 2011-2016, The Dojo Foundation
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
------------
-
 The following NPM packages may be included in this product:
 
  - ansi-regex@2.1.1
  - ansi-styles@2.2.1
- - array-find-index@1.0.2
+ - arrify@1.0.1
  - builtin-modules@1.1.1
- - camelcase-keys@2.1.0
- - camelcase@2.1.1
  - chalk@1.1.3
- - code-point-at@1.1.0
  - decamelize@1.2.0
  - escape-string-regexp@1.0.5
- - find-up@1.1.2
  - has-ansi@2.0.0
- - indent-string@2.1.0
- - is-fullwidth-code-point@1.0.0
  - is-fullwidth-code-point@2.0.0
- - load-json-file@1.1.0
- - loud-rejection@1.6.0
+ - is-plain-obj@1.1.0
  - map-obj@1.0.1
- - meow@3.7.0
- - number-is-nan@1.0.1
  - object-assign@4.1.1
- - parse-json@2.2.0
- - path-exists@2.1.0
  - path-exists@3.0.0
  - path-is-absolute@1.0.1
- - path-type@1.1.0
  - pify@2.3.0
- - read-pkg-up@1.0.1
- - read-pkg@1.1.0
- - redent@1.0.0
- - repeating@2.0.1
- - string-width@1.0.2
  - strip-ansi@3.0.1
- - strip-bom@2.0.0
- - strip-indent@1.0.1
  - supports-color@2.0.0
- - trim-newlines@1.0.0
 
 These packages each contain the following license and notice below:
 
@@ -984,65 +1294,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
------------
-
-The following NPM packages may be included in this product:
-
- - ansi-regex@3.0.0
- - ansi-regex@4.1.0
- - ansi-regex@5.0.1
- - ansi-styles@3.2.1
- - ansi-styles@4.3.0
- - array-union@2.1.0
- - camelcase@5.3.1
- - chalk@2.4.2
- - chalk@4.1.2
- - create-html-element@3.0.0
- - env-paths@2.2.1
- - escape-goat@2.1.1
- - find-up@3.0.0
- - globby@11.0.4
- - has-flag@3.0.0
- - has-flag@4.0.0
- - html-tags@3.1.0
- - import-cwd@3.0.0
- - import-from@3.0.0
- - is-finite@1.1.0
- - is-fullwidth-code-point@3.0.0
- - locate-path@3.0.0
- - p-limit@2.3.0
- - p-locate@3.0.0
- - p-try@2.2.0
- - path-key@3.1.1
- - path-type@4.0.0
- - resolve-from@5.0.0
- - shebang-regex@3.0.0
- - slash@3.0.0
- - string-width@2.1.1
- - string-width@3.1.0
- - string-width@4.2.3
- - stringify-attributes@2.0.0
- - strip-ansi@4.0.0
- - strip-ansi@5.2.0
- - strip-ansi@6.0.1
- - supports-color@5.5.0
- - supports-color@7.2.0
- - type-fest@0.5.2
- - wrap-ansi@5.1.0
- - yn@3.1.1
-
-These packages each contain the following license and notice below:
-
-MIT License
-
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -1072,8 +1323,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following NPM packages may be included in this product:
 
- - aproba@1.2.0
- - wide-align@1.1.3
+ - aproba@2.0.0
+ - wide-align@1.1.5
 
 These packages each contain the following license and notice below:
 
@@ -1095,15 +1346,28 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - are-we-there-yet@1.1.7
+ - are-we-there-yet@2.0.0
 
 This package contains the following license and notice below:
 
-Copyright (c) 2015, Rebecca Turner
+ISC License
 
-Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+Copyright npm, Inc.
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+Permission to use, copy, modify, and/or distribute this
+software for any purpose with or without fee is hereby
+granted, provided that the above copyright notice and this
+permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND NPM DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO
+EVENT SHALL NPM BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE
+USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
@@ -1206,7 +1470,7 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - asn1@0.2.4
+ - asn1@0.2.6
 
 This package contains the following license and notice below:
 
@@ -1847,7 +2111,7 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - browserslist@4.17.3
+ - browserslist@4.19.1
 
 This package contains the following license and notice below:
 
@@ -1936,9 +2200,36 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
+The following NPM packages may be included in this product:
+
+ - cacache@15.3.0
+ - make-fetch-happen@9.1.0
+ - ssri@8.0.1
+
+These packages each contain the following license and notice below:
+
+ISC License
+
+Copyright (c) npm, Inc.
+
+Permission to use, copy, modify, and/or distribute this software for
+any purpose with or without fee is hereby granted, provided that the
+above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE COPYRIGHT HOLDER DISCLAIMS
+ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE
+USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
 The following NPM package may be included in this product:
 
- - caniuse-lite@1.0.30001265
+ - caniuse-lite@1.0.30001304
 
 This package contains the following license and notice below:
 
@@ -2467,13 +2758,18 @@ THE SOFTWARE.
 The following NPM packages may be included in this product:
 
  - chownr@2.0.0
+ - color-support@1.1.3
  - fs-minipass@2.1.0
  - isexe@2.0.0
  - json-stringify-safe@5.0.1
  - lru-cache@6.0.0
  - minimatch@3.0.4
+ - minipass-collect@1.0.2
+ - minipass-flush@1.0.5
+ - minipass-pipeline@1.2.4
+ - minipass-sized@1.0.3
  - nopt@5.0.0
- - npmlog@4.1.2
+ - npmlog@5.0.1
  - once@1.4.0
  - rimraf@3.0.2
  - semver@5.7.1
@@ -2754,7 +3050,7 @@ This package contains the following license and notice below:
 The following NPM packages may be included in this product:
 
  - console-control-strings@1.1.0
- - gauge@2.7.4
+ - gauge@3.0.2
 
 These packages each contain the following license and notice below:
 
@@ -3016,36 +3312,6 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - currently-unhandled@0.4.1
-
-This package contains the following license and notice below:
-
-The MIT License (MIT)
-
-Copyright (c) James Talmage <james@talmage.io> (github.com/jamestalmage)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
------------
-
-The following NPM package may be included in this product:
-
  - dashdash@1.14.1
 
 This package contains the following license and notice below:
@@ -3076,11 +3342,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - debug@2.6.9
+ - debug@4.3.2
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 (The MIT License)
 
@@ -3100,6 +3367,64 @@ LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE A
 IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - debug@4.3.3
+
+This package contains the following license and notice below:
+
+(The MIT License)
+
+Copyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2018-2021 Josh Junon
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the 'Software'), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - decamelize-keys@1.1.0
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com), Dmirty Sobolev <disobolev@icloud.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 -----------
 
@@ -3165,6 +3490,7 @@ The following NPM packages may be included in this product:
  - destroy@1.0.4
  - ee-first@1.1.1
  - mime-db@1.50.0
+ - mime-db@1.51.0
 
 These packages each contain the following license and notice below:
 
@@ -3303,7 +3629,7 @@ SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - electron-to-chromium@1.3.862
+ - electron-to-chromium@1.4.59
 
 This package contains the following license and notice below:
 
@@ -3397,6 +3723,31 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
+The following NPM package may be included in this product:
+
+ - encoding@0.1.13
+
+This package contains the following license and notice below:
+
+Copyright (c) 2012-2014 Andris Reinman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
 The following NPM packages may be included in this product:
 
  - enhanced-resolve@4.5.0
@@ -3404,10 +3755,10 @@ The following NPM packages may be included in this product:
  - loader-utils@2.0.0
  - memory-fs@0.5.0
  - schema-utils@3.1.1
- - terser-webpack-plugin@5.2.4
+ - terser-webpack-plugin@5.3.1
  - thread-loader@3.0.4
- - watchpack@2.2.0
- - webpack@5.58.0
+ - watchpack@2.3.1
+ - webpack@5.68.0
 
 These packages each contain the following license and notice below:
 
@@ -3431,6 +3782,85 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - err-code@2.0.3
+
+This package contains the following license and notice below:
+
+# err-code
+
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+
+[npm-url]:https://npmjs.org/package/err-code
+[downloads-image]:http://img.shields.io/npm/dm/err-code.svg
+[npm-image]:http://img.shields.io/npm/v/err-code.svg
+[travis-url]:https://travis-ci.org/IndigoUnited/js-err-code
+[travis-image]:http://img.shields.io/travis/IndigoUnited/js-err-code/master.svg
+[david-dm-url]:https://david-dm.org/IndigoUnited/js-err-code
+[david-dm-image]:https://img.shields.io/david/IndigoUnited/js-err-code.svg
+[david-dm-dev-url]:https://david-dm.org/IndigoUnited/js-err-code?type=dev
+[david-dm-dev-image]:https://img.shields.io/david/dev/IndigoUnited/js-err-code.svg
+[greenkeeper-image]:https://badges.greenkeeper.io/IndigoUnited/js-err-code.svg
+[greenkeeper-url]:https://greenkeeper.io/
+
+Create new error instances with a code and additional properties.
+
+
+## Installation
+
+```console
+$ npm install err-code
+// or
+$ bower install err-code
+```
+
+The browser file is named index.umd.js which supports CommonJS, AMD and globals (errCode).
+
+
+## Why
+
+I find myself doing this repeatedly:
+
+```js
+var err = new Error('My message');
+err.code = 'SOMECODE';
+err.detail = 'Additional information about the error';
+throw err;
+```
+
+
+## Usage
+
+Simple usage.
+
+```js
+var errcode = require('err-code');
+
+// fill error with message + code
+throw errcode(new Error('My message'), 'ESOMECODE');
+// fill error with message + code + props
+throw errcode(new Error('My message'), 'ESOMECODE', { detail: 'Additional information about the error' });
+// fill error with message + props
+throw errcode(new Error('My message'), { detail: 'Additional information about the error' });
+```
+
+## Pre-existing fields
+
+If the passed `Error` already has a `.code` field, or fields specified in the third argument to `errcode` they will be overwritten, unless the fields are read only or otherwise throw during assignment in which case a new object will be created that shares a prototype chain with the original `Error`. The `.stack` and `.message` properties will be carried over from the original error and `.code` or any passed properties will be set on it.
+
+
+## Tests
+
+`$ npm test`
+
+
+## License
+
+Released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
 -----------
 
@@ -4149,8 +4579,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 The following NPM packages may be included in this product:
 
  - extsprintf@1.3.0
- - extsprintf@1.4.0
- - jsprim@1.4.1
+ - extsprintf@1.4.1
+ - jsprim@1.4.2
 
 These packages each contain the following license and notice below:
 
@@ -4589,10 +5019,12 @@ MIT © [Sindre Sorhus](http://sindresorhus.com)
 The following NPM packages may be included in this product:
 
  - get-stdin@8.0.0
- - p-limit@3.1.0
+ - map-obj@4.3.0
+ - meow@9.0.0
+ - p-map@4.0.0
+ - parse-json@5.2.0
  - supports-color@8.1.1
  - wrap-ansi@7.0.0
- - yocto-queue@0.1.0
 
 These packages each contain the following license and notice below:
 
@@ -4612,7 +5044,7 @@ The following NPM packages may be included in this product:
 
  - getpass@0.1.7
  - http-signature@1.2.0
- - sshpk@1.16.1
+ - sshpk@1.17.0
 
 These packages each contain the following license and notice below:
 
@@ -4807,11 +5239,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - graceful-fs@4.2.8
+ - graceful-fs@4.2.9
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 The ISC License
 
@@ -4924,11 +5357,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - hosted-git-info@2.8.9
+ - hosted-git-info@4.1.0
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 Copyright (c) 2015, Rebecca Turner
 
@@ -5004,6 +5438,24 @@ IN THE SOFTWARE.
 
 -----------
 
+The following NPM package may be included in this product:
+
+ - http-cache-semantics@4.1.0
+
+This package contains the following license and notice below:
+
+Copyright 2016-2018 Kornel Lesiński
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-----------
+
 The following NPM packages may be included in this product:
 
  - http-errors@1.7.2
@@ -5038,9 +5490,265 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - iconv-lite@0.4.24
+ - http-proxy-agent@4.0.1
 
 This package contains the following license and notice below:
+
+http-proxy-agent
+================
+### An HTTP(s) proxy `http.Agent` implementation for HTTP
+[![Build Status](https://github.com/TooTallNate/node-http-proxy-agent/workflows/Node%20CI/badge.svg)](https://github.com/TooTallNate/node-http-proxy-agent/actions?workflow=Node+CI)
+
+This module provides an `http.Agent` implementation that connects to a specified
+HTTP or HTTPS proxy server, and can be used with the built-in `http` module.
+
+__Note:__ For HTTP proxy usage with the `https` module, check out
+[`node-https-proxy-agent`](https://github.com/TooTallNate/node-https-proxy-agent).
+
+Installation
+------------
+
+Install with `npm`:
+
+``` bash
+$ npm install http-proxy-agent
+```
+
+
+Example
+-------
+
+``` js
+var url = require('url');
+var http = require('http');
+var HttpProxyAgent = require('http-proxy-agent');
+
+// HTTP/HTTPS proxy to connect to
+var proxy = process.env.http_proxy || 'http://168.63.76.32:3128';
+console.log('using proxy server %j', proxy);
+
+// HTTP endpoint for the proxy to connect to
+var endpoint = process.argv[2] || 'http://nodejs.org/api/';
+console.log('attempting to GET %j', endpoint);
+var opts = url.parse(endpoint);
+
+// create an instance of the `HttpProxyAgent` class with the proxy server information
+var agent = new HttpProxyAgent(proxy);
+opts.agent = agent;
+
+http.get(opts, function (res) {
+  console.log('"response" event!', res.headers);
+  res.pipe(process.stdout);
+});
+```
+
+
+License
+-------
+
+(The MIT License)
+
+Copyright (c) 2013 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - https-proxy-agent@5.0.0
+
+This package contains the following license and notice below:
+
+https-proxy-agent
+================
+### An HTTP(s) proxy `http.Agent` implementation for HTTPS
+[![Build Status](https://github.com/TooTallNate/node-https-proxy-agent/workflows/Node%20CI/badge.svg)](https://github.com/TooTallNate/node-https-proxy-agent/actions?workflow=Node+CI)
+
+This module provides an `http.Agent` implementation that connects to a specified
+HTTP or HTTPS proxy server, and can be used with the built-in `https` module.
+
+Specifically, this `Agent` implementation connects to an intermediary "proxy"
+server and issues the [CONNECT HTTP method][CONNECT], which tells the proxy to
+open a direct TCP connection to the destination server.
+
+Since this agent implements the CONNECT HTTP method, it also works with other
+protocols that use this method when connecting over proxies (i.e. WebSockets).
+See the "Examples" section below for more.
+
+
+Installation
+------------
+
+Install with `npm`:
+
+``` bash
+$ npm install https-proxy-agent
+```
+
+
+Examples
+--------
+
+#### `https` module example
+
+``` js
+var url = require('url');
+var https = require('https');
+var HttpsProxyAgent = require('https-proxy-agent');
+
+// HTTP/HTTPS proxy to connect to
+var proxy = process.env.http_proxy || 'http://168.63.76.32:3128';
+console.log('using proxy server %j', proxy);
+
+// HTTPS endpoint for the proxy to connect to
+var endpoint = process.argv[2] || 'https://graph.facebook.com/tootallnate';
+console.log('attempting to GET %j', endpoint);
+var options = url.parse(endpoint);
+
+// create an instance of the `HttpsProxyAgent` class with the proxy server information
+var agent = new HttpsProxyAgent(proxy);
+options.agent = agent;
+
+https.get(options, function (res) {
+  console.log('"response" event!', res.headers);
+  res.pipe(process.stdout);
+});
+```
+
+#### `ws` WebSocket connection example
+
+``` js
+var url = require('url');
+var WebSocket = require('ws');
+var HttpsProxyAgent = require('https-proxy-agent');
+
+// HTTP/HTTPS proxy to connect to
+var proxy = process.env.http_proxy || 'http://168.63.76.32:3128';
+console.log('using proxy server %j', proxy);
+
+// WebSocket endpoint for the proxy to connect to
+var endpoint = process.argv[2] || 'ws://echo.websocket.org';
+var parsed = url.parse(endpoint);
+console.log('attempting to connect to WebSocket %j', endpoint);
+
+// create an instance of the `HttpsProxyAgent` class with the proxy server information
+var options = url.parse(proxy);
+
+var agent = new HttpsProxyAgent(options);
+
+// finally, initiate the WebSocket connection
+var socket = new WebSocket(endpoint, { agent: agent });
+
+socket.on('open', function () {
+  console.log('"open" event!');
+  socket.send('hello world');
+});
+
+socket.on('message', function (data, flags) {
+  console.log('"message" event! %j %j', data, flags);
+  socket.close();
+});
+```
+
+API
+---
+
+### new HttpsProxyAgent(Object options)
+
+The `HttpsProxyAgent` class implements an `http.Agent` subclass that connects
+to the specified "HTTP(s) proxy server" in order to proxy HTTPS and/or WebSocket
+requests. This is achieved by using the [HTTP `CONNECT` method][CONNECT].
+
+The `options` argument may either be a string URI of the proxy server to use, or an
+"options" object with more specific properties:
+
+  * `host` - String - Proxy host to connect to (may use `hostname` as well). Required.
+  * `port` - Number - Proxy port to connect to. Required.
+  * `protocol` - String - If `https:`, then use TLS to connect to the proxy.
+  * `headers` - Object - Additional HTTP headers to be sent on the HTTP CONNECT method.
+  * Any other options given are passed to the `net.connect()`/`tls.connect()` functions.
+
+
+License
+-------
+
+(The MIT License)
+
+Copyright (c) 2013 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[CONNECT]: http://en.wikipedia.org/wiki/HTTP_tunnel#HTTP_CONNECT_Tunneling
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - humanize-ms@1.2.1
+
+This package contains the following license and notice below:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-----------
+
+The following NPM packages may be included in this product:
+
+ - iconv-lite@0.4.24
+ - iconv-lite@0.6.3
+
+These packages each contain the following license and notice below:
 
 Copyright (c) 2011 Alexander Shtuchkin
 
@@ -5097,6 +5805,162 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
+ - imurmurhash@0.1.4
+
+This package contains the following license and notice below:
+
+iMurmurHash.js
+==============
+
+An incremental implementation of the MurmurHash3 (32-bit) hashing algorithm for JavaScript based on [Gary Court's implementation](https://github.com/garycourt/murmurhash-js) with [kazuyukitanimura's modifications](https://github.com/kazuyukitanimura/murmurhash-js).
+
+This version works significantly faster than the non-incremental version if you need to hash many small strings into a single hash, since string concatenation (to build the single string to pass the non-incremental version) is fairly costly. In one case tested, using the incremental version was about 50% faster than concatenating 5-10 strings and then hashing.
+
+Installation
+------------
+
+To use iMurmurHash in the browser, [download the latest version](https://raw.github.com/jensyt/imurmurhash-js/master/imurmurhash.min.js) and include it as a script on your site.
+
+```html
+<script type="text/javascript" src="/scripts/imurmurhash.min.js"></script>
+<script>
+// Your code here, access iMurmurHash using the global object MurmurHash3
+</script>
+```
+
+---
+
+To use iMurmurHash in Node.js, install the module using NPM:
+
+```bash
+npm install imurmurhash
+```
+
+Then simply include it in your scripts:
+
+```javascript
+MurmurHash3 = require('imurmurhash');
+```
+
+Quick Example
+-------------
+
+```javascript
+// Create the initial hash
+var hashState = MurmurHash3('string');
+
+// Incrementally add text
+hashState.hash('more strings');
+hashState.hash('even more strings');
+
+// All calls can be chained if desired
+hashState.hash('and').hash('some').hash('more');
+
+// Get a result
+hashState.result();
+// returns 0xe4ccfe6b
+```
+
+Functions
+---------
+
+### MurmurHash3 ([string], [seed])
+Get a hash state object, optionally initialized with the given _string_ and _seed_. _Seed_ must be a positive integer if provided. Calling this function without the `new` keyword will return a cached state object that has been reset. This is safe to use as long as the object is only used from a single thread and no other hashes are created while operating on this one. If this constraint cannot be met, you can use `new` to create a new state object. For example:
+
+```javascript
+// Use the cached object, calling the function again will return the same
+// object (but reset, so the current state would be lost)
+hashState = MurmurHash3();
+...
+
+// Create a new object that can be safely used however you wish. Calling the
+// function again will simply return a new state object, and no state loss
+// will occur, at the cost of creating more objects.
+hashState = new MurmurHash3();
+```
+
+Both methods can be mixed however you like if you have different use cases.
+
+---
+
+### MurmurHash3.prototype.hash (string)
+Incrementally add _string_ to the hash. This can be called as many times as you want for the hash state object, including after a call to `result()`. Returns `this` so calls can be chained.
+
+---
+
+### MurmurHash3.prototype.result ()
+Get the result of the hash as a 32-bit positive integer. This performs the tail and finalizer portions of the algorithm, but does not store the result in the state object. This means that it is perfectly safe to get results and then continue adding strings via `hash`.
+
+```javascript
+// Do the whole string at once
+MurmurHash3('this is a test string').result();
+// 0x70529328
+
+// Do part of the string, get a result, then the other part
+var m = MurmurHash3('this is a');
+m.result();
+// 0xbfc4f834
+m.hash(' test string').result();
+// 0x70529328 (same as above)
+```
+
+---
+
+### MurmurHash3.prototype.reset ([seed])
+Reset the state object for reuse, optionally using the given _seed_ (defaults to 0 like the constructor). Returns `this` so calls can be chained.
+
+---
+
+License (MIT)
+-------------
+Copyright (c) 2013 Gary Court, Jens Taylor
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM packages may be included in this product:
+
+ - infer-owner@1.0.4
+ - minipass@3.1.6
+
+These packages each contain the following license and notice below:
+
+The ISC License
+
+Copyright (c) npm, Inc. and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
  - inflight@1.0.6
 
 This package contains the following license and notice below:
@@ -5146,6 +6010,105 @@ PERFORMANCE OF THIS SOFTWARE.
 
 The following NPM package may be included in this product:
 
+ - ip@1.1.5
+
+This package contains the following license and notice below:
+
+# IP  
+[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  
+
+IP address utilities for node.js
+
+## Installation
+
+###  npm
+```shell
+npm install ip
+```
+
+### git
+
+```shell
+git clone https://github.com/indutny/node-ip.git
+```
+  
+## Usage
+Get your ip address, compare ip addresses, validate ip addresses, etc.
+
+```js
+var ip = require('ip');
+
+ip.address() // my ip address
+ip.isEqual('::1', '::0:1'); // true
+ip.toBuffer('127.0.0.1') // Buffer([127, 0, 0, 1])
+ip.toString(new Buffer([127, 0, 0, 1])) // 127.0.0.1
+ip.fromPrefixLen(24) // 255.255.255.0
+ip.mask('192.168.1.134', '255.255.255.0') // 192.168.1.0
+ip.cidr('192.168.1.134/26') // 192.168.1.128
+ip.not('255.255.255.0') // 0.0.0.255
+ip.or('192.168.1.134', '0.0.0.255') // 192.168.1.255
+ip.isPrivate('127.0.0.1') // true
+ip.isV4Format('127.0.0.1'); // true
+ip.isV6Format('::ffff:127.0.0.1'); // true
+
+// operate on buffers in-place
+var buf = new Buffer(128);
+var offset = 64;
+ip.toBuffer('127.0.0.1', buf, offset);  // [127, 0, 0, 1] at offset 64
+ip.toString(buf, offset, 4);            // '127.0.0.1'
+
+// subnet information
+ip.subnet('192.168.1.134', '255.255.255.192')
+// { networkAddress: '192.168.1.128',
+//   firstAddress: '192.168.1.129',
+//   lastAddress: '192.168.1.190',
+//   broadcastAddress: '192.168.1.191',
+//   subnetMask: '255.255.255.192',
+//   subnetMaskLength: 26,
+//   numHosts: 62,
+//   length: 64,
+//   contains: function(addr){...} }
+ip.cidrSubnet('192.168.1.134/26')
+// Same as previous.
+
+// range checking
+ip.cidrSubnet('192.168.1.134/26').contains('192.168.1.190') // true
+
+
+// ipv4 long conversion
+ip.toLong('127.0.0.1'); // 2130706433
+ip.fromLong(2130706433); // '127.0.0.1'
+```
+
+### License
+
+This software is licensed under the MIT License.
+
+Copyright Fedor Indutny, 2012.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
  - ipaddr.js@1.9.1
 
 This package contains the following license and notice below:
@@ -5172,11 +6135,12 @@ THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - is-core-module@2.7.0
+ - is-core-module@2.8.1
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 The MIT License (MIT)
 
@@ -5294,19 +6258,31 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - is-utf8@0.2.1
+ - is-lambda@1.0.1
 
 This package contains the following license and notice below:
 
 The MIT License (MIT)
 
-Copyright (C) 2014 Wei Fanzhe
+Copyright (c) 2016-2017 Thomas Watson Steen
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-　　
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 -----------
 
@@ -5400,7 +6376,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM packages may be included in this product:
 
- - jest-worker@27.2.4
+ - jest-worker@27.4.6
  - react-dom@17.0.2
  - react@17.0.2
  - scheduler@0.20.2
@@ -5594,15 +6570,239 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM package may be included in this product:
 
- - json-schema@0.2.3
+ - json-parse-even-better-errors@2.3.1
 
 This package contains the following license and notice below:
 
-JSON Schema is a repository for the JSON Schema specification, reference schemas and a CommonJS implementation of JSON Schema (not the only JavaScript implementation of JSON Schema, JSV is another excellent JavaScript validator).
+Copyright 2017 Kat Marchán
+Copyright npm, Inc.
 
-Code is licensed under the AFL or BSD license as part of the Persevere 
-project which is administered under the Dojo foundation,
-and all contributions require a Dojo CLA.
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+---
+
+This library is a fork of 'better-json-errors' by Kat Marchán, extended and
+distributed under the terms of the MIT license above.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - json-schema@0.4.0
+
+This package contains the following license and notice below:
+
+Dojo is available under *either* the terms of the BSD 3-Clause "New" License *or* the
+Academic Free License version 2.1. As a recipient of Dojo, you may choose which
+license to receive this code under (except as noted in per-module LICENSE
+files). Some modules may not be the copyright of the Dojo Foundation. These
+modules contain explicit declarations of copyright in both the LICENSE files in
+the directories in which they reside and in the code itself. No external
+contributions are allowed under licenses which are fundamentally incompatible
+with the AFL-2.1 OR and BSD-3-Clause licenses that Dojo is distributed under.
+
+The text of the AFL-2.1 and BSD-3-Clause licenses is reproduced below. 
+
+-------------------------------------------------------------------------------
+BSD 3-Clause "New" License:
+**********************
+
+Copyright (c) 2005-2015, The Dojo Foundation
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+  * Neither the name of the Dojo Foundation nor the names of its contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------------------------
+The Academic Free License, v. 2.1:
+**********************************
+
+This Academic Free License (the "License") applies to any original work of
+authorship (the "Original Work") whose owner (the "Licensor") has placed the
+following notice immediately following the copyright notice for the Original
+Work:
+
+Licensed under the Academic Free License version 2.1
+
+1) Grant of Copyright License. Licensor hereby grants You a world-wide,
+royalty-free, non-exclusive, perpetual, sublicenseable license to do the
+following:
+
+a) to reproduce the Original Work in copies;
+
+b) to prepare derivative works ("Derivative Works") based upon the Original
+Work;
+
+c) to distribute copies of the Original Work and Derivative Works to the
+public;
+
+d) to perform the Original Work publicly; and
+
+e) to display the Original Work publicly.
+
+2) Grant of Patent License. Licensor hereby grants You a world-wide,
+royalty-free, non-exclusive, perpetual, sublicenseable license, under patent
+claims owned or controlled by the Licensor that are embodied in the Original
+Work as furnished by the Licensor, to make, use, sell and offer for sale the
+Original Work and Derivative Works.
+
+3) Grant of Source Code License. The term "Source Code" means the preferred
+form of the Original Work for making modifications to it and all available
+documentation describing how to modify the Original Work. Licensor hereby
+agrees to provide a machine-readable copy of the Source Code of the Original
+Work along with each copy of the Original Work that Licensor distributes.
+Licensor reserves the right to satisfy this obligation by placing a
+machine-readable copy of the Source Code in an information repository
+reasonably calculated to permit inexpensive and convenient access by You for as
+long as Licensor continues to distribute the Original Work, and by publishing
+the address of that information repository in a notice immediately following
+the copyright notice that applies to the Original Work.
+
+4) Exclusions From License Grant. Neither the names of Licensor, nor the names
+of any contributors to the Original Work, nor any of their trademarks or
+service marks, may be used to endorse or promote products derived from this
+Original Work without express prior written permission of the Licensor. Nothing
+in this License shall be deemed to grant any rights to trademarks, copyrights,
+patents, trade secrets or any other intellectual property of Licensor except as
+expressly stated herein. No patent license is granted to make, use, sell or
+offer to sell embodiments of any patent claims other than the licensed claims
+defined in Section 2. No right is granted to the trademarks of Licensor even if
+such marks are included in the Original Work. Nothing in this License shall be
+interpreted to prohibit Licensor from licensing under different terms from this
+License any Original Work that Licensor otherwise would have a right to
+license.
+
+5) This section intentionally omitted.
+
+6) Attribution Rights. You must retain, in the Source Code of any Derivative
+Works that You create, all copyright, patent or trademark notices from the
+Source Code of the Original Work, as well as any notices of licensing and any
+descriptive text identified therein as an "Attribution Notice." You must cause
+the Source Code for any Derivative Works that You create to carry a prominent
+Attribution Notice reasonably calculated to inform recipients that You have
+modified the Original Work.
+
+7) Warranty of Provenance and Disclaimer of Warranty. Licensor warrants that
+the copyright in and to the Original Work and the patent rights granted herein
+by Licensor are owned by the Licensor or are sublicensed to You under the terms
+of this License with the permission of the contributor(s) of those copyrights
+and patent rights. Except as expressly stated in the immediately proceeding
+sentence, the Original Work is provided under this License on an "AS IS" BASIS
+and WITHOUT WARRANTY, either express or implied, including, without limitation,
+the warranties of NON-INFRINGEMENT, MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE. THE ENTIRE RISK AS TO THE QUALITY OF THE ORIGINAL WORK IS WITH YOU.
+This DISCLAIMER OF WARRANTY constitutes an essential part of this License. No
+license to Original Work is granted hereunder except under this disclaimer.
+
+8) Limitation of Liability. Under no circumstances and under no legal theory,
+whether in tort (including negligence), contract, or otherwise, shall the
+Licensor be liable to any person for any direct, indirect, special, incidental,
+or consequential damages of any character arising as a result of this License
+or the use of the Original Work including, without limitation, damages for loss
+of goodwill, work stoppage, computer failure or malfunction, or any and all
+other commercial damages or losses. This limitation of liability shall not
+apply to liability for death or personal injury resulting from Licensor's
+negligence to the extent applicable law prohibits such limitation. Some
+jurisdictions do not allow the exclusion or limitation of incidental or
+consequential damages, so this exclusion and limitation may not apply to You.
+
+9) Acceptance and Termination. If You distribute copies of the Original Work or
+a Derivative Work, You must make a reasonable effort under the circumstances to
+obtain the express assent of recipients to the terms of this License. Nothing
+else but this License (or another written agreement between Licensor and You)
+grants You permission to create Derivative Works based upon the Original Work
+or to exercise any of the rights granted in Section 1 herein, and any attempt
+to do so except under the terms of this License (or another written agreement
+between Licensor and You) is expressly prohibited by U.S. copyright law, the
+equivalent laws of other countries, and by international treaty. Therefore, by
+exercising any of the rights granted to You in Section 1 herein, You indicate
+Your acceptance of this License and all of its terms and conditions.
+
+10) Termination for Patent Action. This License shall terminate automatically
+and You may no longer exercise any of the rights granted to You by this License
+as of the date You commence an action, including a cross-claim or counterclaim,
+against Licensor or any licensee alleging that the Original Work infringes a
+patent. This termination provision shall not apply for an action alleging
+patent infringement by combinations of the Original Work with other software or
+hardware.
+
+11) Jurisdiction, Venue and Governing Law. Any action or suit relating to this
+License may be brought only in the courts of a jurisdiction wherein the
+Licensor resides or in which Licensor conducts its primary business, and under
+the laws of that jurisdiction excluding its conflict-of-law provisions. The
+application of the United Nations Convention on Contracts for the International
+Sale of Goods is expressly excluded. Any use of the Original Work outside the
+scope of this License or after its termination shall be subject to the
+requirements and penalties of the U.S. Copyright Act, 17 U.S.C. Â§ 101 et
+seq., the equivalent laws of other countries, and international treaty. This
+section shall survive the termination of this License.
+
+12) Attorneys Fees. In any action to enforce the terms of this License or
+seeking damages relating thereto, the prevailing party shall be entitled to
+recover its costs and expenses, including, without limitation, reasonable
+attorneys' fees and costs incurred in connection with such action, including
+any appeal of such action. This section shall survive the termination of this
+License.
+
+13) Miscellaneous. This License represents the complete agreement concerning
+the subject matter hereof. If any provision of this License is held to be
+unenforceable, such provision shall be reformed only to the extent necessary to
+make it enforceable.
+
+14) Definition of "You" in This License. "You" throughout this License, whether
+in upper or lower case, means an individual or a legal entity exercising rights
+under, and complying with all of the terms of, this License. For legal
+entities, "You" includes any entity that controls, is controlled by, or is
+under common control with you. For purposes of this definition, "control" means
+(i) the power, direct or indirect, to cause the direction or management of such
+entity, whether by contract or otherwise, or (ii) ownership of fifty percent
+(50%) or more of the outstanding shares, or (iii) beneficial ownership of such
+entity.
+
+15) Right to Use. You may use the Original Work in all ways not otherwise
+restricted or conditioned by this License or by law, and Licensor promises not
+to interfere with or be responsible for such uses by You.
+
+This license is Copyright (C) 2003-2004 Lawrence E. Rosen. All rights reserved.
+Permission is hereby granted to copy and distribute this license without
+modification. This license may not be modified without the express written
+permission of its copyright owner.
 
 -----------
 
@@ -5761,6 +6961,36 @@ lilconfig('myapp', options)
 
 - lilconig v1 → cosmiconfig v6
 - lilconig v2 → cosmiconfig v7
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - lines-and-columns@1.1.6
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) 2015 Brian Donovan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 -----------
 
@@ -6172,25 +7402,98 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - minipass@3.1.5
+ - min-indent@1.0.1
 
 This package contains the following license and notice below:
 
-The ISC License
+The MIT License (MIT)
 
-Copyright (c) npm, Inc. and Contributors
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com), James Kyle <me@thejameskyle.com> (thejameskyle.com)
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - minimist-options@4.1.0
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) Vadim Demedes <vdemedes@gmail.com> (vadimdemedes.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - minipass-fetch@1.4.1
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+Copyright (c) 2016 David Frank
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Note: This is a derivative work based on "node-fetch" by David Frank,
+modified and distributed under the terms of the MIT license above.
+https://github.com/bitinn/node-fetch
 
 -----------
 
@@ -6324,12 +7627,43 @@ The following NPM packages may be included in this product:
 
  - ms@2.0.0
  - ms@2.1.1
+ - ms@2.1.2
 
 These packages each contain the following license and notice below:
 
 The MIT License (MIT)
 
 Copyright (c) 2016 Zeit, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - ms@2.1.3
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) 2020 Vercel, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -6431,11 +7765,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - negotiator@0.6.2
+ - negotiator@0.6.3
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 (The MIT License)
 
@@ -6497,7 +7832,7 @@ SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - node-gyp@7.1.2
+ - node-gyp@8.4.1
 
 This package contains the following license and notice below:
 
@@ -6530,7 +7865,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - node-releases@1.1.77
+ - node-releases@2.0.1
 
 This package contains the following license and notice below:
 
@@ -6560,7 +7895,7 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - node-sass@5.0.0
+ - node-sass@7.0.1
 
 This package contains the following license and notice below:
 
@@ -6623,6 +7958,30 @@ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - normalize-package-data@3.0.3
+
+This package contains the following license and notice below:
+
+This package contains code originally written by Isaac Z. Schlueter.
+Used with permission.
+
+Copyright (c) Meryn Stol ("Author")
+All rights reserved.
+
+The BSD License
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -----------
 
@@ -6765,11 +8124,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - picocolors@0.2.1
+ - picocolors@1.0.0
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 ISC License
 
@@ -6798,37 +8158,6 @@ This package contains the following license and notice below:
 The MIT License (MIT)
 
 Copyright (c) 2017-present, Jon Schlinkert.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
------------
-
-The following NPM packages may be included in this product:
-
- - pinkie-promise@2.0.1
- - pinkie@2.0.4
-
-These packages each contain the following license and notice below:
-
-The MIT License (MIT)
-
-Copyright (c) Vsevolod Strukchinsky <floatdrop@gmail.com> (github.com/floatdrop)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -7027,6 +8356,56 @@ SOFTWARE.**
 
 The following NPM package may be included in this product:
 
+ - promise-inflight@1.0.1
+
+This package contains the following license and notice below:
+
+Copyright (c) 2017, Rebecca Turner <me@re-becca.org>
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - promise-retry@2.0.1
+
+This package contains the following license and notice below:
+
+Copyright (c) 2014 IndigoUnited
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
  - prr@1.0.1
 
 This package contains the following license and notice below:
@@ -7063,12 +8442,49 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
-The following NPM packages may be included in this product:
+The following NPM package may be included in this product:
 
- - qs@6.5.2
+ - qs@6.5.3
+
+This package contains the following license and notice below:
+
+BSD 3-Clause License
+
+Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-----------
+
+The following NPM package may be included in this product:
+
  - qs@6.7.0
 
-These packages each contain the following license and notice below:
+This package contains the following license and notice below:
 
 Copyright (c) 2014 Nathan LaFreniere and other contributors.
 All rights reserved.
@@ -7280,11 +8696,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - readable-stream@2.3.7
+ - readable-stream@3.6.0
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 Node.js is licensed for use as follows:
 
@@ -7431,9 +8848,9 @@ The following NPM packages may be included in this product:
 
  - require-main-filename@2.0.0
  - set-blocking@2.0.0
- - yargs-parser@13.1.2
  - yargs-parser@15.0.3
  - yargs-parser@20.2.9
+ - yargs-parser@21.0.0
 
 These packages each contain the following license and notice below:
 
@@ -7481,6 +8898,36 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - retry@0.12.0
+
+This package contains the following license and notice below:
+
+Copyright (c) 2011:
+Tim Koschützki (tim@debuggable.com)
+Felix Geisendörfer (felix@debuggable.com)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
 
 -----------
 
@@ -7577,133 +9024,17 @@ SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - sass-graph@2.2.5
+ - sass-graph@4.0.0
 
 This package contains the following license and notice below:
 
-# Sass Graph
+Copyright 2014 Michael Mifsud
 
-Parses Sass files in a directory and exposes a graph of dependencies
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-[![Build Status](https://travis-ci.org/xzyfer/sass-graph.svg?branch=master)](https://travis-ci.org/xzyfer/sass-graph)
-[![Coverage Status](https://coveralls.io/repos/github/xzyfer/sass-graph/badge.svg?branch=master)](https://coveralls.io/github/xzyfer/sass-graph?branch=master)
-[![npm version](https://badge.fury.io/js/sass-graph.svg)](http://badge.fury.io/js/sass-graph)
-[![Dependency Status](https://david-dm.org/xzyfer/sass-graph.svg?theme=shields.io)](https://david-dm.org/xzyfer/sass-graph)
-[![devDependency Status](https://david-dm.org/xzyfer/sass-graph/dev-status.svg?theme=shields.io)](https://david-dm.org/xzyfer/sass-graph#info=devDependencies)
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-## Install
-
-Install with [npm](https://npmjs.org/package/sass-graph)
-
-```
-npm install --save-dev sass-graph
-```
-
-## Usage
-
-Usage as a Node library:
-
-```js
-var sassGraph = require('./sass-graph');
-```
-
-Usage as a command line tool:
-
-The command line tool will parse a graph and then either display ancestors, descendents or both.
-
-```
-$ ./bin/sassgraph --help
-Usage: bin/sassgraph <command> [options] <dir> [file]
-
-Commands:
-  ancestors    Output the ancestors
-  descendents  Output the descendents
-
-Options:
-  -I, --load-path   Add directories to the sass load path
-  -e, --extensions  File extensions to include in the graph
-  -j, --json        Output the index in json
-  -h, --help        Show help
-  -v, --version     Show version number
-
-Examples:
-  ./bin/sassgraph descendents test/fixtures test/fixtures/a.scss
-  /path/to/test/fixtures/b.scss
-  /path/to/test/fixtures/_c.scss
-```
-
-## API
-
-#### parseDir
-
-Parses a directory and builds a dependency graph of all requested file extensions.
-
-#### parseFile
-
-Parses a file and builds its dependency graph.
-
-## Options
-
-#### loadPaths
-
-Type: `Array`
-Default: `[process.cwd]`
-
-Directories to use when resolved `@import` directives.
-
-#### extensions
-
-Type: `Array`
-Default: `['scss', 'css', 'sass']`
-
-File types to be parsed.
-
-#### follow
-
-Type: `Boolean`
-Default: `false`
-
-Follow symbolic links.
-
-## Example
-
-```js
-var sassGraph = require('./sass-graph');
-console.log(sassGraph.parseDir('test/fixtures'));
-
-//{ index: {,
-//    '/path/to/test/fixtures/a.scss': {
-//        imports: ['b.scss'],
-//        importedBy: [],
-//    },
-//    '/path/to/test/fixtures/b.scss': {
-//        imports: ['_c.scss'],
-//        importedBy: ['a.scss'],
-//    },
-//    '/path/to/test/fixtures/_c.scss': {
-//        imports: [],
-//        importedBy: ['b/scss'],
-//    },
-//}}
-```
-
-## Running Mocha tests
-
-You can run the tests by executing the following commands:
-
-```
-npm install
-npm test
-```
-
-## Authors
-
-Sass graph was originally written by [Lachlan Donald](http://lachlan.me).
-It is now maintained by [Michael Mifsud](http://twitter.com/xzyfer).
-
-## License
-
-MIT
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -7759,7 +9090,7 @@ License, as follows:
 
 The following NPM package may be included in this product:
 
- - scss-tokenizer@0.2.3
+ - scss-tokenizer@0.3.0
 
 This package contains the following license and notice below:
 
@@ -8009,6 +9340,225 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
+The following NPM package may be included in this product:
+
+ - smart-buffer@4.2.0
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) 2013-2017 Josh Glazebrook
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - socks-proxy-agent@6.1.1
+
+This package contains the following license and notice below:
+
+socks-proxy-agent
+================
+### A SOCKS proxy `http.Agent` implementation for HTTP and HTTPS
+[![Build Status](https://github.com/TooTallNate/node-socks-proxy-agent/workflows/Node%20CI/badge.svg)](https://github.com/TooTallNate/node-socks-proxy-agent/actions?workflow=Node+CI)
+
+This module provides an `http.Agent` implementation that connects to a
+specified SOCKS proxy server, and can be used with the built-in `http`
+and `https` modules.
+
+It can also be used in conjunction with the `ws` module to establish a WebSocket
+connection over a SOCKS proxy. See the "Examples" section below.
+
+Installation
+------------
+
+Install with `npm`:
+
+``` bash
+$ npm install socks-proxy-agent
+```
+
+
+Examples
+--------
+
+#### TypeScript example
+
+```ts
+import https from 'https';
+import { SocksProxyAgent } from 'socks-proxy-agent';
+
+const info = {
+	host: 'br41.nordvpn.com',
+	userId: 'your-name@gmail.com',
+	password: 'abcdef12345124'
+};
+const agent = new SocksProxyAgent(info);
+
+https.get('https://jsonip.org', { agent }, (res) => {
+	console.log(res.headers);
+	res.pipe(process.stdout);
+});
+```
+
+#### `http` module example
+
+```js
+var url = require('url');
+var http = require('http');
+var SocksProxyAgent = require('socks-proxy-agent');
+
+// SOCKS proxy to connect to
+var proxy = process.env.socks_proxy || 'socks://127.0.0.1:1080';
+console.log('using proxy server %j', proxy);
+
+// HTTP endpoint for the proxy to connect to
+var endpoint = process.argv[2] || 'http://nodejs.org/api/';
+console.log('attempting to GET %j', endpoint);
+var opts = url.parse(endpoint);
+
+// create an instance of the `SocksProxyAgent` class with the proxy server information
+var agent = new SocksProxyAgent(proxy);
+opts.agent = agent;
+
+http.get(opts, function (res) {
+	console.log('"response" event!', res.headers);
+	res.pipe(process.stdout);
+});
+```
+
+#### `https` module example
+
+```js
+var url = require('url');
+var https = require('https');
+var SocksProxyAgent = require('socks-proxy-agent');
+
+// SOCKS proxy to connect to
+var proxy = process.env.socks_proxy || 'socks://127.0.0.1:1080';
+console.log('using proxy server %j', proxy);
+
+// HTTP endpoint for the proxy to connect to
+var endpoint = process.argv[2] || 'https://encrypted.google.com/';
+console.log('attempting to GET %j', endpoint);
+var opts = url.parse(endpoint);
+
+// create an instance of the `SocksProxyAgent` class with the proxy server information
+var agent = new SocksProxyAgent(proxy);
+opts.agent = agent;
+
+https.get(opts, function (res) {
+	console.log('"response" event!', res.headers);
+	res.pipe(process.stdout);
+});
+```
+
+#### `ws` WebSocket connection example
+
+``` js
+var WebSocket = require('ws');
+var SocksProxyAgent = require('socks-proxy-agent');
+
+// SOCKS proxy to connect to
+var proxy = process.env.socks_proxy || 'socks://127.0.0.1:1080';
+console.log('using proxy server %j', proxy);
+
+// WebSocket endpoint for the proxy to connect to
+var endpoint = process.argv[2] || 'ws://echo.websocket.org';
+console.log('attempting to connect to WebSocket %j', endpoint);
+
+// create an instance of the `SocksProxyAgent` class with the proxy server information
+var agent = new SocksProxyAgent(proxy);
+
+// initiate the WebSocket connection
+var socket = new WebSocket(endpoint, { agent: agent });
+
+socket.on('open', function () {
+	console.log('"open" event!');
+	socket.send('hello world');
+});
+
+socket.on('message', function (data, flags) {
+	console.log('"message" event! %j %j', data, flags);
+	socket.close();
+});
+```
+
+License
+-------
+
+(The MIT License)
+
+Copyright (c) 2013 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - socks@2.6.1
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Josh Glazebrook
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
 The following NPM packages may be included in this product:
 
  - source-map-js@0.6.2
@@ -8047,11 +9597,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - source-map-support@0.5.20
+ - source-map-support@0.5.21
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 The MIT License (MIT)
 
@@ -8074,525 +9625,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
------------
-
-The following NPM package may be included in this product:
-
- - source-map@0.4.4
-
-This package contains the following license and notice below:
-
-# Source Map
-
-This is a library to generate and consume the source map format
-[described here][format].
-
-This library is written in the Asynchronous Module Definition format, and works
-in the following environments:
-
-* Modern Browsers supporting ECMAScript 5 (either after the build, or with an
-  AMD loader such as RequireJS)
-
-* Inside Firefox (as a JSM file, after the build)
-
-* With NodeJS versions 0.8.X and higher
-
-## Node
-
-    $ npm install source-map
-
-## Building from Source (for everywhere else)
-
-Install Node and then run
-
-    $ git clone https://fitzgen@github.com/mozilla/source-map.git
-    $ cd source-map
-    $ npm link .
-
-Next, run
-
-    $ node Makefile.dryice.js
-
-This should spew a bunch of stuff to stdout, and create the following files:
-
-* `dist/source-map.js` - The unminified browser version.
-
-* `dist/source-map.min.js` - The minified browser version.
-
-* `dist/SourceMap.jsm` - The JavaScript Module for inclusion in Firefox source.
-
-## Examples
-
-### Consuming a source map
-
-```js
-var rawSourceMap = {
-  version: 3,
-  file: 'min.js',
-  names: ['bar', 'baz', 'n'],
-  sources: ['one.js', 'two.js'],
-  sourceRoot: 'http://example.com/www/js/',
-  mappings: 'CAAC,IAAI,IAAM,SAAUA,GAClB,OAAOC,IAAID;CCDb,IAAI,IAAM,SAAUE,GAClB,OAAOA'
-};
-
-var smc = new SourceMapConsumer(rawSourceMap);
-
-console.log(smc.sources);
-// [ 'http://example.com/www/js/one.js',
-//   'http://example.com/www/js/two.js' ]
-
-console.log(smc.originalPositionFor({
-  line: 2,
-  column: 28
-}));
-// { source: 'http://example.com/www/js/two.js',
-//   line: 2,
-//   column: 10,
-//   name: 'n' }
-
-console.log(smc.generatedPositionFor({
-  source: 'http://example.com/www/js/two.js',
-  line: 2,
-  column: 10
-}));
-// { line: 2, column: 28 }
-
-smc.eachMapping(function (m) {
-  // ...
-});
-```
-
-### Generating a source map
-
-In depth guide:
-[**Compiling to JavaScript, and Debugging with Source Maps**](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/)
-
-#### With SourceNode (high level API)
-
-```js
-function compile(ast) {
-  switch (ast.type) {
-  case 'BinaryExpression':
-    return new SourceNode(
-      ast.location.line,
-      ast.location.column,
-      ast.location.source,
-      [compile(ast.left), " + ", compile(ast.right)]
-    );
-  case 'Literal':
-    return new SourceNode(
-      ast.location.line,
-      ast.location.column,
-      ast.location.source,
-      String(ast.value)
-    );
-  // ...
-  default:
-    throw new Error("Bad AST");
-  }
-}
-
-var ast = parse("40 + 2", "add.js");
-console.log(compile(ast).toStringWithSourceMap({
-  file: 'add.js'
-}));
-// { code: '40 + 2',
-//   map: [object SourceMapGenerator] }
-```
-
-#### With SourceMapGenerator (low level API)
-
-```js
-var map = new SourceMapGenerator({
-  file: "source-mapped.js"
-});
-
-map.addMapping({
-  generated: {
-    line: 10,
-    column: 35
-  },
-  source: "foo.js",
-  original: {
-    line: 33,
-    column: 2
-  },
-  name: "christopher"
-});
-
-console.log(map.toString());
-// '{"version":3,"file":"source-mapped.js","sources":["foo.js"],"names":["christopher"],"mappings":";;;;;;;;;mCAgCEA"}'
-```
-
-## API
-
-Get a reference to the module:
-
-```js
-// NodeJS
-var sourceMap = require('source-map');
-
-// Browser builds
-var sourceMap = window.sourceMap;
-
-// Inside Firefox
-let sourceMap = {};
-Components.utils.import('resource:///modules/devtools/SourceMap.jsm', sourceMap);
-```
-
-### SourceMapConsumer
-
-A SourceMapConsumer instance represents a parsed source map which we can query
-for information about the original file positions by giving it a file position
-in the generated source.
-
-#### new SourceMapConsumer(rawSourceMap)
-
-The only parameter is the raw source map (either as a string which can be
-`JSON.parse`'d, or an object). According to the spec, source maps have the
-following attributes:
-
-* `version`: Which version of the source map spec this map is following.
-
-* `sources`: An array of URLs to the original source files.
-
-* `names`: An array of identifiers which can be referrenced by individual
-  mappings.
-
-* `sourceRoot`: Optional. The URL root from which all sources are relative.
-
-* `sourcesContent`: Optional. An array of contents of the original source files.
-
-* `mappings`: A string of base64 VLQs which contain the actual mappings.
-
-* `file`: Optional. The generated filename this source map is associated with.
-
-#### SourceMapConsumer.prototype.computeColumnSpans()
-
-Compute the last column for each generated mapping. The last column is
-inclusive.
-
-#### SourceMapConsumer.prototype.originalPositionFor(generatedPosition)
-
-Returns the original source, line, and column information for the generated
-source's line and column positions provided. The only argument is an object with
-the following properties:
-
-* `line`: The line number in the generated source.
-
-* `column`: The column number in the generated source.
-
-* `bias`: Either `SourceMapConsumer.GREATEST_LOWER_BOUND` or
-  `SourceMapConsumer.LEAST_UPPER_BOUND`. Specifies whether to return the closest
-  element that is smaller than or greater than the one we are searching for,
-  respectively, if the exact element cannot be found.  Defaults to
-  `SourceMapConsumer.GREATEST_LOWER_BOUND`.
-
-and an object is returned with the following properties:
-
-* `source`: The original source file, or null if this information is not
-  available.
-
-* `line`: The line number in the original source, or null if this information is
-  not available.
-
-* `column`: The column number in the original source, or null or null if this
-  information is not available.
-
-* `name`: The original identifier, or null if this information is not available.
-
-#### SourceMapConsumer.prototype.generatedPositionFor(originalPosition)
-
-Returns the generated line and column information for the original source,
-line, and column positions provided. The only argument is an object with
-the following properties:
-
-* `source`: The filename of the original source.
-
-* `line`: The line number in the original source.
-
-* `column`: The column number in the original source.
-
-and an object is returned with the following properties:
-
-* `line`: The line number in the generated source, or null.
-
-* `column`: The column number in the generated source, or null.
-
-#### SourceMapConsumer.prototype.allGeneratedPositionsFor(originalPosition)
-
-Returns all generated line and column information for the original source, line,
-and column provided. If no column is provided, returns all mappings
-corresponding to a either the line we are searching for or the next closest line
-that has any mappings. Otherwise, returns all mappings corresponding to the
-given line and either the column we are searching for or the next closest column
-that has any offsets.
-
-The only argument is an object with the following properties:
-
-* `source`: The filename of the original source.
-
-* `line`: The line number in the original source.
-
-* `column`: Optional. The column number in the original source.
-
-and an array of objects is returned, each with the following properties:
-
-* `line`: The line number in the generated source, or null.
-
-* `column`: The column number in the generated source, or null.
-
-#### SourceMapConsumer.prototype.hasContentsOfAllSources()
-
-Return true if we have the embedded source content for every source listed in
-the source map, false otherwise.
-
-In other words, if this method returns `true`, then `smc.sourceContentFor(s)`
-will succeed for every source `s` in `smc.sources`.
-
-#### SourceMapConsumer.prototype.sourceContentFor(source[, returnNullOnMissing])
-
-Returns the original source content for the source provided. The only
-argument is the URL of the original source file.
-
-If the source content for the given source is not found, then an error is
-thrown. Optionally, pass `true` as the second param to have `null` returned
-instead.
-
-#### SourceMapConsumer.prototype.eachMapping(callback, context, order)
-
-Iterate over each mapping between an original source/line/column and a
-generated line/column in this source map.
-
-* `callback`: The function that is called with each mapping. Mappings have the
-  form `{ source, generatedLine, generatedColumn, originalLine, originalColumn,
-  name }`
-
-* `context`: Optional. If specified, this object will be the value of `this`
-  every time that `callback` is called.
-
-* `order`: Either `SourceMapConsumer.GENERATED_ORDER` or
-  `SourceMapConsumer.ORIGINAL_ORDER`. Specifies whether you want to iterate over
-  the mappings sorted by the generated file's line/column order or the
-  original's source/line/column order, respectively. Defaults to
-  `SourceMapConsumer.GENERATED_ORDER`.
-
-### SourceMapGenerator
-
-An instance of the SourceMapGenerator represents a source map which is being
-built incrementally.
-
-#### new SourceMapGenerator([startOfSourceMap])
-
-You may pass an object with the following properties:
-
-* `file`: The filename of the generated source that this source map is
-  associated with.
-
-* `sourceRoot`: A root for all relative URLs in this source map.
-
-* `skipValidation`: Optional. When `true`, disables validation of mappings as
-  they are added. This can improve performance but should be used with
-  discretion, as a last resort. Even then, one should avoid using this flag when
-  running tests, if possible.
-
-#### SourceMapGenerator.fromSourceMap(sourceMapConsumer)
-
-Creates a new SourceMapGenerator based on a SourceMapConsumer
-
-* `sourceMapConsumer` The SourceMap.
-
-#### SourceMapGenerator.prototype.addMapping(mapping)
-
-Add a single mapping from original source line and column to the generated
-source's line and column for this source map being created. The mapping object
-should have the following properties:
-
-* `generated`: An object with the generated line and column positions.
-
-* `original`: An object with the original line and column positions.
-
-* `source`: The original source file (relative to the sourceRoot).
-
-* `name`: An optional original token name for this mapping.
-
-#### SourceMapGenerator.prototype.setSourceContent(sourceFile, sourceContent)
-
-Set the source content for an original source file.
-
-* `sourceFile` the URL of the original source file.
-
-* `sourceContent` the content of the source file.
-
-#### SourceMapGenerator.prototype.applySourceMap(sourceMapConsumer[, sourceFile[, sourceMapPath]])
-
-Applies a SourceMap for a source file to the SourceMap.
-Each mapping to the supplied source file is rewritten using the
-supplied SourceMap. Note: The resolution for the resulting mappings
-is the minimium of this map and the supplied map.
-
-* `sourceMapConsumer`: The SourceMap to be applied.
-
-* `sourceFile`: Optional. The filename of the source file.
-  If omitted, sourceMapConsumer.file will be used, if it exists.
-  Otherwise an error will be thrown.
-
-* `sourceMapPath`: Optional. The dirname of the path to the SourceMap
-  to be applied. If relative, it is relative to the SourceMap.
-
-  This parameter is needed when the two SourceMaps aren't in the same
-  directory, and the SourceMap to be applied contains relative source
-  paths. If so, those relative source paths need to be rewritten
-  relative to the SourceMap.
-
-  If omitted, it is assumed that both SourceMaps are in the same directory,
-  thus not needing any rewriting. (Supplying `'.'` has the same effect.)
-
-#### SourceMapGenerator.prototype.toString()
-
-Renders the source map being generated to a string.
-
-### SourceNode
-
-SourceNodes provide a way to abstract over interpolating and/or concatenating
-snippets of generated JavaScript source code, while maintaining the line and
-column information associated between those snippets and the original source
-code. This is useful as the final intermediate representation a compiler might
-use before outputting the generated JS and source map.
-
-#### new SourceNode([line, column, source[, chunk[, name]]])
-
-* `line`: The original line number associated with this source node, or null if
-  it isn't associated with an original line.
-
-* `column`: The original column number associated with this source node, or null
-  if it isn't associated with an original column.
-
-* `source`: The original source's filename; null if no filename is provided.
-
-* `chunk`: Optional. Is immediately passed to `SourceNode.prototype.add`, see
-  below.
-
-* `name`: Optional. The original identifier.
-
-#### SourceNode.fromStringWithSourceMap(code, sourceMapConsumer[, relativePath])
-
-Creates a SourceNode from generated code and a SourceMapConsumer.
-
-* `code`: The generated code
-
-* `sourceMapConsumer` The SourceMap for the generated code
-
-* `relativePath` The optional path that relative sources in `sourceMapConsumer`
-  should be relative to.
-
-#### SourceNode.prototype.add(chunk)
-
-Add a chunk of generated JS to this source node.
-
-* `chunk`: A string snippet of generated JS code, another instance of
-   `SourceNode`, or an array where each member is one of those things.
-
-#### SourceNode.prototype.prepend(chunk)
-
-Prepend a chunk of generated JS to this source node.
-
-* `chunk`: A string snippet of generated JS code, another instance of
-   `SourceNode`, or an array where each member is one of those things.
-
-#### SourceNode.prototype.setSourceContent(sourceFile, sourceContent)
-
-Set the source content for a source file. This will be added to the
-`SourceMap` in the `sourcesContent` field.
-
-* `sourceFile`: The filename of the source file
-
-* `sourceContent`: The content of the source file
-
-#### SourceNode.prototype.walk(fn)
-
-Walk over the tree of JS snippets in this node and its children. The walking
-function is called once for each snippet of JS and is passed that snippet and
-the its original associated source's line/column location.
-
-* `fn`: The traversal function.
-
-#### SourceNode.prototype.walkSourceContents(fn)
-
-Walk over the tree of SourceNodes. The walking function is called for each
-source file content and is passed the filename and source content.
-
-* `fn`: The traversal function.
-
-#### SourceNode.prototype.join(sep)
-
-Like `Array.prototype.join` except for SourceNodes. Inserts the separator
-between each of this source node's children.
-
-* `sep`: The separator.
-
-#### SourceNode.prototype.replaceRight(pattern, replacement)
-
-Call `String.prototype.replace` on the very right-most source snippet. Useful
-for trimming whitespace from the end of a source node, etc.
-
-* `pattern`: The pattern to replace.
-
-* `replacement`: The thing to replace the pattern with.
-
-#### SourceNode.prototype.toString()
-
-Return the string representation of this source node. Walks over the tree and
-concatenates all the various snippets together to one string.
-
-#### SourceNode.prototype.toStringWithSourceMap([startOfSourceMap])
-
-Returns the string representation of this tree of source nodes, plus a
-SourceMapGenerator which contains all the mappings between the generated and
-original sources.
-
-The arguments are the same as those to `new SourceMapGenerator`.
-
-## Tests
-
-[![Build Status](https://travis-ci.org/mozilla/source-map.png?branch=master)](https://travis-ci.org/mozilla/source-map)
-
-Install NodeJS version 0.8.0 or greater, then run `node test/run-tests.js`.
-
-To add new tests, create a new file named `test/test-<your new test name>.js`
-and export your test functions with names that start with "test", for example
-
-```js
-exports["test doing the foo bar"] = function (assert, util) {
-  ...
-};
-```
-
-The new test will be located automatically when you run the suite.
-
-The `util` argument is the test utility module located at `test/source-map/util`.
-
-The `assert` argument is a cut down version of node's assert module. You have
-access to the following assertion functions:
-
-* `doesNotThrow`
-
-* `equal`
-
-* `ok`
-
-* `strictEqual`
-
-* `throws`
-
-(The reason for the restricted set of test functions is because we need the
-tests to run inside Firefox's test suite as well and so the assert module is
-shimmed in that environment. See `build/assert-shim.js`.)
-
-[format]: https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit
-[feature]: https://wiki.mozilla.org/DevTools/Features/SourceMap
-[Dryice]: https://github.com/mozilla/dryice
 
 -----------
 
@@ -8856,11 +9888,12 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - string_decoder@1.1.1
+ - string_decoder@1.3.0
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 Node.js is licensed for use as follows:
 
@@ -8974,7 +10007,7 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - terser@5.9.0
+ - terser@5.10.0
 
 This package contains the following license and notice below:
 
@@ -9628,6 +10661,24 @@ For more information, please refer to <http://unlicense.org>
 
 The following NPM package may be included in this product:
 
+ - type-fest@0.18.1
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
  - typescript@4.4.3
 
 This package contains the following license and notice below:
@@ -9725,6 +10776,44 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - unique-filename@1.1.1
+
+This package contains the following license and notice below:
+
+Copyright npm, Inc
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
+The following NPM package may be included in this product:
+
+ - unique-slug@2.0.2
+
+This package contains the following license and notice below:
+
+The ISC License
+
+Copyright npm, Inc
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
@@ -9961,7 +11050,7 @@ THE SOFTWARE
 
 The following NPM package may be included in this product:
 
- - webpack-sources@3.2.1
+ - webpack-sources@3.2.3
 
 This package contains the following license and notice below:
 
@@ -10161,12 +11250,11 @@ THIS SOFTWARE.
 
 -----------
 
-The following NPM packages may be included in this product:
+The following NPM package may be included in this product:
 
- - yargs@13.3.2
  - yargs@14.2.3
 
-These packages each contain the following license and notice below:
+This package contains the following license and notice below:
 
 Copyright 2010 James Halliday (mail@substack.net)
 Modified work Copyright 2014 Contributors (ben@npmjs.com)
@@ -10193,11 +11281,12 @@ THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
  - yargs@16.2.0
+ - yargs@17.3.1
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 MIT License
 
@@ -10225,7 +11314,7 @@ THE SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - yassb-web@1.1.7
+ - yassb-web@1.1.8
 
 This package contains the following license and notice below:
 
