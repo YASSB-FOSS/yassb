@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.10] - 2022-02-01
+### Fixed
+- version number.
+
 ## [1.1.9] - 2022-02-01
 ### Changed
 - updated dependencies for compatibility with Node 17.
