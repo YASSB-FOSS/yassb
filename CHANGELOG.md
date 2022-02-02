@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.1.11] - 2022-02-02
+### Fixed
+- added webpack to deps.
+
 ## [1.1.10] - 2022-02-01
 ### Fixed
 - version number.
