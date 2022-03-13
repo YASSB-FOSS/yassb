@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.2.0] - 2022-03-13
+### Added
+- added stats info to webpack.
+
 ## [1.1.11] - 2022-02-02
 ### Fixed
 - added webpack to deps.

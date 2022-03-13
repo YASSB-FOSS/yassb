@@ -4,7 +4,7 @@ import { WORKING_DIR } from '@yassb/config/working-dir.constant';
 import { logDone } from '@yassb/tools/loggers.function';
 import config from 'config';
 import { ensureDirSync } from 'fs-extra';
-import webpack from 'webpack';
+import webpack, { MultiStats } from 'webpack';
 
 /**
  * Creates the js out folder if it does not exist
@@ -25,9 +25,14 @@ function callWebPack(): void {
   const configToUse = (config.has('webpackConfig')) ? config.get('webpackConfig') : defaultConfig;
 
   try {
-    webpack([configToUse], (err: Error) => {
+    webpack([configToUse], (err: Error, stats: MultiStats) => {
       if (err)
         console.log('webpack ~ err', err);
+      const jsonStats = stats?.toJson?.();
+      if (jsonStats?.errors?.length > 0)
+        console.log(jsonStats.errors);
+      if (jsonStats?.warnings?.length > 0)
+        console.log(jsonStats.warnings);
       logDone('scripts');
     });
   } catch (error) {
