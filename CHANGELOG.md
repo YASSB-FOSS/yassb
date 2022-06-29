@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.2.2] - 2022-06-29
+### Fixed
+- line ending.
+
 ## [1.2.1] - 2022-06-29
 ### Fixed
 - line ending.
