@@ -30,7 +30,7 @@ const yassbConfig: webpack.Configuration = {
     })
 
   ],
-  target: 'node14',
+  target: 'node16',
   node: {
     __dirname: false
   },
