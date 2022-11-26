@@ -4,6 +4,16 @@
   "temp": [],
   "changes": [
     {
+      "version": "1.3.1",
+      "date": "2022-11-26",
+      "items": [
+        {
+          "type": "fixed",
+          "value": "reset file list"
+        }
+      ]
+    },
+    {
       "version": "1.3.0",
       "date": "2022-09-28",
       "items": [
