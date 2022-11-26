@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.3.1] - 2022-11-26
+### Fixed
+- reset file list.
+
 ## [1.3.0] - 2022-09-28
 ### Changed
 - migrated to dart-sass.
