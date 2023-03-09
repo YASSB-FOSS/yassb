@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
   "engines": {
     "node": ">=8.0.0"
