@@ -27,6 +27,9 @@ class DoWatch {
    */
   private isWatching = true;
 
+  private timer: NodeJS.Timeout;
+  private filesChanged: Array<watcher.FileOrFiles> = [];
+
   /**
    * Creates an instance of do watch.
    *
@@ -50,23 +53,47 @@ class DoWatch {
    * Watchs the `src` folder as defined in the config object and runs the builder on changes.
    */
   private watch(): void {
-    watcher.watchTree(this.config.workingDir.src, { interval: 1 }, async (file, curr, prev) => {
+    watcher.watchTree(this.config.workingDir.src, { interval: 1 }, this.onFilesChanged.bind(this));
+  }
 
-      if (this.firstRun === true)
-        return this.firstRun = false;
-
-      this.sendStartRebuildMessage();
-
-      const runStyles = this.shouldRunStyles(file);
-      const runScripts = this.shouldRunScripts(file);
-      const skipTexts = this.shouldSkipTexts(runScripts, runStyles);
-
-      await buildAll({ runScripts, runStyles, skipTexts, isWatching: this.isWatching });
-
-      this.sendReloadMessage();
-
+  private async onFilesChanged(file: watcher.FileOrFiles): Promise<void> {
+    if (this.firstRun === true) {
       this.firstRun = false;
+      return;
+    }
+
+    this.bufferFilesChanged(file);
+
+    this.firstRun = false;
+  };
+
+  private bufferFilesChanged(file: watcher.FileOrFiles): void {
+    this.filesChanged.push(file);
+    if (this.timer)
+      clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.processFilesChanged();
+      this.filesChanged = [];
+    }, 500);
+  }
+
+  private processFilesChanged(): void {
+    let runStyles = false;
+    let runScripts = false;
+    let skipTexts = false;
+
+    this.filesChanged.forEach(file => {
+      runStyles = this.shouldRunStyles(file) ? true : runStyles;
+      runScripts = this.shouldRunScripts(file) ? true : runScripts;
+      skipTexts = this.shouldSkipTexts(runScripts, runStyles) ? true : skipTexts;
     });
+
+    this.sendStartRebuildMessage();
+
+    buildAll({ runScripts, runStyles, skipTexts, isWatching: this.isWatching });
+
+    this.sendReloadMessage();
+
   }
 
   /**
