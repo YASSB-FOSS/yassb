@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.3.2] - 2023-03-09
+### Fixed
+- rebuilding once with multiple file changed.
+
 ## [1.3.1] - 2022-11-26
 ### Fixed
 - reset file list.
