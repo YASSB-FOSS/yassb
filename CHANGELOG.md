@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.4.0] - 2023-03-11
+### Added
+- remove CSP in watch mode.
+
 ## [1.3.3] - 2023-03-09
 ### Fixed
 - reset langs.

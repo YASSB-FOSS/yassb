@@ -4,6 +4,16 @@
   "temp": [],
   "changes": [
     {
+      "version": "1.4.0",
+      "date": "2023-03-11",
+      "items": [
+        {
+          "type": "added",
+          "value": "remove CSP in watch mode"
+        }
+      ]
+    },
+    {
       "version": "1.3.3",
       "date": "2023-03-09",
       "items": [
