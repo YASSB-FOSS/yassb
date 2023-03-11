@@ -97,15 +97,21 @@ export class PostProcessFile {
 
   /**
    * Prepares the content to be saved.
-   * If in watch mode, addes the WebSocket listener for live reloading.
+   * If in watch mode, adds the WebSocket listener for live reloading and removes the CSP meta tag.
    * Else minifies the content.
    */
   private prepareCodeForSaving(): void {
     // tslint:disable-next-line: prefer-conditional-expression
-    if (this.isWatching && !this.fileContents.includes('WebSocket(\'ws://localhost:3001\')'))
-      this.fileContents = this.fileContents.replace('</body>', CLIENT_SOCKET_SNIPPET_FOR_WATCH);
-    else
+    if (this.isWatching) {
+      if (!this.fileContents.includes('WebSocket(\'ws://localhost:3001\')')) {
+        this.fileContents = this.fileContents.replace('</body>', CLIENT_SOCKET_SNIPPET_FOR_WATCH);
+      }
+      if (this.fileContents.includes('<meta http-equiv="Content-Security-Policy" content="')) {
+        this.fileContents = this.fileContents.replace(/<meta http-equiv="Content-Security-Policy" content="[a-zA-z0-9';:\-\s/\.]*">/gm, '');
+      }
+    } else {
       this.fileContents = minify(this.fileContents, this.config.htmlMinificationOptions);
+    }
   }
 
   /**
