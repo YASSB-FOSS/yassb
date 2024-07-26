@@ -7,6 +7,30 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [1.4.2] - 2024-07-26
+### Fixed
+- bin unix.
+
+## [1.4.0] - 2023-03-11
+### Added
+- remove CSP in watch mode.
+
+## [1.3.3] - 2023-03-09
+### Fixed
+- reset langs.
+
+## [1.3.2] - 2023-03-09
+### Fixed
+- rebuilding once with multiple file changed.
+
+## [1.3.1] - 2022-11-26
+### Fixed
+- reset file list.
+
+## [1.3.0] - 2022-09-28
+### Changed
+- migrated to dart-sass.
+
 ## [1.2.4] - 2022-06-29
 ### Fixed
 - fix.

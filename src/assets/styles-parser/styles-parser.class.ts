@@ -3,7 +3,7 @@ import { WORKING_DIR } from '@yassb/config/working-dir.constant';
 import { logDone } from '@yassb/tools/loggers.function';
 import { YassbConfig } from '@yassb/yassb';
 import { ensureDirSync, ensureFileSync, writeFileSync } from 'fs-extra';
-import { renderSync } from 'node-sass';
+import { renderSync } from 'sass';
 import { resolve } from 'path';
 
 /**

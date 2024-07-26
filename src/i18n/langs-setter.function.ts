@@ -12,6 +12,7 @@ export const langsSetter = (): void => {
   if (!i18nExists)
     return;
   const dirLs = fs.readdirSync(WORKING_DIR.i18n);
+  LANGS.length = 0;
   dirLs.forEach(fileName => {
     if (fileName.includes('.json'))
       LANGS.push(fileName.replace('.json', ''));

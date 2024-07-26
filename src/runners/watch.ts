@@ -1,5 +1,4 @@
 import { setupYassb } from '@yassb/config/setup.function';
-import { WORKING_DIR } from '@yassb/config/working-dir.constant';
 import { buildAll } from '@yassb/runners/build';
 import { devServer, socketConnectionStore } from '@yassb/runners/server';
 import { YassbConfig } from '@yassb/yassb';
@@ -27,6 +26,9 @@ class DoWatch {
    */
   private isWatching = true;
 
+  private timer: NodeJS.Timeout;
+  private filesChanged: Array<any> = [];
+
   /**
    * Creates an instance of do watch.
    *
@@ -50,23 +52,47 @@ class DoWatch {
    * Watchs the `src` folder as defined in the config object and runs the builder on changes.
    */
   private watch(): void {
-    watcher.watchTree(this.config.workingDir.src, { interval: 1 }, async (file, curr, prev) => {
+    watcher.watchTree(this.config.workingDir.src, { interval: 1 }, this.onFilesChanged.bind(this));
+  }
 
-      if (this.firstRun === true)
-        return this.firstRun = false;
-
-      this.sendStartRebuildMessage();
-
-      const runStyles = this.shouldRunStyles(file);
-      const runScripts = this.shouldRunScripts(file);
-      const skipTexts = this.shouldSkipTexts(runScripts, runStyles);
-
-      await buildAll({ runScripts, runStyles, skipTexts, isWatching: this.isWatching });
-
-      this.sendReloadMessage();
-
+  private async onFilesChanged(file: any): Promise<void> {
+    if (this.firstRun === true) {
       this.firstRun = false;
+      return;
+    }
+
+    this.bufferFilesChanged(file);
+
+    this.firstRun = false;
+  };
+
+  private bufferFilesChanged(file: any): void {
+    this.filesChanged.push(file);
+    if (this.timer)
+      clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.processFilesChanged();
+      this.filesChanged = [];
+    }, 500);
+  }
+
+  private processFilesChanged(): void {
+    let runStyles = false;
+    let runScripts = false;
+    let skipTexts = false;
+
+    this.filesChanged.forEach(file => {
+      runStyles = this.shouldRunStyles(file) ? true : runStyles;
+      runScripts = this.shouldRunScripts(file) ? true : runScripts;
+      skipTexts = this.shouldSkipTexts(runScripts, runStyles) ? true : skipTexts;
     });
+
+    this.sendStartRebuildMessage();
+
+    buildAll({ runScripts, runStyles, skipTexts, isWatching: this.isWatching });
+
+    this.sendReloadMessage();
+
   }
 
   /**
@@ -83,7 +109,7 @@ class DoWatch {
    * @param file the file that has changed.
    * @returns true if the file changed is a stylesheet.
    */
-  private shouldRunStyles(file: watcher.FileOrFiles): boolean {
+  private shouldRunStyles(file: any): boolean {
     return (this.shouldDo('.scss', file) || this.shouldDo('.css', file)) ? true : false;
   }
 
@@ -93,7 +119,7 @@ class DoWatch {
    * @param file the file that has changed.
    * @returns true if the file changed is a script.
    */
-  private shouldRunScripts(file: watcher.FileOrFiles): boolean {
+  private shouldRunScripts(file: any): boolean {
     return (
       this.shouldDo('.ts', file) || this.shouldDo('.js', file) ||
       this.shouldDo('.tsx', file) || this.shouldDo('.jsx', file)

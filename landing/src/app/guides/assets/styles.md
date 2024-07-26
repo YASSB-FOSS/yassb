@@ -5,7 +5,7 @@ category: Assets
 ---
 # Styles
 
-Styles processing and bundling is currently provided out-of-the-box with [node-sass](https://www.npmjs.com/package/node-sass). You can also entirely overwrite the built-in process and bring you own styles processor in YASSB [configuration]({{url-to="configuration"}}).
+Styles processing and bundling is currently provided out-of-the-box with [dart-sass](https://sass-lang.com/dart-sass). You can also entirely overwrite the built-in process and bring you own styles processor in YASSB [configuration]({{url-to="configuration"}}).
 
 By default, YASSB processes `./src/app/styles/styles.scss` and saves the final file in `./out/assets/css/[name]-[version].min.js`.
 

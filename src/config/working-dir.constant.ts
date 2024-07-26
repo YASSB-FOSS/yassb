@@ -22,7 +22,7 @@ export const WORKING_DIR = {
   pagesToGenerate: undefined as string,
   /** Entry file to be processd by webpack. Can end with: `.js` | `.ts` */
   scripts: undefined as string,
-  /** Entry file to be processd by node-sass. Can end with: `.css` | `.scss` */
+  /** Entry file to be processd by dart-sass. Can end with: `.css` | `.scss` */
   styles: undefined as string,
   /** ALIAS of `app`, default entry point for the user-defined folder in the `generate-from-files` directive.
    *

@@ -28,6 +28,7 @@ export class ListFiles {
    * @returns the full list of files as an `Array`
    */
   public init(): Array<string> {
+    this.files = [];
     this.listFiles(this.startingPath);
     return this.files;
   }
