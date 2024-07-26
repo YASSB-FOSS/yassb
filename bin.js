@@ -1,3 +1,1 @@
-#!/usr/bin/env node
-
-const start = require('./index');
+#!/usr/bin/env node const start = require('./index');
