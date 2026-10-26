@@ -1,0 +1,20 @@
+{
+  "name": "yassb-landing",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Website and documentation of YASSB (https://yassb-foss.github.io), built with YASSB itself.",
+  "scripts": {
+    "build": "node ../bin.js build",
+    "watch": "node ../bin.js watch",
+    "check": "node ../bin.js check",
+    "inspect": "node ../bin.js inspect",
+    "typecheck": "../node_modules/.bin/tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/typography": "^0.5.20",
+    "highlight.js": "^11.12.0",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.3.3"
+  }
+}

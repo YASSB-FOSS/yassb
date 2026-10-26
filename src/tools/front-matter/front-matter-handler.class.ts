@@ -1,27 +1,17 @@
-import { FRONT_MATTER_DATA_STORE, FrontMatterData } from '@yassb/tools/front-matter/front-matter-store.const';
+import { FRONT_MATTER_DATA_STORE, FrontMatterData } from './front-matter-store.const';
 
 /**
- * Stores and retrieves Front Matter data from `FRONT_MATTER_DATA_STORE`.
+ * Reads and writes the front matter of pages in `FRONT_MATTER_DATA_STORE`, by absolute output path.
+ *
+ * @featurePart content.front-matter
  */
 export class FrontMatterHandler {
 
-  /**
-   * Gets the front matter data for a given file by its path.
-   *
-   * @param filePath full absolute path to the file.
-   * @returns the Front Matter data of that file.
-   */
   public static get(filePath: string): FrontMatterData {
     return FRONT_MATTER_DATA_STORE[filePath];
   }
 
-  /**
-   * Stores the front matter for a file, indexed by its full absolute path.
-   * If the object for the given path does not exist, it is created first.
-   *
-   * @param filePath the full absolute path to the file.
-   * @param data the data to store.
-   */
+  /** Adds `data` to the front matter of `filePath` (undefined values are ignored). */
   public static set(filePath: string, data: FrontMatterData): void {
     if (!FRONT_MATTER_DATA_STORE[filePath])
       FRONT_MATTER_DATA_STORE[filePath] = {};

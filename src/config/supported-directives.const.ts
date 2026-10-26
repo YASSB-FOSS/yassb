@@ -1,13 +1,14 @@
-import { HtmlFromDataSource } from '@yassb/directives/data-from-source/html-from-data-source.class';
-import { InsertScriptSrc } from '@yassb/directives/insert-script-src/insert-script-src.class';
-import { InsertStylesSrc } from '@yassb/directives/insert-styles-src.class/insert-styles-src.class';
-import { PublicFileList } from '@yassb/directives/public-file-list/public-file-list.class';
-import { UrlTo } from '@yassb/directives/url-to/url-to.class';
+import { HtmlFromDataSource } from '../directives/data-from-source/html-from-data-source.class';
+import { InsertScriptSrc } from '../directives/insert-script-src/insert-script-src.class';
+import { InsertStylesSrc } from '../directives/insert-styles-src/insert-styles-src.class';
+import { PublicFileList } from '../directives/public-file-list/public-file-list.class';
+import { UrlTo } from '../directives/url-to/url-to.class';
 /* eslint-disable no-shadow */
 
 /**
- * List of all the name of the supported directives in kebab case to match how they appear in HTML attributes.
- * Used to reference the attribute when getting the values from the directive.
+ * Names of the built-in directives, as written in HTML.
+ *
+ * @internal
  */
 export enum SupportedDirectives {
   component = 'component',
@@ -20,9 +21,10 @@ export enum SupportedDirectives {
 }
 
 /**
- * Array of the built-in directives that can be invoked in the forEach loop in DirectivesInvoker.
+ * Built-in directives run on every file after `component` (see `DirectivesInvoker`), in this order.
+ * `component` and `generate-from-files` are handled separately (`DirectivesParser`, `GeneratePagesFromMd`).
  *
- * @see DirectivesInvoker
+ * @featurePart behaviour.pipeline
  */
 export const BUILT_IN_DIRECTIVES = [
   HtmlFromDataSource,

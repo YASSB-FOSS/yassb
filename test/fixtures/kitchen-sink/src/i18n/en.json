@@ -1,0 +1,15 @@
+{
+  "SITE.TITLE": "Kitchen sink",
+  "HOME.HELLO": "Hello & welcome",
+  "HOME.LOGO_ALT": "The logo",
+  "HOME.INTRO_TITLE": "Introduction",
+  "NAV.HOME": "Home",
+  "NAV.ABOUT": "About",
+  "NEWS.MORE": "More news",
+  "PRESENT": "present",
+  "COMMON.NAME": "Kitchen",
+  "GREETING": "Hi {{COMMON.NAME}}!",
+  "nested": { "KEY": "Nested key" },
+  "ABOUT.TITLE": "About us",
+  "UNUSED.KEY": "Never used"
+}

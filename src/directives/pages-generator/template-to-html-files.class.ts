@@ -1,160 +1,116 @@
-import { SupportedDirectives } from '@yassb/config/supported-directives.const';
-import { WORKING_DIR } from '@yassb/config/working-dir.constant';
-import { extractDirectives } from '@yassb/directives/tools/extract-directives.function';
-import { PostProcessFile } from '@yassb/post-processing/post-process-file.class';
-import { ListFiles } from '@yassb/tools/file-system-helpers/list-files.class';
-import { getDirectiveValues } from '@yassb/tools/files-content-helpers/get-directive-value.function';
-import { TextFormatterParser } from '@yassb/tools/files-content-helpers/text-formatter-parser.class';
-import { FrontMatterHandler } from '@yassb/tools/front-matter/front-matter-handler.class';
-import { mdTitleExtractor } from '@yassb/tools/md-title-extractor.function';
-import { camelToKebabCase } from '@yassb/tools/strings-formatters/camel-to-kebab-case.function';
-import { YassbConfig } from '@yassb/yassb';
-import { ensureDirSync, readFileSync, writeFileSync } from 'fs-extra';
-import { GrayMatterFile } from 'gray-matter';
-import {
-  basename,
-  extname,
-  parse,
-  relative,
-  resolve
-  } from 'path';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { basename, extname, parse, relative, resolve } from 'path';
+import { SupportedDirectives } from '../../config/supported-directives.const';
+import { WORKING_DIR } from '../../config/working-dir.constant';
+import { report } from '../../diagnostics/diagnostics';
+import { lineOf } from '../../diagnostics/diagnostics';
+import { ListFiles, isDirectory } from '../../tools/file-system-helpers/list-files.class';
+import { getDirectiveValues } from '../../tools/files-content-helpers/get-directive-value.function';
+import { TextFormatterParser } from '../../tools/files-content-helpers/text-formatter-parser.class';
+import { FrontMatterHandler } from '../../tools/front-matter/front-matter-handler.class';
+import { FrontMatterInjector } from '../../tools/front-matter/front-matter-injector.class';
+import { mdTitleExtractor } from '../../tools/md-title-extractor.function';
+import { camelToKebabCase } from '../../tools/strings-formatters/camel-to-kebab-case.function';
+import type { YassbConfig } from '../../yassb';
+import { extractDirectives, replaceFirstLiteral } from '../tools/extract-directives.function';
+import { GENERATED_PAGES } from './generated-pages.store';
 
 /**
- * Takes care of actually injecting in the template the content from a given file and saves to disk the resulting page.
+ * One template of `pages-to-generate` → one page per `.md`/`.txt` file of the folder in its
+ * `<!-- generate-from-files="folder" -->` directive (relative to `workingDir.posts`, i.e. `src/app`).
+ *
+ * Output: `out/<template folder>/<file's subfolder>/<slug>.html`, where the slug is the front matter `slug`,
+ * else the title (front matter `title`, else the first `# Title`), else the file name.
+ * Front matter placeholders (`{ title }`) are replaced right away and again at the end of the build.
+ *
+ * @feature directive.generate-from-files
+ * @summary Generates one page per Markdown/text file from a template in pages-to-generate.
+ * @usage In src/app/pages-to-generate/blog/post.html: <h1>{ title }</h1> <!-- generate-from-files="blog" -->
+ * @options The value is a folder relative to src/app (workingDir.posts); USERNAME is replaced.
+ * @rules The directive must be in the template file itself, not in a component; .md and .txt files are read recursively; output is <out>/<template folder>/<file sub-folder>/<slug>.html with slug = front matter slug, else the title in kebab-case, else the file name; front matter placeholders are replaced at once and again in post-processing; generated pages then go through all directives; with i18n only templates inside a language folder (pages-to-generate/en/...) are translated, so a multi-language blog needs one template per language.
+ * @errors TEMPLATE_NO_DIRECTIVE, TEMPLATE_SOURCE_NOT_FOUND, MARKDOWN_EMPTY
+ * @status stable
+ * @since 1.0.0
+ * @related content.markdown, content.front-matter
  */
 export class TemplateToHtmlFiles {
 
-  /**
-   * Regex to match the comments to invoke the directive.
-   */
   public static regex = /<!--\s*generate-from-files\s*=\s*".+"\s*-->/g;
 
-  /**
-   * Full string of the directive in the template body to determine the source folder.
-   */
   private directiveFullString: string;
-  /**
-   * Dir where to look for source files.
-   */
   private dirSourcePath: string;
-  /**
-   * Contents of the templte before content is injected.
-   */
   private templateContents: string;
 
-  /**
-   * List of paths to all the cupported files found at `dirSourcePath`, including subdirectories.
-   */
-  private supportedFilesPaths: Array<string> = [];
-
-  /**
-   * Creates an instance of template to html files.
-   *
-   * @param pathToTemplate the full absolute path to the template
-   * @param configOptions the full YASSB config Object
-   */
   constructor(
     private pathToTemplate: string,
     private configOptions: YassbConfig
   ) { }
 
-  /**
-   * Inits template to html files.
-   * The operation is aborted if no directive is found in the template or no file is found in the `dirSourcePath`.
-   * Else, for each file found a new page is generated based on the template with the contents of the file.
-   *
-   * @returns init
-   */
   public init(): void {
     this.templateContents = readFileSync(this.pathToTemplate, 'utf8');
-    this.extractComponents(this.templateContents);
+    const found = extractDirectives(this.templateContents, TemplateToHtmlFiles.regex);
+    if (Array.isArray(found))
+      this.directiveFullString = found[0];
 
     if (!this.directiveFullString) {
-      console.error(`ERROR: no directive \`generate-from-files\` found in template ${this.pathToTemplate}. Template skipped.`);
+      report({
+        level: 'error',
+        code: 'TEMPLATE_NO_DIRECTIVE',
+        file: this.pathToTemplate,
+        message: `No \`generate-from-files\` directive in template ${this.pathToTemplate}. Template skipped.`,
+        hint: 'The directive must be written in the template itself, not in a component.'
+      });
       return;
     }
 
-    this.setDirSourcePath();
-
-    if (!this.dirSourcePath)
-      return;
-
-    this.supportedFilesPaths = new ListFiles(this.dirSourcePath, file => file.endsWith('.md') || file.endsWith('.txt')).init();
-    this.supportedFilesPaths.forEach(path => this.createNewPageFromFile(path));
-  }
-
-  /**
-   * Extracts from the template the YASSB formatted comment with the directive `generate-from-files` pointing to the dir to scan for .md files
-   *
-   * @param text The full text of the template
-   */
-  private extractComponents(text: string): void {
-    const arrComponents = extractDirectives(text, TemplateToHtmlFiles.regex);
-    if (Array.isArray(arrComponents))
-      this.directiveFullString = arrComponents[0];
-  }
-
-  /**
-   * Removes the text of the YASSB formatted comment
-   */
-  private setDirSourcePath(): void {
     const directiveData = getDirectiveValues(this.directiveFullString, this.configOptions, SupportedDirectives['generate-from-files'], 'posts');
     if (!directiveData)
       return;
     this.dirSourcePath = directiveData.fullPath;
+
+    if (!isDirectory(this.dirSourcePath)) {
+      report({
+        level: 'error',
+        code: 'TEMPLATE_SOURCE_NOT_FOUND',
+        fatal: true,
+        file: this.pathToTemplate,
+        line: lineOf(this.pathToTemplate, this.directiveFullString),
+        directive: this.directiveFullString,
+        message: `Folder "${directiveData.directiveMainValue}" of \`${this.directiveFullString}\` not found (${this.dirSourcePath}).`,
+        hint: 'The folder is relative to src/app (or workingDir.posts).'
+      });
+      return;
+    }
+
+    new ListFiles(this.dirSourcePath, file => file.endsWith('.md') || file.endsWith('.txt')).init()
+      .forEach(path => this.createNewPageFromFile(path));
   }
 
-  /**
-   * Creates a new page from the source file
-   *
-   * @param pathToFile
-   */
   private createNewPageFromFile(pathToFile: string): void {
-
-    const { content, data } = new TextFormatterParser(pathToFile).do();
-    const newFileHtmlContents = this.templateContents.replace(this.directiveFullString, content);
+    const { content, data } = new TextFormatterParser(pathToFile, this.configOptions).do();
+    const newFileHtmlContents = replaceFirstLiteral(this.templateContents, this.directiveFullString, content);
 
     const fileName = this.buildNewFileName(content, data, pathToFile);
     const pathOut = this.buildOutPath(pathToFile);
-    ensureDirSync(pathOut);
+    mkdirSync(pathOut, { recursive: true });
     const fullPath = resolve(pathOut, fileName);
     FrontMatterHandler.set(fullPath, data);
-    writeFileSync(fullPath, newFileHtmlContents);
-    new PostProcessFile(fullPath, this.configOptions, false, false).init();
+    GENERATED_PAGES.set(fullPath, { template: this.pathToTemplate, source: pathToFile });
+    writeFileSync(fullPath, new FrontMatterInjector(newFileHtmlContents, FrontMatterHandler.get(fullPath) || {}, pathToFile).inject());
   }
 
-  /**
-   * Builds the file name for the file. If in Front Matter a slug is provided, that is preferred. If not, a slug is generated from the title in Front Matter.
-   * If no title is found in Front Matter, the title is extracted from the file. If not tile has been found, it falls back to the filename of the data source file.
-   *
-   * @param content content of the generated page.
-   * @param grayMatterData Object with the content and the Front Matter data as parsed by `gray-matter`.
-   * @param pathToFile the full path to the file bein processed.
-   * @returns new file name .
-   */
-  private buildNewFileName(content: string, data: GrayMatterFile<string>['data'], pathToFile: string): string {
+  private buildNewFileName(content: string, data: { [key: string]: any }, pathToFile: string): string {
     if (data.slug)
       return `${data.slug}.html`;
     const mdTitle = data.title ? data.title : mdTitleExtractor(content);
     const extension = extname(pathToFile);
     const fileNameDirty = mdTitle ? mdTitle : basename(pathToFile).replace(extension, '');
-    const fileNameClean = camelToKebabCase(fileNameDirty);
-    return `${fileNameClean}.html`;
+    return `${camelToKebabCase(String(fileNameDirty))}.html`;
   }
 
-  /**
-   * Determines where to save the new file by combining the relative path of the template and of the source file.
-   *
-   * @param pathToFile full absolute path to the source file
-   * @returns out path
-   */
   private buildOutPath(pathToFile: string): string {
-    const relativePathToTemplateWithFileName = relative(WORKING_DIR.pagesToGenerate, this.pathToTemplate);
-    const relativePathToTemplate = parse(relativePathToTemplateWithFileName).dir;
-
-    const relativePathToMdWithFilename = relative(this.dirSourcePath, pathToFile);
-    const relativePathToMd = parse(relativePathToMdWithFilename).dir;
-
+    const relativePathToTemplate = parse(relative(WORKING_DIR.pagesToGenerate, this.pathToTemplate)).dir;
+    const relativePathToMd = parse(relative(this.dirSourcePath, pathToFile)).dir;
     return resolve(WORKING_DIR.out, relativePathToTemplate, relativePathToMd);
   }
 

@@ -4,6 +4,84 @@
   "temp": [],
   "changes": [
     {
+      "version": "2.0.0",
+      "date": "2026-10-26",
+      "items": [
+        {
+          "type": "changed",
+          "value": "requires Node.js 20+ (or Bun); runtime dependencies reduced from 26 to 5 (esbuild, gray-matter, html-minifier-terser, sass, showdown)"
+        },
+        {
+          "type": "changed",
+          "value": "scripts bundled with esbuild instead of webpack; webpackConfig still honoured when webpack is installed in the site"
+        },
+        {
+          "type": "changed",
+          "value": "config/*.ts and site code compiled per file with esbuild instead of ts-node; config loading rules unchanged"
+        },
+        {
+          "type": "changed",
+          "value": "translation edits only translated elements instead of re-serializing pages with cheerio"
+        },
+        {
+          "type": "changed",
+          "value": "builds about 2.5x faster"
+        },
+        {
+          "type": "added",
+          "value": "watch: every build runs in a fresh process, so config, renderers and directives are reloaded; errors shown in an in-browser overlay without stopping the server; CSS hot swap; whole project watched"
+        },
+        {
+          "type": "added",
+          "value": "yassb inspect, yassb check, yassb docs commands; --strict, --clean, --out, --json flags"
+        },
+        {
+          "type": "added",
+          "value": "diagnostics with stable codes, file and line"
+        },
+        {
+          "type": "added",
+          "value": "output lock: only one build/check/watch at a time writes an output folder; a second one stops with OUTPUT_LOCKED naming the other process"
+        },
+        {
+          "type": "added",
+          "value": "sourcePath in renderer props, nested translation keys, i18n.allowHtml, sitemap: false, cleanOut, strict, beforeBuild/afterBuild hooks, esbuildOptions, defineConfig"
+        },
+        {
+          "type": "added",
+          "value": "feature catalogue: every export tagged @feature/@featurePart/@internal, build fails if a feature, CLI flag or diagnostic code is undocumented; yassb docs features"
+        },
+        {
+          "type": "added",
+          "value": "docs/guide.md, AGENTS.md, llms.txt; starter project with AGENTS.md"
+        },
+        {
+          "type": "fixed",
+          "value": "options containing arrays were silently ignored"
+        },
+        {
+          "type": "fixed",
+          "value": "$$ and $& in content were altered when inserted into pages"
+        },
+        {
+          "type": "fixed",
+          "value": "basicElement wrote <undefined> elements without a tag option"
+        },
+        {
+          "type": "fixed",
+          "value": "an element with both data-attr-t and data-t lost its text translation"
+        },
+        {
+          "type": "fixed",
+          "value": "watch reloaded the browser before the rebuild finished and ignored changes to code outside src"
+        },
+        {
+          "type": "removed",
+          "value": "dependencies no longer installed: react, react-dom, fs-extra, cheerio, lodash, moment, webpack, ts-node, typescript and others; sites importing them must declare them (yassb check lists them)"
+        }
+      ]
+    },
+    {
       "version": "1.4.3",
       "date": "2024-07-26",
       "items": [

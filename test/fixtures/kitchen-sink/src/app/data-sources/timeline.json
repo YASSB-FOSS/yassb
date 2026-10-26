@@ -1,0 +1,6 @@
+[
+  { "date": { "start": "2019/03", "end": "-" }, "description": { "en": "Working", "it": "Lavoro" } },
+  { "date": { "start": "2015/09/12", "end": "2018/06/30" }, "description": { "en": "Studying", "it": "Studio" } },
+  { "date": { "start": "2010" }, "description": { "en": "Born", "it": "Nato" } },
+  { "date": { "raw": "Someday" }, "description": { "en": "Raw", "it": "Grezzo" } }
+]

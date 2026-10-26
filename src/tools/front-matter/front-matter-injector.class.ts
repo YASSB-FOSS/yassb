@@ -1,27 +1,29 @@
-import { FrontMatterData } from '@yassb/tools/front-matter/front-matter-store.const';
+import { report } from '../../diagnostics/diagnostics';
+import { replaceAllLiteral } from '../../directives/tools/extract-directives.function';
+import type { FrontMatterData } from './front-matter-store.const';
 
 /**
- * Injects Front Matter data into the contents of a file by analyzing where a data key is found in content between curly brackets.
+ * Replaces `{ key }` placeholders (one space inside each brace) with front matter values.
+ * Strings are inserted as they are, dates (and the `date` key) as ISO strings, other values as JSON.
+ *
+ * @feature content.front-matter
+ * @summary { key } placeholders are replaced with front matter values.
+ * @usage ---\ntitle: Hello\ndate: 2024-01-15\n---  then <title>{ title }</title>
+ * @options none
+ * @rules One space inside each brace; values come from Markdown files, components with front matter and the data returned by custom directives; strings inserted as they are (not escaped), dates and the date key as ISO strings, other values as JSON; replaced after components and again in post-processing.
+ * @errors FRONT_MATTER_INVALID_DATE
+ * @status stable
+ * @since 1.0.0
+ * @related content.markdown, api.custom-directives
  */
 export class FrontMatterInjector {
 
-  /**
-   * Creates an instance of front matter injector.
-   *
-   * @param contents the contents of the file where to look for insert commanda.
-   * @param data the full Front Matter data of the file to be inserted.
-   */
   constructor(
     private contents: string,
-    private data: FrontMatterData
+    private data: FrontMatterData,
+    private fileForReports?: string
   ) { }
 
-  /**
-   * Starts the logic of front matter injector.
-   * For each `key` in `data` calls `injectDataValues`.
-   *
-   * @returns the contents of the file as updated with the injected data.
-   */
   public inject(): string {
     for (const key in this.data)
       this.injectDataValues(key, this.data[key]);
@@ -29,46 +31,32 @@ export class FrontMatterInjector {
     return this.contents;
   }
 
-  /**
-   * Injects data values into content by matching the regexp formed by each `key` of `data` between tcurly brackets.
-   *
-   * @param identifier the key of the data to look for.
-   * @param value the value to be injected.
-   */
-  private injectDataValues(identifier: string, value: string | Object | Array<any>): void {
+  private injectDataValues(identifier: string, value: unknown): void {
     const searchTerm = `{ ${identifier} }`;
-    const stringifiedValue = this.stingify(value, identifier);
-    this.contents = this.contents.replace(new RegExp(searchTerm, 'g'), stringifiedValue);
+    if (!this.contents.includes(searchTerm))
+      return;
+    this.contents = replaceAllLiteral(this.contents, searchTerm, this.stringify(value, identifier));
   }
 
-  /**
-   * Converts non string Front Matter data values to strings with JSON stringify.
-   *
-   * @param value the value to check and eventually convert.
-   * @param identifier the key of the data.
-   * @returns the value as a string.
-   */
-  private stingify(value: string | Object | Array<unknown>, identifier: string): string {
-
-    if (this.isDate(value))
+  private stringify(value: unknown, identifier: string): string {
+    if (value instanceof Date)
       return value.toISOString();
 
-    if (identifier === 'date')
-      return new Date(value as string).toISOString();
-
-    switch (typeof value) {
-      case 'string':
-        return value;
-      default:
-        return JSON.stringify(value);
+    if (identifier === 'date') {
+      const date = new Date(value as string);
+      if (Number.isNaN(date.getTime())) {
+        report({
+          level: 'error',
+          code: 'FRONT_MATTER_INVALID_DATE',
+          file: this.fileForReports,
+          message: `Front matter "date" is not a valid date: ${JSON.stringify(value)}. It was inserted as it is.`
+        });
+        return String(value);
+      }
+      return date.toISOString();
     }
-  }
 
-  /**
-   * Determines if a value is a Date
-   */
-  private isDate(value: any): value is Date {
-    return value instanceof Date;
+    return typeof value === 'string' ? value : String(JSON.stringify(value));
   }
 
 }

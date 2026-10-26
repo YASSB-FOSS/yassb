@@ -1,0 +1,5 @@
+[
+  { "title": "Components", "description": "Shared HTML fragments, included with a directive." },
+  { "title": "Data", "description": "JSON files rendered into HTML by renderers." },
+  { "title": "Translations", "description": "Add src/i18n/<lang>.json files to build every page in each language." }
+]

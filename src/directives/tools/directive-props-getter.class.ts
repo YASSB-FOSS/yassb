@@ -1,10 +1,10 @@
-import { isValidJsonString } from '@yassb/tools/is-valid-json-string.function';
-import { YassbConfig } from '@yassb/yassb';
+import type { YassbConfig } from '../../yassb';
 /* eslint-disable no-shadow */
 
 /**
- * Quick reference of some of the attributes of built-in directives.
- * The list is used to avoid typos, it is not exhaustive. It does not need to contain all possible attributes names.
+ * Names of the attributes of built-in directives.
+ *
+ * @internal
  */
 export enum DirectivePropsKeys {
   component = 'component',
@@ -16,90 +16,117 @@ export enum DirectivePropsKeys {
 }
 
 /**
- * Type of values that might be retrieved from an attribute of a directive
+ * Attributes of a directive: `options` is parsed JSON, every other value is a string.
+ *
+ * @internal
  */
 export interface DirectiveProps {
   [key: string]: string | { [key: string]: unknown } | Array<unknown>;
 }
 
 /**
- * Analyzes a YASSB formatted HTML comment and extracts the relevant attributes and values
+ * Problem found while reading the attributes of a directive.
+ *
+ * @internal
+ */
+export interface DirectivePropsError {
+  code: 'OPTIONS_INVALID_JSON';
+  message: string;
+}
+
+/**
+ * Reads the attributes of a directive, e.g.
+ * `<!-- create-from-data-source="news.json" renderer="newsList" options="{"limit":3}" -->`.
+ *
+ * - `LANG` in the directive is replaced by the current language, `USERNAME` by `config.username` (as in 1.x);
+ * - `options` holds JSON, written as is inside double (or single) quotes;
+ * - other values are read up to the closing quote.
+ *
+ * @feature directive.attributes
+ * @summary Shared attribute syntax of directives: quoted values, JSON options, LANG and USERNAME placeholders.
+ * @usage <!-- create-from-data-source="LANG/news.json" renderer="list" options="{"order":["b","a"],"limit":3}" -->
+ * @options options: JSON (object or array) written as is inside double or single quotes, anywhere in the directive.
+ * @rules Values end at the closing quote; LANG anywhere in the directive (options included) becomes the current language; USERNAME becomes config.username (the text "undefined" if unset); invalid options JSON is reported and ignored.
+ * @errors OPTIONS_INVALID_JSON
+ * @status stable
+ * @since 1.0.0
+ * @related config.username, directive.create-from-data-source
  */
 export class DirectivePropsGetter {
 
-  /**
-   * Object whose keys are the attribute names found in the directive and the values the content of the attributes.
-   */
   private props: DirectiveProps = {};
 
-  /**
-   * Creates an instance of directive props getter.
-   *
-   * @param directiveFullString the full text of the directive previously found with a `RegExp`.
-   * @param config the full YASSV configuration object
-   * @param [lang] the current language being processed if i18n is enabled
-   */
+  /** Problems found by `parse()`. */
+  public errors: Array<DirectivePropsError> = [];
+
   constructor(
     private directiveFullString: string,
     private config: YassbConfig,
     private lang?: string
   ) { }
 
-  /**
-   * Executes the whole logic to extract all properties and values from the directive.
-   *
-   * @returns parse
-   */
   public parse(): DirectiveProps {
     if (this.lang)
-      this.replaceLang();
-    this.replaceUsername();
-    this.getOptions();
-    this.matchDirectiveProps();
+      this.directiveFullString = this.directiveFullString.replace(/LANG/g, this.lang);
+    this.directiveFullString = this.directiveFullString.replace(/USERNAME/g, String(this.config.username));
+    this.readAttributes();
     return this.props;
   }
 
-  /**
-   * Replaces any occurance of `LANG` with the current lang, if i18n is enabled
-   */
-  private replaceLang(): void {
-    this.directiveFullString = this.directiveFullString.replace(/LANG/g, this.lang);
+  private readAttributes(): void {
+    const text = this.directiveFullString;
+    const attribute = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(["'])/g;
+    let match: RegExpExecArray | null;
+    while ((match = attribute.exec(text))) {
+      const name = match[1];
+      const quote = match[2];
+      const valueStart = match.index + match[0].length;
+
+      if (name === DirectivePropsKeys.options && (text[valueStart] === '{' || text[valueStart] === '[')) {
+        const end = findJsonEnd(text, valueStart);
+        const json = text.slice(valueStart, end);
+        try {
+          this.props.options = JSON.parse(json);
+        } catch {
+          this.errors.push({ code: 'OPTIONS_INVALID_JSON', message: `options are not valid JSON: ${json}` });
+        }
+        attribute.lastIndex = text[end] === quote ? end + 1 : end;
+        continue;
+      }
+
+      const close = text.indexOf(quote, valueStart);
+      const valueEnd = close < 0 ? text.length : close;
+      this.props[name] = text.slice(valueStart, valueEnd);
+      attribute.lastIndex = close < 0 ? text.length : close + 1;
+    }
   }
 
-  /**
-   * Replaces any occurance of `USERNAME` in the directive string with the value set in YASSB config
-   */
-  private replaceUsername(): void {
-    this.directiveFullString = this.directiveFullString.replace(/USERNAME/g, this.config.username);
+}
+
+/**
+ * End of the JSON value starting at `start` (an object or array), honouring strings and nesting.
+ */
+function findJsonEnd(text: string, start: number): number {
+  let depth = 0;
+  let inString = false;
+  for (let i = start; i < text.length; i++) {
+    const char = text[i];
+    if (inString) {
+      if (char === '\\')
+        i++;
+      else if (char === '"')
+        inString = false;
+      continue;
+    }
+    if (char === '"')
+      inString = true;
+    else if (char === '{' || char === '[')
+      depth++;
+    else if (char === '}' || char === ']') {
+      depth--;
+      if (depth === 0)
+        return i + 1;
+    }
   }
-
-  /**
-   * Matches anything between the external quotes of the `options` attribute and then removes options from the directiveFullString.
-   */
-  private getOptions(): void {
-    if (!this.directiveFullString.includes('options="'))
-      return;
-
-    const optionsString = this.directiveFullString.match(/(?<=options=")[{[].*(?=")/g)[0];
-    this.directiveFullString = this.directiveFullString.replace(optionsString, '').replace('options="', '');
-    if (isValidJsonString(optionsString))
-      this.props['options'] = JSON.parse(optionsString);
-    else
-      console.error(`ERROR: Options are not a valid JSON string in directive ${this.directiveFullString}`);
-  }
-
-  /**
-   * Matches each attribute and value in the directive without the closing quote (").
-   * Then splits the string by `="` to separate the attribute from the value.
-   * Checks if the attribute is a supported attribute. If so, adds it to the props, else throws an error in console.
-   */
-  private matchDirectiveProps(): void {
-    const arrPropsValues = this.directiveFullString.match(/[a-zA-Z-]*={1}"{1}[\\/a-zA-Z0-9\s.,;:`üöïëäÄËÏÖÜçáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙ()\][{}_\-^<>@#£$%§°&?^!|§€-]*/g);
-    if (arrPropsValues)
-      arrPropsValues.forEach(propValue => {
-        const arrPropValue = propValue.split('="');
-        this.props[arrPropValue[0]] = arrPropValue[1];
-      });
-  }
-
+  return text.length;
 }

@@ -1,89 +1,105 @@
-import { WORKING_DIR } from '@yassb/config/working-dir.constant';
-import { DirectivePropsGetter, DirectivePropsKeys } from '@yassb/directives/tools/directive-props-getter.class';
-import { YassbBaseDirective } from '@yassb/directives/yassb-base-directive.class';
-import { RenderersCaller } from '@yassb/renderers/renderers-caller.class';
-import { fileDoesNotExists } from '@yassb/tools/file-does-not-exists.function';
-import { YassbDirective, YassbDirectiveProps, YassbDirectiveResponse } from '@yassb/yassb';
-import { readJsonSync } from 'fs-extra';
+import { existsSync } from 'fs';
 import { resolve } from 'path';
+import { WORKING_DIR } from '../../config/working-dir.constant';
+import { describeError, report } from '../../diagnostics/diagnostics';
+import { locate } from '../../diagnostics/source-location';
+import { RenderersCaller } from '../../renderers/renderers-caller.class';
+import { readTextCached } from '../../tools/file-cache';
+import type { YassbDirective, YassbDirectiveProps, YassbDirectiveResponse } from '../../yassb';
+import { DirectivePropsGetter, DirectivePropsKeys } from '../tools/directive-props-getter.class';
+import { replaceAllLiteral } from '../tools/extract-directives.function';
+import { YassbBaseDirective } from '../yassb-base-directive.class';
 
 /**
- * Generates HTML content from a data source
+ * `<!-- create-from-data-source="file.json" renderer="name" options="{...}" -->`
+ *
+ * Reads the JSON file (relative to the data-sources folder) and replaces the directive with the HTML returned by
+ * the renderer. The renderer receives the parsed JSON as `source` and its absolute path as `sourcePath`.
+ *
+ * @feature directive.create-from-data-source
+ * @summary Renders a JSON data source with a renderer and inserts the resulting HTML.
+ * @usage <!-- create-from-data-source="people/team.json" renderer="peopleCards" options="{"limit":3}" -->
+ * @options renderer: name in customRenderers or a built-in renderer (default basicElement); options: JSON passed to the renderer as props.options.
+ * @rules One JSON file per directive, path relative to src/app/data-sources (sub-folders allowed); the file is parsed again for every directive, so renderers may mutate their data; the renderer receives source (parsed JSON) and sourcePath; every occurrence of the same directive text in the file is replaced; a missing file or name leaves the comment (removed by the minifier) and is reported; invalid JSON or a throwing renderer fail the build.
+ * @errors DATA_SOURCE_MISSING_NAME, DATA_SOURCE_NOT_FOUND, DATA_SOURCE_INVALID_JSON
+ * @status stable
+ * @since 1.0.0
+ * @related api.custom-renderers, directive.attributes, renderer.basicElement
  */
 export class HtmlFromDataSource extends YassbBaseDirective implements YassbDirective {
 
   /**
-   * Regex to match the comments to invoke the directive
+   * Regex to match the comments to invoke the directive (one per line).
    */
   public static regex = /<!--\s*create-from-data-source\s*=\s*".+\..+"\s*-->/g;
 
-  /**
-   * File name of the data source file
-   */
-  private fileName: string;
-  /**
-   * Renderer to be used to generate the HTML
-   */
-  private renderer: string;
-  /**
-   * Options passed in the directive
-   */
-  private options: Object;
-
-  /**
-   * Creates an instance of html from data source and calls `super` so YassbBaseDirective assigns the args to the protected properties.
-   *
-   * @param args
-   */
   constructor(args: YassbDirectiveProps) {
     super(args);
   }
 
-  /**
-   * Inits html from data source.
-   * The directive completes only if the data source and the rendere are both found and valid.
-   *
-   * @returns init
-   */
   public init(): YassbDirectiveResponse {
-    this.getDirectiveProps();
+    const getter = new DirectivePropsGetter(this.directiveFullString, this.config, this.lang);
+    const props = getter.parse();
+    const fileName = props[DirectivePropsKeys['create-from-data-source']] as string;
+    const renderer = props[DirectivePropsKeys.renderer] as string;
+    const where = () => locate(this.fileFullPath, this.directiveFullString);
 
-    if (!this.fileName) {
-      console.error('ERROR: can\'t determine the data source file name. Did you pass it as an argument to `create-from-data-source`?');
+    for (const error of getter.errors)
+      report({ level: 'error', code: error.code, ...where(), directive: this.directiveFullString, message: `${error.message} in \`${this.directiveFullString}\`` });
+
+    if (!fileName) {
+      report({
+        level: 'error',
+        code: 'DATA_SOURCE_MISSING_NAME',
+        ...where(),
+        directive: this.directiveFullString,
+        message: `No data source file in \`${this.directiveFullString}\`.`,
+        hint: 'Write the JSON file name: <!-- create-from-data-source="items.json" renderer="itemsList" -->'
+      });
       return { html: this.fileContents, data: {} };
     }
 
-    const fullPath = resolve(WORKING_DIR.dataSources, this.fileName);
+    const fullPath = resolve(WORKING_DIR.dataSources, fileName);
 
-    if (fileDoesNotExists(fullPath, this.fileName, 'data-source')) {
-      console.error(`ERROR: data source ${this.fileName} file not found @ ${fullPath}. Injection of contents aborted.`);
+    if (!existsSync(fullPath)) {
+      report({
+        level: 'error',
+        code: 'DATA_SOURCE_NOT_FOUND',
+        ...where(),
+        directive: this.directiveFullString,
+        message: `Data source "${fileName}" not found at ${fullPath}. The block was not rendered.`,
+        hint: 'Data source paths are relative to the data-sources folder (src/app/data-sources by default).'
+      });
       return { html: this.fileContents, data: {} };
     }
 
-    const dataSrcContents = readJsonSync(fullPath) as string | Array<unknown> | { [key: string]: unknown };
+    let source: unknown;
+    try {
+      source = JSON.parse(readTextCached(fullPath));
+    } catch (error) {
+      report({
+        level: 'error',
+        code: 'DATA_SOURCE_INVALID_JSON',
+        fatal: true,
+        file: fullPath,
+        directive: this.directiveFullString,
+        message: `Data source "${fileName}" is not valid JSON: ${describeError(error).message}`
+      });
+      return { html: replaceAllLiteral(this.fileContents, this.directiveFullString, ''), data: {} };
+    }
+
     const componentContent = new RenderersCaller(
       this.fileFullPath,
       this.directiveFullString,
-      dataSrcContents,
+      source,
       this.config,
       this.lang,
-      this.renderer,
-      this.options
+      renderer,
+      props[DirectivePropsKeys.options],
+      fullPath
     ).callRenderer();
 
-    return { html: this.fileContents.replace(new RegExp(this.directiveFullString, 'g'), componentContent), data: {} };
-  }
-
-  /**
-   * Gets directive props by parsing the directiveFullString with `DirectivePropsGetter`
-   *
-   * @see DirectivePropsGetter
-   */
-  private getDirectiveProps(): void {
-    const directiveProps = new DirectivePropsGetter(this.directiveFullString, this.config, this.lang).parse();
-    this.fileName = directiveProps[DirectivePropsKeys['create-from-data-source']] as string;
-    this.renderer = directiveProps[DirectivePropsKeys.renderer] as string;
-    this.options = directiveProps[DirectivePropsKeys.options];
+    return { html: replaceAllLiteral(this.fileContents, this.directiveFullString, componentContent), data: {} };
   }
 
 }
