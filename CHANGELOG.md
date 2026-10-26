@@ -7,6 +7,33 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [2.0.0] - 2026-10-26
+### Added
+- watch: every build runs in a fresh process, so config, renderers and directives are reloaded; errors shown in an in-browser overlay without stopping the server; CSS hot swap; whole project watched.
+- yassb inspect, yassb check, yassb docs commands; --strict, --clean, --out, --json flags.
+- diagnostics with stable codes, file and line.
+- output lock: only one build/check/watch at a time writes an output folder; a second one stops with OUTPUT_LOCKED naming the other process.
+- sourcePath in renderer props, nested translation keys, i18n.allowHtml, sitemap: false, cleanOut, strict, beforeBuild/afterBuild hooks, esbuildOptions, defineConfig.
+- feature catalogue: every export tagged @feature/@featurePart/@internal, build fails if a feature, CLI flag or diagnostic code is undocumented; yassb docs features.
+- docs/guide.md, AGENTS.md, llms.txt; starter project with AGENTS.md.
+
+### Changed
+- requires Node.js 20+ (or Bun); runtime dependencies reduced from 26 to 5 (esbuild, gray-matter, html-minifier-terser, sass, showdown).
+- scripts bundled with esbuild instead of webpack; webpackConfig still honoured when webpack is installed in the site.
+- config/*.ts and site code compiled per file with esbuild instead of ts-node; config loading rules unchanged.
+- translation edits only translated elements instead of re-serializing pages with cheerio.
+- builds about 2.5x faster.
+
+### Fixed
+- options containing arrays were silently ignored.
+- $$ and $& in content were altered when inserted into pages.
+- basicElement wrote <undefined> elements without a tag option.
+- an element with both data-attr-t and data-t lost its text translation.
+- watch reloaded the browser before the rebuild finished and ignored changes to code outside src.
+
+### Removed
+- dependencies no longer installed: react, react-dom, fs-extra, cheerio, lodash, moment, webpack, ts-node, typescript and others; sites importing them must declare them (yassb check lists them).
+
 ## [1.4.3] - 2024-07-26
 ### Fixed
 - bin unix.
