@@ -1,124 +1,80 @@
-import { CLIENT_SOCKET_SNIPPET_FOR_WATCH } from '@yassb/runners/client-socket-snippet-for-watch.const';
-import { FrontMatterHandler } from '@yassb/tools/front-matter/front-matter-handler.class';
-import { FrontMatterInjector } from '@yassb/tools/front-matter/front-matter-injector.class';
-import { FrontMatterData } from '@yassb/tools/front-matter/front-matter-store.const';
-import { YassbConfig } from '@yassb/yassb';
-import { readFileSync, writeFileSync } from 'fs-extra';
-import { minify } from 'html-minifier';
+import { readFileSync, writeFileSync } from 'fs';
+import { describeError, report } from '../diagnostics/diagnostics';
+import { sourceFileOf } from '../diagnostics/source-location';
+import { FrontMatterHandler } from '../tools/front-matter/front-matter-handler.class';
+import { FrontMatterInjector } from '../tools/front-matter/front-matter-injector.class';
+import type { YassbConfig } from '../yassb';
 
 /**
- * Post processes each file passed by `PostProcessFiles`
+ * Final step for one page: front matter placeholders, custom post processors, then minification
+ * (`yassb build`) or the live-reload script (`yassb watch`).
  */
 export class PostProcessFile {
 
-  /**
-   * Contents of the file to post process
-   */
-  private fileContents: string;
-  /**
-   * Front Matter data found in `fileContents`
-   */
-  private fileData: FrontMatterData;
-
-  /**
-   * Creates an instance of post process file.
-   *
-   * @param pathToFile full absolute path to the file being processed
-   * @param config full YASSB configuration object
-   * @param isWatching determins if in watch mode to skip production-only steps
-   */
   constructor(
     private pathToFile: string,
     private config: YassbConfig,
     private isWatching: boolean,
-    private shouldRunFinalPostProcessing: boolean = true
+    private liveReloadSnippet?: string
   ) { }
 
-  /**
-   * Inits post process file logic.
-   *
-   * @returns init
-   */
-  public init(): void {
-    this.setFileContents();
-    this.setFileData();
-    this.injectFrontMatterData(this.fileData);
+  public async init(): Promise<void> {
+    let contents = readFileSync(this.pathToFile, 'utf8');
 
-    // If should run final post processing if false it means that we are processing a file just generated from a template
-    if (this.shouldRunFinalPostProcessing)
-      this.postProcessFile();
+    const fileData = FrontMatterHandler.get(this.pathToFile);
+    if (fileData && typeof fileData === 'object')
+      contents = new FrontMatterInjector(contents, fileData, sourceFileOf(this.pathToFile)).inject();
 
-    this.saveToDiskFinalVersionOfFile();
-  }
-
-  /**
-   * Reads asynchronously the file and sets the contents on `fileContents`.
-   *
-   * @returns file contents
-   */
-  private setFileContents(): void {
-    this.fileContents = readFileSync(this.pathToFile, 'utf8');
-  }
-
-  /**
-   * Sets file data by fetching it from `FRONT_MATTER_DATA_STORE`.
-   * In this way any Front Matter data is removed from the page and is available for the final injections.
-   */
-  private setFileData(): void {
-    this.fileData = FrontMatterHandler.get(this.pathToFile);
-  }
-
-  /**
-   * Injects Front Matter data if any was fond in the file.
-   *
-   * @param fileData Front Matter data retrieved from the store for the current file.
-   */
-  private injectFrontMatterData(fileData: FrontMatterData): void {
-    if (typeof fileData === 'object' && Object.keys(fileData))
-      this.fileContents = new FrontMatterInjector(this.fileContents, fileData).inject();
-  }
-
-  /**
-   * Handles the logic to post process each file by calling the methods in charge of the actions to be performed.
-   */
-  private postProcessFile(): void {
-    this.runCustomPostProcessors();
-    this.prepareCodeForSaving();
-  }
-
-  /**
-   * Runs custom post processors if set in congig.
-   */
-  private runCustomPostProcessors(): void {
-    this.config.postProcessors.forEach(postProcessor => {
-      this.fileContents = postProcessor(this.fileContents);
-    });
-  }
-
-  /**
-   * Prepares the content to be saved.
-   * If in watch mode, adds the WebSocket listener for live reloading and removes the CSP meta tag.
-   * Else minifies the content.
-   */
-  private prepareCodeForSaving(): void {
-    // tslint:disable-next-line: prefer-conditional-expression
-    if (this.isWatching) {
-      if (!this.fileContents.includes('WebSocket(\'ws://localhost:3001\')')) {
-        this.fileContents = this.fileContents.replace('</body>', CLIENT_SOCKET_SNIPPET_FOR_WATCH);
+    for (const postProcessor of this.config.postProcessors || []) {
+      try {
+        const result = postProcessor(contents);
+        if (typeof result === 'string')
+          contents = result;
+        else
+          throw new Error(`returned ${typeof result} instead of the page HTML`);
+      } catch (error) {
+        const { message, detail } = describeError(error);
+        report({
+          level: 'error',
+          code: 'POST_PROCESSOR_FAILED',
+          fatal: true,
+          file: sourceFileOf(this.pathToFile),
+          message: `Post processor ${postProcessor.name || '(anonymous)'} failed on ${this.pathToFile}: ${message}`,
+          detail
+        });
       }
-      if (this.fileContents.includes('<meta http-equiv="Content-Security-Policy" content="')) {
-        this.fileContents = this.fileContents.replace(/<meta http-equiv="Content-Security-Policy" content="[a-zA-z0-9';:\-\s/\.]*">/gm, '');
-      }
-    } else {
-      this.fileContents = minify(this.fileContents, this.config.htmlMinificationOptions);
     }
+
+    contents = this.isWatching ? this.prepareForWatch(contents) : await this.minify(contents);
+    writeFileSync(this.pathToFile, contents);
   }
 
-  /**
-   * Saves to disk the final version of file
-   */
-  private saveToDiskFinalVersionOfFile(): void {
-    writeFileSync(this.pathToFile, this.fileContents);
+  /** Adds the live-reload script and removes the Content-Security-Policy meta tag (it would block it). */
+  private prepareForWatch(contents: string): string {
+    if (this.liveReloadSnippet && !contents.includes('/__yassb/events')) {
+      if (contents.includes('</body>'))
+        contents = contents.replace('</body>', () => `${this.liveReloadSnippet}</body>`);
+      else if (/<html[\s>]/i.test(contents))
+        contents += this.liveReloadSnippet;
+    }
+    if (contents.includes('<meta http-equiv="Content-Security-Policy" content="'))
+      contents = contents.replace(/<meta http-equiv="Content-Security-Policy" content="[a-zA-z0-9';:\-\s/.]*">/gm, '');
+    return contents;
+  }
+
+  private async minify(contents: string): Promise<string> {
+    const { minify } = require('html-minifier-terser') as typeof import('html-minifier-terser');
+    try {
+      return await minify(contents, this.config.htmlMinificationOptions || {});
+    } catch (error) {
+      report({
+        level: 'error',
+        code: 'MINIFY_FAILED',
+        file: sourceFileOf(this.pathToFile),
+        message: `The page could not be minified (${describeError(error).message}); it was written unminified.`
+      });
+      return contents;
+    }
   }
 
 }

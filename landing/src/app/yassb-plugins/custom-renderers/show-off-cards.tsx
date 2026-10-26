@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Renderer, RendererProps } from '../../../../../bundle';
+import { Renderer, RendererProps } from 'yassb-web';
 
 interface ShowOffCards {
   icon: string;

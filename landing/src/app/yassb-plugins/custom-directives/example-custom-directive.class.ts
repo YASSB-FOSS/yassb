@@ -1,4 +1,4 @@
-import { YassbDirective, YassbDirectiveProps, YassbDirectiveResponse } from '../../../../../bundle';
+import { YassbDirective, YassbDirectiveProps, YassbDirectiveResponse } from 'yassb-web';
 
 export class ExampleCustomDirective implements YassbDirective {
 

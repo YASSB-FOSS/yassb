@@ -7,7 +7,7 @@ slug: index
 
 This guide provides a comprehensive explaination of how to use YASSB with examples and code snippets.
 
-If you are interested to learn how YASSB works under the hood, you may also considering having a look at the [docs](/docs), or explore the source code.
+If you are interested to learn how YASSB works under the hood, you may also considering having a look at the [guide](https://github.com/YASSB-FOSS/yassb/blob/master/docs/guide.md), or explore the source code.
 
 These guides are organized in 5 sections:
 

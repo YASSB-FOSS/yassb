@@ -9,7 +9,7 @@ Custom renderers are functions that elaborate a given data source and produce th
 
 Because YASSB supports both JS and TS, your functions can be in either language. 
 
-Custom renderers should be of type [`Renderer`]({{url-to="yassb.html#renderer"}}) should expect one argument, which is an object with the following properties:
+Custom renderers should be of type [`Renderer`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts) should expect one argument, which is an object with the following properties:
 
 - `currentFilePath`: the full path of the file benig processed. This will be a subdirectory of the `out` folder;
 - `source`: an Array of elements as defined in the directive (e.g. the content of the JSON file to which the directive points to);

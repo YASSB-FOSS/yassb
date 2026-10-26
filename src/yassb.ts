@@ -1,76 +1,110 @@
-import { OptionsKeys } from '@yassb/config/options-keys.enum';
-import { WORKING_DIR } from '@yassb/config/working-dir.constant';
-import { FrontMatterDataStore } from '@yassb/tools/front-matter/front-matter-store.const';
-import { GrayMatterOption } from 'gray-matter';
-import { Options as MinifyOptions } from 'html-minifier';
-import { ConverterOptions } from 'showdown';
-import { Configuration } from 'webpack';
+/**
+ * Public types of YASSB.
+ *
+ * Everything a site needs to type its configuration, renderers and custom directives lives here
+ * and is re-exported by `yassb-web` (see `src/index.ts`).
+ * The names and shapes of the 1.x types are unchanged; new fields are optional.
+ */
+import type { Diagnostic } from './diagnostics/diagnostics';
+import type { FrontMatterDataStore } from './tools/front-matter/front-matter-store.const';
+
+export type { Diagnostic, DiagnosticLevel } from './diagnostics/diagnostics';
+export type { FrontMatterData, FrontMatterDataStore } from './tools/front-matter/front-matter-store.const';
 
 /**
- * Args passed to renderers to be used as a destructured object.
- *
- * @property `lang` the language being processed if i18n is enabled, else undefined.
- * @property `source` generic type to be specified when declaring `RenderedProps<T>` (eg. `RenderedProps<string>`).
- * @property `options` content of the `options` attribute parsed from a JSON string.
+ * Folders of a project. Every value is optional in the configuration: missing values fall back to the defaults below.
+ * Paths are relative: `base` to the folder YASSB runs in, `src`/`out` to `base`, `assets`/`i18n`/`app` to `src`,
+ * everything else to `app`, except `scriptsOutFolder`/`stylesOutFolder`, which are relative to `out`.
  */
-export interface RendererProps<T> {
+export interface WorkingDirConfig {
+  /** Root folder of the project. Default: the current folder. */
+  base: string;
+  /** Default: `src`. */
+  src: string;
+  /** Copied as is into `out`. Default: `assets` (inside `src`). */
+  assets: string;
+  /** `<lang>.json` translation files; their names define the languages. Default: `i18n` (inside `src`). */
+  i18n: string;
+  /** Default: `app` (inside `src`). */
+  app: string;
+  /** One HTML file per page. Default: `pages` (inside `app`). */
+  pages: string;
+  /** Fragments included with the `component` directive. Default: `components` (inside `app`). */
+  components: string;
+  /** JSON files used by `create-from-data-source`. Default: `data-sources` (inside `app`). */
+  dataSources: string;
+  /** Templates used by `generate-from-files`. Default: `pages-to-generate` (inside `app`). */
+  pagesToGenerate: string;
+  /** Base folder for the paths passed to `generate-from-files`. Default: `app` itself. */
+  posts: string;
+  /** Entry file bundled with esbuild. Default: `scripts/main.ts` (inside `app`). */
+  scripts: string;
+  /** Entry stylesheet. Default: `styles/styles.scss` (inside `app`). */
+  styles: string;
+  /** Output folder. Default: `dist/public` (inside `base`). */
+  out: string;
+  /** Default: `assets/js` (inside `out`). */
+  scriptsOutFolder: string;
+  /** Default: `assets/css` (inside `out`). */
+  stylesOutFolder: string;
+}
+
+/**
+ * Args passed to renderers as one object.
+ *
+ * @property `currentFilePath` file being processed: a component in `src`, or a page copied to `out`.
+ * @property `lang` the language being processed if i18n is enabled, else undefined.
+ * @property `source` the parsed contents of the data source (for `public-file-list`, the list of files).
+ * @property `sourcePath` absolute path of the data source file (for `public-file-list`, the scanned folder). New in 2.0.
+ * @property `options` content of the directive's `options` attribute, parsed from JSON.
+ */
+export interface RendererProps<T, O = unknown> {
   currentFilePath: string;
   lang: string;
   source: T;
+  sourcePath?: string;
   config: YassbConfig;
-  options?: unknown;
+  options?: O;
   frontMatterStore: FrontMatterDataStore;
 }
 
 /**
- * Definition of the function expected as a renderer.
- *
- * @param RendererProps when invoked, the Object of type `RendererProps` is passed to the renderer.
+ * A renderer turns data into an HTML string.
+ * Register it in `config.customRenderers` under the name used in the `renderer` attribute of a directive.
  */
-export type Renderer = (args: RendererProps<unknown>) => string;
+export type Renderer = (args: RendererProps<any, any>) => string;
 
 /**
- * Structure of the store of custom renderers.
- *
- * @property `[nameOfRenderer: string]` the key property for each renderer added to the store __must__ be the name of the function to be executed.
+ * Store of renderers: the key is the name used in the `renderer="..."` attribute.
  */
 export interface RenderersStore {
   [nameOfRenderer: string]: Renderer;
 }
 
 /**
- * Constructed Object to be invoked calling `.init()`.
- * Custom directives Classes should implement `YassbDirective`.
- *
- * @interface YassbDirective
- * @method `init` public method executing the directive and returning an Object of type `YassbDirectiveResponse`
+ * Instance of a directive. `init()` is called once per regex match and returns the whole updated HTML.
  */
 export interface YassbDirective {
   init(): YassbDirectiveResponse;
 }
 
 /**
- * Constructable Object to be invoked with `new`
- *
- * @interface YassbDirectiveConstructable
- * @param args Object of type `YassbDirectiveProps` with the data shared with the `YassbDirective`.
+ * Class of a custom directive: a static `regex` (use the `g` flag) and a constructor receiving `YassbDirectiveProps`.
  */
 export interface YassbDirectiveConstructable {
   regex: RegExp;
-
-  new(
-    args: YassbDirectiveProps
-  ): YassbDirective;
+  new(args: YassbDirectiveProps): YassbDirective;
 }
 
 /**
+ * Data passed to a directive.
  *
- * @interface YassbDirectiveProps
- * @property `fileFullPath` the full path of the file benig processed. This will be a subdirectory of the `out` folder;
- * @property `fileContents` HTML code of the entire page, as already processed by built-in directives.
- * @property `lang` the current language being processed, `undefined` if i18n is no enabled.
+ * @property `fileFullPath` the file being processed. Components are processed first, with their own path in `src`;
+ *   the page itself is processed last, with its path in `out`. Check this path to act only on whole pages.
+ * @property `fileContents` HTML of the file, as already processed by the previous directives.
+ * @property `lang` the language being processed, `undefined` if i18n is not enabled.
  * @property `config` the YASSB configuration object.
- * @property `matchedDirectives` the Array of the full string of the html code invoking the directive as matched by the `CustomDirectiveDeclaration['regex']`
+ * @property `directiveFullString` the text matched by the directive's regex for this call.
  */
 export interface YassbDirectiveProps {
   fileFullPath: string;
@@ -82,56 +116,140 @@ export interface YassbDirectiveProps {
 }
 
 /**
- * Response to be returned by the method `init` of a `YassbDirective`.
+ * Returned by `YassbDirective.init()`.
  *
- * @interface YassbDirectiveResponse
- * @property `html` the full string of the HTML code passed as `YassbDirectiveProps['fileContents']` to the directive and as modified by the directive itself.
- * @property `data` Object with any value to be added as Front Matter compatible information to the HTML page for post processing action. These info will be removed after post processing.
+ * @property `html` the full HTML received in `fileContents`, as modified by the directive.
+ * @property `data` values made available as front matter placeholders (`{ key }`) to the page.
  */
 export interface YassbDirectiveResponse {
   html: string;
   data: { [key: string]: any };
 }
 
-/**
- * Array with all the constuctable Classes implementing a `YassbDirective`.
- */
+/** Custom directives, executed after the built-in ones, in this order. */
 export type CustomDirectivesStore = Array<YassbDirectiveConstructable>;
 
 /**
- * A function that, givn the path to the source styles, parses them and return the final css to be saved.
- * Parsers do not need tosave to disk any data.
+ * Compiles the stylesheet and returns the CSS. It does not need to write anything to disk.
  *
  * @param absolutePathToFile the full path to the source style.
- * @param relativePathToOrigin the path to the styles relative to the root folder of the project.
- * @param relativePathToDestination the output folder, relative to the root folder of the project.
+ * @param relativePathToOrigin same value as `absolutePathToFile` (kept for compatibility).
+ * @param relativePathToDestination the full path of the CSS file that YASSB will write.
  */
 export type CustomStylesParser = (absolutePathToFile: string, relativePathToOrigin: string, relativePathToDestination: string) => Promise<string | Buffer> | string | Buffer;
 
+/** Receives the final HTML of a page (after directives and translation) and returns it modified. */
 export type PostProcessor = (fileContents: string) => string;
 
+/** Options of `html-minifier-terser`, used on every page in `yassb build`. */
+export interface HtmlMinifierOptions {
+  caseSensitive?: boolean;
+  collapseBooleanAttributes?: boolean;
+  collapseInlineTagWhitespace?: boolean;
+  collapseWhitespace?: boolean;
+  conservativeCollapse?: boolean;
+  continueOnParseError?: boolean;
+  customAttrAssign?: RegExp[];
+  customAttrCollapse?: RegExp;
+  customAttrSurround?: RegExp[];
+  customEventAttributes?: RegExp[];
+  decodeEntities?: boolean;
+  html5?: boolean;
+  ignoreCustomComments?: RegExp[];
+  ignoreCustomFragments?: RegExp[];
+  includeAutoGeneratedTags?: boolean;
+  keepClosingSlash?: boolean;
+  maxLineLength?: number;
+  minifyCSS?: boolean | object | ((text: string, type?: string) => string);
+  minifyJS?: boolean | object | ((text: string, inline?: boolean) => string);
+  minifyURLs?: boolean | string | object | ((text: string) => string);
+  preserveLineBreaks?: boolean;
+  preventAttributesEscaping?: boolean;
+  processConditionalComments?: boolean;
+  processScripts?: string[];
+  quoteCharacter?: string;
+  removeAttributeQuotes?: boolean;
+  removeComments?: boolean;
+  removeEmptyAttributes?: boolean | ((attrName: string, tag: string) => boolean);
+  removeEmptyElements?: boolean;
+  removeOptionalTags?: boolean;
+  removeRedundantAttributes?: boolean;
+  removeScriptTypeAttributes?: boolean;
+  removeStyleLinkTypeAttributes?: boolean;
+  removeTagWhitespace?: boolean;
+  sortAttributes?: boolean;
+  sortClassName?: boolean;
+  trimCustomFragments?: boolean;
+  useShortDoctype?: boolean;
+}
+
+/** Summary of a build, passed to the `afterBuild` hook and returned by `runBuild()`. */
+export interface BuildResult {
+  /** False when an error stopped part of the build, or when `strict` is on and any error was reported. */
+  ok: boolean;
+  durationMs: number;
+  diagnostics: Array<Diagnostic>;
+  /** Absolute path of the output folder. */
+  out: string;
+  /** True in `yassb watch`. */
+  watchMode: boolean;
+}
+
+/** Information passed to the `beforeBuild` hook. */
+export interface BuildStartInfo {
+  watchMode: boolean;
+  out: string;
+  langs: Array<string>;
+}
+
 /**
- * Configuration options for YASSB, to be passed as the defaul export in `/config/default.[js/ts]`.
- *
- * @property `username` used to protect personal info. When passing a path to `generate-from-files`, the username contained in the path can be replaced with USERNAME. YASSB will replace USERNAME with the value passed in the options as `username`.
- * @property `customRenderers` used to define custom renderers. These can be any JS | TS | JSX | TSX function and must return a string. During compilation renderers receive one argument of type `RendererProps`
- * @property `customDirectives` used to define custom directives. These can be a JS | TS Class and must return the full HTML code passed to them. During compilation directives receive one argument of type `YassbDirectiveProps`
- * @property `workingDir` object defining custom dir names for projects files. Currrently the folder hierarchy is mandatory, only dir names can be personalized.
+ * Configuration of YASSB: the default export of `config/default.ts` (or `.js`/`.json`).
+ * Files for other environments (`config/production.ts`, `config/local.ts`, …) are merged on top, as with the `config` package.
  */
 export interface YassbConfig {
-  [OptionsKeys.username]?: string;
-  [OptionsKeys.customRenderers]?: RenderersStore;
-  [OptionsKeys.customDirectives]?: CustomDirectivesStore;
-  [OptionsKeys.workingDir]?: Partial<typeof WORKING_DIR>;
-  [OptionsKeys.skipsStyles]?: boolean;
-  [OptionsKeys.stylesParser]?: CustomStylesParser;
-  [OptionsKeys.postProcessors]?: Array<PostProcessor>;
-  [OptionsKeys.htmlMinificationOptions]?: MinifyOptions;
-  [OptionsKeys.showdownConverterOptions]?: ConverterOptions;
-  [OptionsKeys.grayMatterOption]?: GrayMatterOption<string, unknown>;
-  [OptionsKeys.webpackConfig]?: Configuration;
-  [OptionsKeys.siteHost]?: string;
-  [OptionsKeys.devServerPort]?: number;
+  /** Replaces `USERNAME` in directive values. */
+  username?: string;
+  /** Renderers by name, used by `create-from-data-source` and `public-file-list`. */
+  customRenderers?: RenderersStore;
+  /** Classes of custom directives. */
+  customDirectives?: CustomDirectivesStore;
+  /** Folder names of the project, see `WorkingDirConfig`. */
+  workingDir?: Partial<WorkingDirConfig>;
+  /** Skip the stylesheet entirely. */
+  skipsStyles?: boolean;
+  /** Replaces the built-in Sass compiler (e.g. PostCSS + Tailwind). */
+  stylesParser?: CustomStylesParser;
+  /** Functions applied to every HTML page at the end, in order. */
+  postProcessors?: Array<PostProcessor>;
+  /** Minifier options for `yassb build`. */
+  htmlMinificationOptions?: HtmlMinifierOptions;
+  /** Options of the Showdown Markdown converter. Default: `{ tables: true }`. */
+  showdownConverterOptions?: object;
+  /** Options of gray-matter, used to read front matter. */
+  grayMatterOption?: object;
+  /** Legacy: a webpack configuration for the scripts. Requires `webpack` installed in the site. Prefer `esbuildOptions`. */
+  webpackConfig?: object;
+  /** Extra esbuild options merged into the default scripts build (e.g. `{ target: 'es2020', external: [...] }`). New in 2.0. */
+  esbuildOptions?: object;
+  /** Public host of the site. When set, `sitemap.xml` is kept in the output. */
+  siteHost?: string;
+  /** Port of `yassb watch` / `yassb serve`. Default: 3000. */
+  devServerPort?: number;
+  /** Set to `false` to never write `sitemap.xml` (url-to keeps working). New in 2.0. */
+  sitemap?: boolean;
+  /** Delete the output folder (except dot files such as `.git`) before building. New in 2.0. */
+  cleanOut?: boolean;
+  /** Treat every reported error as fatal: the build exits with code 1. New in 2.0. */
+  strict?: boolean;
+  /** i18n options. New in 2.0. */
+  i18n?: {
+    /** Allow HTML in translations (`<span data-t="KEY">` gets the translation as HTML). Default: false. */
+    allowHtml?: boolean;
+  };
+  /** Called before every build, in `build` and in `watch`. New in 2.0. */
+  beforeBuild?: (info: BuildStartInfo) => void | Promise<void>;
+  /** Called after every build, in `build` and in `watch`: the place for site validations. New in 2.0. */
+  afterBuild?: (result: BuildResult) => void | Promise<void>;
 }
 
 /**
@@ -154,7 +272,7 @@ export type DataSourceModel = Array<BasicElement> | Array<LiDateDescription> | A
  * Date properties to be specified in liDateDescription renderer.
  *
  * @property `raw` is required if `start` is not provided. Will be rendered as-is, can be any string value.
- * @property `start` is required if `raw` is not provided. The date will be formatted based on the information provided (year only, year and month, year, month and day)
+ * @property `start` is required if `raw` is not provided. Format `YYYY`, `YYYY/MM` or `YYYY/MM/DD`.
  * @property `end` is optional. If the character `-` is passed, it will be converted to the text "present".
  */
 export interface DateModel {
@@ -184,7 +302,7 @@ export interface BasicElementWithI18n {
 }
 
 /**
- * Data source expectd by `liDateDescription` renderer.
+ * Data source expected by `liDateDescription` renderer.
  *
  * @property `date` Object of type `DateModel`.
  */
@@ -193,7 +311,7 @@ export interface LiDateDescription extends BasicElement {
 }
 
 /**
- * Data source expectd by `liDateDescription` renderer if i18n is enabled
+ * Data source expected by `liDateDescription` renderer if i18n is enabled
  *
  * @property `date` Object of type `DateModel`.
  */

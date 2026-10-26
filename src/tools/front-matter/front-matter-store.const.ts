@@ -1,19 +1,24 @@
 /**
- * Types of data that can be assigned as Front Matter.
- * We need to use unknown as the value cannot be predicted.
+ * Front matter values of a page: from Markdown files, components with front matter, or the `data` returned by directives.
+ * They replace `{ key }` placeholders in the page.
  */
 export interface FrontMatterData {
-  [key: string]: string | Array<unknown> | { [key: string]: unknown };
+  [key: string]: any;
 }
 
 /**
- * Constant on which the Front Matter data of each file is stored.
+ * Front matter of every page, by absolute output path.
  */
 export interface FrontMatterDataStore {
   [filePath: string]: FrontMatterData;
 }
 
 /**
- * Constant on which the Front Matter data of each file is stored.
+ * Store of the front matter of each page of the current build.
  */
 export const FRONT_MATTER_DATA_STORE: FrontMatterDataStore = {};
+
+export function clearFrontMatterStore(): void {
+  for (const key of Object.keys(FRONT_MATTER_DATA_STORE))
+    delete FRONT_MATTER_DATA_STORE[key];
+}

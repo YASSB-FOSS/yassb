@@ -19,11 +19,11 @@ The following examples will use the YAML formatting, but you can choose any othe
 
 Front Matter data can be added to any text-based file to be processed by YASSB. Theoretically, one could even add Front Matter data to an svg file.
 
-Front Matter is deeply integrated in YASSB. Whenever YASSB processes any kind of text-based file, it looks for Front Matter data and it stores it in memory. All Front Matter data is stored in the [`FRONT_MATTER_DATA_STORE`]({{url-to="FrontMatterDataStore"}}), indexed by the full absolute path to the file in which the Front Matter Data was found.
+Front Matter is deeply integrated in YASSB. Whenever YASSB processes any kind of text-based file, it looks for Front Matter data and it stores it in memory. All Front Matter data is stored in the [`FRONT_MATTER_DATA_STORE`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts), indexed by the full absolute path to the file in which the Front Matter Data was found.
 
-The full [`FRONT_MATTER_DATA_STORE`]({{url-to="FrontMatterDataStore"}}) is also passed to [custom directives]({{url-to="custom-directives"}}) and [custom renderers]({{url-to="custom-renderers"}}). In this way all the Front Matter data of the project is always available during the build process. While each page is being composed, its metadata and the metadata of any other page is available to all directives and renderers.
+The full [`FRONT_MATTER_DATA_STORE`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts) is also passed to [custom directives]({{url-to="custom-directives"}}) and [custom renderers]({{url-to="custom-renderers"}}). In this way all the Front Matter data of the project is always available during the build process. While each page is being composed, its metadata and the metadata of any other page is available to all directives and renderers.
 
-If you want to add [custom directives]({{url-to="custom-directives"}}) or [custom renderers]({{url-to="custom-renderers"}}), when reading any HTML file you can assume that its Front Matter, if any was set in the source file, will be avalable in the [`FRONT_MATTER_DATA_STORE`]({{url-to="FrontMatterDataStore"}}) indexed by the full path to the file itself.
+If you want to add [custom directives]({{url-to="custom-directives"}}) or [custom renderers]({{url-to="custom-renderers"}}), when reading any HTML file you can assume that its Front Matter, if any was set in the source file, will be avalable in the [`FRONT_MATTER_DATA_STORE`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts) indexed by the full path to the file itself.
 
 Example:
 

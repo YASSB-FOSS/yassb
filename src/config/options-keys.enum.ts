@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 /**
- * Keys of all the ooptions that can be set in the ocnfiguration file.
- * Configuration is based on the node package [`config`](https://www.npmjs.com/package/config).
+ * Keys of all the options that can be set in the configuration file. See `YassbConfig` in `src/yassb.ts`.
  */
 export enum OptionsKeys {
   username = 'username',
@@ -15,6 +14,13 @@ export enum OptionsKeys {
   showdownConverterOptions = 'showdownConverterOptions',
   grayMatterOption = 'grayMatterOption',
   webpackConfig = 'webpackConfig',
+  esbuildOptions = 'esbuildOptions',
   siteHost = 'siteHost',
-  devServerPort = 'devServerPort'
+  devServerPort = 'devServerPort',
+  sitemap = 'sitemap',
+  cleanOut = 'cleanOut',
+  strict = 'strict',
+  i18n = 'i18n',
+  beforeBuild = 'beforeBuild',
+  afterBuild = 'afterBuild'
 }

@@ -1,19 +1,16 @@
-import { WORKING_DIR } from '@yassb/config/working-dir.constant';
-import { LANGS } from '@yassb/i18n/langs.constant';
-import fs from 'fs-extra';
+import { existsSync, readdirSync } from 'fs';
+import { WORKING_DIR } from '../config/working-dir.constant';
+import { LANGS } from './langs.constant';
 
 /**
- * Loads the languages of the website based on the trnalsation files found in the `i18n` folder.
- *
- * @returns setter
+ * Sets `LANGS` from the `<lang>.json` files of the i18n folder, sorted by file name.
+ * No i18n folder (or no JSON in it) means a single-language site: `LANGS` stays empty.
  */
 export const langsSetter = (): void => {
-  const i18nExists = fs.existsSync(WORKING_DIR.i18n);
-  if (!i18nExists)
-    return;
-  const dirLs = fs.readdirSync(WORKING_DIR.i18n);
   LANGS.length = 0;
-  dirLs.forEach(fileName => {
+  if (!existsSync(WORKING_DIR.i18n))
+    return;
+  readdirSync(WORKING_DIR.i18n).sort().forEach(fileName => {
     if (fileName.includes('.json'))
       LANGS.push(fileName.replace('.json', ''));
   });

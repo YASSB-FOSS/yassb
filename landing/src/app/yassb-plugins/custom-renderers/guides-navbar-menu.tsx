@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { guidesOrderedListData } from './guides-ordered-list-data.function';
-import { FilePathsForPublicFileList, Renderer, RendererProps } from '../../../../../bundle';
+import { FilePathsForPublicFileList, Renderer, RendererProps } from 'yassb-web';
 
 /**
  * Generates the guides menu to be displayed on mobile in the navbar.

@@ -22,7 +22,7 @@ Example of a custom definition of the input file and of the destination folder i
       }
     } as YassbConfig
 
-In this example the entry point for WebPack will be `./src/app/custom-dir/styles.scss` and the destination folder `out/my-styles`.
+In this example the entry point will be `./src/app/custom-dir/styles.scss` and the destination folder `out/my-styles`.
 
 ### Example using Bootstrap
 
@@ -52,7 +52,7 @@ YASSB will automatically process all styles and place them in a versioned an min
 
 You can alternatively define a custom style processor in YASSB [configuration]({{url-to="configuration"}}).
 
-A custom style parsers is a JavaScript or TypeScript function of type [`CustomStylesParser`]({{url-to="yassb.html#customstylesparser"}}) that returns the full `css`, synchronously or as a Promise: 
+A custom style parsers is a JavaScript or TypeScript function of type [`CustomStylesParser`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts) that returns the full `css`, synchronously or as a Promise: 
 
     (
       absolutePathToFile: string,

@@ -1,5 +1,5 @@
-import { FilePathsForPublicFileList } from '../../../../../bundle';
-import { FrontMatterDataStore } from '../../../../../bundle';
+import { FilePathsForPublicFileList } from 'yassb-web';
+import { FrontMatterDataStore } from 'yassb-web';
 
 export interface GuidesOrderedListData {
   categories: any[];

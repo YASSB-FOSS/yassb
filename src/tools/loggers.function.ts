@@ -1,17 +1,29 @@
 /**
- * Minimally formatted message for the console to show the progress of the build process.
- *
- * @param step where the build process is at.
+ * Progress messages of the build. Silenced with `setQuiet(true)` (e.g. `--json` output).
  */
-export function logStep(step: string): void {
-  console.log(` • Start ${step}`);
+let quiet = false;
+
+export function setQuiet(value: boolean): void {
+  quiet = value;
 }
 
-/**
- * * Minimally formatted message for the console to show what steps of build process have finished.
- *
- * @param what name of the step.
- */
-export function logDone(what: string): void {
-  console.log(`  - Done ${what}`);
+export function isQuiet(): boolean {
+  return quiet;
+}
+
+/** ` • Start <step>` */
+export function logStep(step: string): void {
+  if (!quiet)
+    console.log(` • Start ${step}`);
+}
+
+/** `  - Done <step>` */
+export function logDone(what: string, durationMs?: number): void {
+  if (!quiet)
+    console.log(`  - Done ${what}${durationMs !== undefined ? ` (${Math.round(durationMs)} ms)` : ''}`);
+}
+
+export function logInfo(message: string): void {
+  if (!quiet)
+    console.log(message);
 }

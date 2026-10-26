@@ -23,7 +23,7 @@ A typical YASSB project is organized in different folders. The following structu
 | components|./src/app/ | Contains HTML files with fragments to be injected into pages (e.g. `footer`)
 | data-sources|./src/app/ | Contains the JSON files with the data to generate iterable items
 | pages-to-generate|./src/app/ | HTML templates to be used when creating pages from .md files
-| scripts/main.ts|./src/app/ | Entry file to be processd by webpack. Can end with: `.js` | `.ts`
+| scripts/main.ts|./src/app/ | Entry file bundled by esbuild. Can end with: `.js` | `.ts`
 | styles/style.scss|./src/app/ | Entry file to be processd by node-sass. Can end with: `.css` | `.scss`
 | out|./ | Destination dir of the compiled project - defaults to `dist/public`
 | js|./out/assets/ | Destination dir of minified JS file, retains the same name of the entry file + version + min.js

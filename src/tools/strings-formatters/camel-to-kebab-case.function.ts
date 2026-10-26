@@ -1,4 +1,4 @@
-import { cleanString } from '@yassb/tools/strings-formatters/string-cleaner-for-filename.function';
+import { cleanString } from './string-cleaner-for-filename.function';
 
 /**
  * Converts a string formatted in camelCase to a kebab-case formatted one.

@@ -6,7 +6,7 @@
  */
 export function cleanString(source: string): string {
   let r = source.toLowerCase();
-  const NON_ASCIIS = {
+  const NON_ASCIIS: { [ascii: string]: string } = {
     a: '[àáâãäå]',
     ae: 'æ',
     c: 'ç',

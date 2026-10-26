@@ -7,7 +7,7 @@ categoryOrder: 3
 ---
 # Renderers
 
-Renderers are JS or TS functions of type [`Renderer`]({{url-to="yassb.html#renderer"}}) that elaborate a given data source and produce the HTML.
+Renderers are JS or TS functions of type [`Renderer`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts) that elaborate a given data source and produce the HTML.
 
 Renderers are invoked by directives. When invoking a renderer directives normally pass to them the data they need to produce the desired HTML.
 

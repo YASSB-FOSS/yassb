@@ -1,0 +1,22 @@
+# YASSB
+
+> YASSB (Yet Another Static Site Builder, npm package `yassb-web`) builds static sites from HTML pages and components, JSON data rendered by TypeScript functions, Markdown and translation files. Data in JSON, UI in HTML (with directives written as HTML comments), logic in TypeScript.
+
+The complete guide ships with the package: run `npx yassb docs` (or `npx yassb docs <topic>`) inside a project.
+To understand an existing site run `npx yassb inspect`; to validate changes run `npx yassb check`.
+
+## Guides
+
+- [Quick start](https://yassb-foss.github.io/guides/setup/quick-start.html)
+- [Project structure](https://yassb-foss.github.io/guides/setup/project-structure.html)
+- [Configuration](https://yassb-foss.github.io/guides/setup/configuration.html)
+- [Command line and coding agents](https://yassb-foss.github.io/guides/setup/command-line.html)
+- [Directives](https://yassb-foss.github.io/guides/directives/)
+- [Renderers](https://yassb-foss.github.io/guides/renderers/)
+- [Internationalization](https://yassb-foss.github.io/guides/internationalization/)
+- [Front matter](https://yassb-foss.github.io/guides/setup/front-matter.html)
+
+## Source
+
+- [Repository](https://github.com/YASSB-FOSS/yassb), see `docs/guide.md` and `AGENTS.md`
+- [npm](https://www.npmjs.com/package/yassb-web)

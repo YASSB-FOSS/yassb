@@ -13,7 +13,7 @@ Because post processors are executed before the build ends, they [still have acc
 
 ## Defining post processors
 
-Post processors are JavaScript or TypeScript function (including JSX and TSX) of type [`PostProcessor`]({{url-to="yassb.html#postprocessor"}}).
+Post processors are JavaScript or TypeScript function (including JSX and TSX) of type [`PostProcessor`](https://github.com/YASSB-FOSS/yassb/blob/master/src/yassb.ts).
 
 Post processor receive one argument, a `string` representing the whole content of the file being processed. They __must__ return the full string, modified as needed.
 

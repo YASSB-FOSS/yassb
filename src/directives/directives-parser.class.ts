@@ -1,17 +1,25 @@
-import { SupportedDirectives } from '@yassb/config/supported-directives.const';
-import { DirectivesInvoker } from '@yassb/directives/directives-helpers/directives-invoker.class';
-import { extractDirectives } from '@yassb/directives/tools/extract-directives.function';
-import { canProcessFileExtension } from '@yassb/tools/files-content-helpers/can-process-file-extension.function';
-import { getDirectiveValues } from '@yassb/tools/files-content-helpers/get-directive-value.function';
-import { getFormattedContent } from '@yassb/tools/files-content-helpers/get-formatted-content.function';
-import { FrontMatterInjector } from '@yassb/tools/front-matter/front-matter-injector.class';
-import { FrontMatterData } from '@yassb/tools/front-matter/front-matter-store.const';
-import { YassbConfig } from '@yassb/yassb';
+import { SupportedDirectives } from '../config/supported-directives.const';
+import { report } from '../diagnostics/diagnostics';
+import { locate } from '../diagnostics/source-location';
+import { canProcessFileExtension } from '../tools/files-content-helpers/can-process-file-extension.function';
+import { getDirectiveValues } from '../tools/files-content-helpers/get-directive-value.function';
+import { getFormattedContent } from '../tools/files-content-helpers/get-formatted-content.function';
+import { FrontMatterInjector } from '../tools/front-matter/front-matter-injector.class';
+import type { FrontMatterData } from '../tools/front-matter/front-matter-store.const';
+import type { YassbConfig } from '../yassb';
+import { DirectivesInvoker } from './directives-helpers/directives-invoker.class';
+import { extractDirectives, replaceAllLiteral } from './tools/extract-directives.function';
+
+/** Components nested deeper than this are reported as a cycle. */
+const MAX_COMPONENT_DEPTH = 40;
 
 /**
- * Finds all the directives in the html code passed as `fileContents` and calls the executers on each.
- * This acts also as the executer for the `component` directive.
- * In this way the `component` directive is executed recursively on each component before all other directives.
+ * Processes the directives of one file (a page, or a component included by a page).
+ *
+ * Order, as in 1.x:
+ * 1. `component` directives, recursively: each component is processed (with its own path) before being inserted;
+ * 2. front matter placeholders collected so far;
+ * 3. built-in directives, then custom directives (see `DirectivesInvoker`).
  */
 export class DirectivesParser {
 
@@ -21,33 +29,27 @@ export class DirectivesParser {
   public static regex = /<!--\s*component\s*=\s*".+\..+"\s*-->/g;
 
   /**
-   * Store for all the data retrieved in Front Matter.
-   * Static so data persists between child instances of `DirectiveParser` parsing nested components of the same parent file.
+   * Front matter of the page being processed, shared by the nested parsers of its components.
    */
   public static frontMatterData: FrontMatterData = {};
 
   /**
-   * Creates an instance of DirectivesParser.
-   *
    * @param fileFullPath the full path to the file being processed.
-   * @param fileContents The HTML code of the file being analyzed.
-   * @param lang The current language if i18n is enabled.
-   * @param config The YASSB configuration object.
-   * @param keepFrontMatterData Tells DirectivesParser whether to clean or not the static property `frontMatterData`.
+   * @param fileContents the HTML of the file.
+   * @param lang the current language if i18n is enabled.
+   * @param config the YASSB configuration.
+   * @param keepFrontMatterData true for nested components, so the page's front matter is kept.
+   * @param depth nesting level of components.
    */
   constructor(
     private fileFullPath: string,
     private fileContents: string,
     private lang: string,
     private config: YassbConfig,
-    private keepFrontMatterData: boolean = false
+    private keepFrontMatterData: boolean = false,
+    private depth: number = 0
   ) { }
 
-  /**
-   * Finds directives and executes them recursively.
-   * The first directives to be executed recursively is the `component` directive.
-   * In this way when the other directives are executed the are presente with the full html code of the page.
-   */
   public inject(): string {
 
     if (!this.keepFrontMatterData)
@@ -63,11 +65,6 @@ export class DirectivesParser {
     return this.fileContents;
   }
 
-  /**
-   * Loops all `component` directives and injects the content in current fileContents.
-   * Inside the loop a new instance of `DirectivesParser` is initiated for each nested components found.
-   * In this way when the top level loop ends, the whole page is already available for the following directives
-   */
   private componentDirective(): void {
     const components = extractDirectives(this.fileContents, DirectivesParser.regex);
     if (Array.isArray(components))
@@ -76,12 +73,6 @@ export class DirectivesParser {
       });
   }
 
-  /**
-   * Loops all built-in and custom directives and delegates to the Class the generation of the HTML.
-   * Applies the html to filecontents and if any data has been returned it is added in Front Matter.
-   *
-   * @see DirectivesInvoker
-   */
   private invokeDirectives(): void {
     const { html, data } = new DirectivesInvoker({
       fileFullPath: this.fileFullPath,
@@ -95,30 +86,35 @@ export class DirectivesParser {
         DirectivesParser.frontMatterData[key] = data[key];
   }
 
-  /**
-   * Analyzes the component directive, gets the content of the directive.
-   * After retrieving the contents it initializes a new `DirectivesParser` on the content of the component to look for nested directives.
-   * The loop repeats until there are no more nested components.
-   *
-   * @param componentFullString full string of the directive to execute
-   * @remarks
-   * Currently there are no check to prevent infinite loops. It would be nice if there were.
-   */
   private handleComponent(componentFullString: string): string {
     const directiveData = getDirectiveValues(componentFullString, this.config, SupportedDirectives.component, 'components', this.lang);
+    if (!directiveData)
+      return this.fileContents;
 
-    const extension = canProcessFileExtension(componentFullString, directiveData.fullPath, directiveData.directiveMainValue);
+    if (this.depth >= MAX_COMPONENT_DEPTH) {
+      report({
+        level: 'error',
+        code: 'COMPONENT_CYCLE',
+        fatal: true,
+        ...locate(this.fileFullPath, componentFullString),
+        directive: componentFullString,
+        message: `Components are nested more than ${MAX_COMPONENT_DEPTH} levels at \`${componentFullString}\`: a component probably includes itself.`
+      });
+      return replaceAllLiteral(this.fileContents, componentFullString, '');
+    }
+
+    const extension = canProcessFileExtension(componentFullString, directiveData.fullPath, directiveData.directiveMainValue, this.fileFullPath);
     if (!extension)
       return this.fileContents;
 
-    const { content, data } = getFormattedContent(directiveData.fullPath, extension);
+    const { content, data } = getFormattedContent(directiveData.fullPath, extension, this.config);
 
     for (const key in data)
       if (data[key])
         DirectivesParser.frontMatterData[key] = data[key];
 
-    const componentContent = new DirectivesParser(directiveData.fullPath, content, this.lang, this.config, true).inject();
-    return this.fileContents.replace(new RegExp(componentFullString, 'g'), componentContent);
+    const componentContent = new DirectivesParser(directiveData.fullPath, content, this.lang, this.config, true, this.depth + 1).inject();
+    return replaceAllLiteral(this.fileContents, componentFullString, componentContent);
   }
 
 }

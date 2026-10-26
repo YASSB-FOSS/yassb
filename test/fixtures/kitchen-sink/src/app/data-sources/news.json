@@ -1,0 +1,5 @@
+[
+  { "date": "2024-05-01", "title": { "en": "First", "it": "Primo" } },
+  { "date": "2024-06-01", "title": { "en": "Second", "it": "Secondo" } },
+  { "date": "2024-07-01", "title": { "en": "Third", "it": "Terzo" } }
+]

@@ -1,4 +1,4 @@
 /**
- * Exports YassbBaseDirective so it can be imported by other modules.
+ * `yassb-web/tools`: kept for sites written for 1.x (`import { YassbBaseDirective } from 'yassb-web/tools'`).
  */
-export * from './directives/yassb-base-directive.class';
+export { YassbBaseDirective } from './directives/yassb-base-directive.class';

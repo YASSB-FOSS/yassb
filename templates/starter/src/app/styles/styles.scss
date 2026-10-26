@@ -1,0 +1,13 @@
+$text: #222;
+
+body {
+  margin: 0 auto;
+  max-width: 48rem;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+  color: $text;
+}
+
+nav a {
+  margin-right: 1rem;
+}

@@ -1,6 +1,6 @@
 import autoprefixer from 'autoprefixer';
 import CleanCSS from 'clean-css';
-import { readFileSync } from 'fs-extra';
+import { readFileSync } from 'fs';
 import postcss from 'postcss';
 import tailwindcss from 'tailwindcss';
 

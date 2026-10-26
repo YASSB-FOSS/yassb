@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Converter } from 'showdown';
-import { Renderer, RendererProps } from '../../../../../bundle';
+import { Renderer, RendererProps } from 'yassb-web';
 
 interface FeaturesList {
   label: string;

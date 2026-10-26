@@ -1,8 +1,6 @@
 /* eslint-disable no-shadow */
 /**
- * Supported text formats.
- *
- * @todo more files could be easily supported without any modifications. To be reviewed.
+ * File types that can be included with the `component` directive. `.md` and `.txt` are converted from Markdown.
  */
 export enum SupportedFormats {
   html = '.html',
@@ -10,4 +8,4 @@ export enum SupportedFormats {
   txt = '.txt',
   svg = '.svg',
   md = '.md'
-};
+}
