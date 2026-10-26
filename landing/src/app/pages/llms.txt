@@ -1,6 +1,6 @@
 # YASSB
 
-> YASSB (Yet Another Static Site Builder, npm package `yassb-web`) builds static sites from HTML pages and components, JSON data rendered by TypeScript functions, Markdown and translation files. Data in JSON, UI in HTML (directives written as HTML comments), logic in TypeScript. Built to be read by coding agents.
+> YASSB (Yet Another Static Site Builder, npm package `yassb-web`) builds static sites from HTML pages and components, JSON data rendered by TypeScript functions, Markdown and translation files. Data in JSON or Markdown, UI in HTML (directives written as HTML comments), logic in TypeScript. Built to be read by coding agents.
 
 Inside a project: `npx yassb docs` prints the complete guide (offline, always matching the installed version), `npx yassb docs features` lists every feature, `npx yassb inspect` describes the site, `npx yassb check` validates it.
 

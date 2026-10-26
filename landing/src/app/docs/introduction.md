@@ -7,7 +7,7 @@ order: 1
 slug: index
 ---
 
-<p class="lead">YASSB is a static site builder with a simple contract: data in JSON, UI in HTML, logic in TypeScript. It is small, fast, and built so that a coding agent can understand a site in seconds and change it without breaking it.</p>
+<p class="lead">YASSB is a static site builder with a simple contract: data in JSON or Markdown, UI in HTML, logic in TypeScript. It is small, fast, and built so that a coding agent can understand a site in seconds and change it without breaking it.</p>
 
 <div class="not-prose my-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
   <a href="/docs/getting-started/installation.html" class="group relative rounded-xl border border-slate-200 p-6 hover:border-violet-300 hover:bg-violet-50/50 dark:border-slate-800 dark:hover:border-violet-500/40 dark:hover:bg-slate-800/50">

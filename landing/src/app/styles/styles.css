@@ -33,13 +33,6 @@
   }
 }
 
-/* The brush strokes of the 1.x hero image, recoloured with the brand palette (red → pink, yellow → amber,
-   blue/cyan → violet), laid over the brand gradient. */
-.hero-streaks {
-  background: url("/assets/images/hero-streaks.webp") center / cover no-repeat;
-  opacity: 0.75;
-}
-
 @utility text-brand {
   background-image: linear-gradient(90deg, #f9a8d4, #c084fc 50%, #f9a8d4);
   background-clip: text;
