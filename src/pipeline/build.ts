@@ -152,7 +152,9 @@ export async function runBuild(options: BuildOptions = {}): Promise<DetailedBuil
 
   logInfo(watchMode ? 'Rebuilding...' : 'Building...');
 
-  if (options.clean || config.cleanOut)
+  // A partial rebuild (watch mode) must not delete the pages it does not rebuild.
+  const fullBuild = steps.html && steps.styles && steps.scripts;
+  if (options.clean || (config.cleanOut && fullBuild))
     cleanOut();
 
   if (!(await runHook(config, 'beforeBuild', { watchMode, out: WORKING_DIR.out, langs: [...LANGS] })))

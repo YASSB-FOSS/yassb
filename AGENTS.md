@@ -115,8 +115,8 @@ with their flags; `DIAGNOSTIC_CODES` → `@errors`.
 
 **Docs coverage.** Each docs target in `features.config.json` must reference every feature id with an HTML
 comment next to the text that covers it: `<!-- feature: directive.url-to -->` (several ids separated by commas).
-`docs/guide.md` is enforced. `landing/src/app/guides` is reported as warnings until the new website covers
-everything: then set `"enforce": true`. References to ids that no longer exist are always errors.
+Both `docs/guide.md` and the website docs (`landing/src/app/docs`) are enforced. References to ids that no longer
+exist are always errors.
 
 When you add or change a feature: tag it, update `docs/guide.md` (and its marker), run `bun run build`.
 

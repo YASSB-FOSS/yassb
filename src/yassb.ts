@@ -464,7 +464,7 @@ export interface YassbConfig {
    * @summary Empties the output folder before each build.
    * @usage cleanOut: true  (or yassb build --clean)
    * @options boolean, default false
-   * @rules Dot files at the root of the output (.git, .nojekyll) are kept; without it, deleted pages stay in the output.
+   * @rules Dot files at the root of the output (.git, .nojekyll) are kept; in watch mode only full rebuilds clean (a styles- or scripts-only rebuild keeps the pages); without it, deleted pages stay in the output.
    * @errors none
    * @status stable
    * @since 2.0.0

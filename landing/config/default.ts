@@ -1,35 +1,36 @@
-import { YassbConfig } from 'yassb-web';
-import { ExampleCustomDirective } from '../src/app/yassb-plugins/custom-directives/example-custom-directive.class';
-import { featuresList } from '../src/app/yassb-plugins/custom-renderers/features-list';
-import { guidesIndex } from '../src/app/yassb-plugins/custom-renderers/guides-index';
-import { guidesNavbarMenu } from '../src/app/yassb-plugins/custom-renderers/guides-navbar-menu';
-import { showOffCards } from '../src/app/yassb-plugins/custom-renderers/show-off-cards';
-import { addDivToPreCode } from '../src/app/yassb-plugins/post-processors/add-div-to-pre-code.function';
-import { buildTailwind } from '../src/app/yassb-plugins/styles-parser/build-tailwind.function';
+import type { YassbConfig } from 'yassb-web';
+import { finalizePage } from '../builder/post-processors';
+import { diagnosticsReference, docsNav, docsPager, featureCount, featureReference } from '../builder/renderers';
+import { buildSearchIndex } from '../builder/search-index';
+import { escapeBracesInCode } from '../builder/showdown';
+import { tailwind } from '../builder/tailwind';
 
+/**
+ * Website of YASSB, built with YASSB. See AGENTS.md in this folder.
+ */
 export default {
   workingDir: {
     out: 'YASSB-FOSS.github.io',
     styles: 'styles/styles.css'
   },
-  stylesParser: buildTailwind,
-  customRenderers: {
-    featuresList,
-    guidesIndex,
-    guidesNavbarMenu,
-    showOffCards
+  siteHost: 'https://yassb-foss.github.io/',
+  cleanOut: true,
+  stylesParser: tailwind,
+  customRenderers: { docsNav, docsPager, featureReference, diagnosticsReference, featureCount },
+  postProcessors: [finalizePage],
+  showdownConverterOptions: {
+    tables: true,
+    ghCompatibleHeaderId: true,
+    strikethrough: true,
+    disableForced4SpacesIndentedSublists: true,
+    extensions: [escapeBracesInCode]
   },
-  customDirectives: [
-    ExampleCustomDirective
-  ],
-  postProcessors: [addDivToPreCode],
   htmlMinificationOptions: {
-    removeAttributeQuotes: false,
     collapseWhitespace: true,
-    collapseInlineTagWhitespace: true,
     conservativeCollapse: true,
+    removeComments: true,
     minifyCSS: true,
-    minifyJS: true,
-    removeComments: true
-  }
-} as YassbConfig
+    minifyJS: true
+  },
+  afterBuild: buildSearchIndex
+} as YassbConfig;

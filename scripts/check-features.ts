@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { checkFeatures, FeatureCheckConfig } from './features/feature-check';
 import { readSurfaces } from './features/surfaces';
+import { DIAGNOSTIC_CODES } from '../src/diagnostics/diagnostics';
 
 const root = resolve(import.meta.dir, '..');
 const config: FeatureCheckConfig = JSON.parse(readFileSync(join(root, 'features.config.json'), 'utf8'));
@@ -22,5 +23,5 @@ if (result.errors.length) {
 }
 
 const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
-writeFileSync(join(root, config.manifest), `${JSON.stringify({ version, features: result.features }, null, 2)}\n`);
+writeFileSync(join(root, config.manifest), `${JSON.stringify({ version, features: result.features, diagnostics: DIAGNOSTIC_CODES }, null, 2)}\n`);
 console.log(`✓ Feature catalogue: ${result.features.length} features, ${result.declarations.length} declarations checked${result.warnings.length ? `, ${result.warnings.length} warning(s)` : ''}.`);

@@ -1,12 +1,9 @@
-import { multiplyHeadsAsBodyRows } from './responsive-table/multiply-heads-as-body-rows.function';
-import { setHeights } from './responsive-table/set-heights';
+import { setupCopyButtons, setupMobileNavigation, setupTableOfContents } from './docs-ui';
+import { setupSearch } from './search';
+import { setupThemeToggle } from './theme';
 
-window['toggleNavbar'] = (collapseID) => {
-  document.getElementById(collapseID).classList.toggle("hidden");
-  document.getElementById(collapseID).classList.toggle("block");
-}
-
-multiplyHeadsAsBodyRows();
-
-window.onresize = setHeights;
-
+setupThemeToggle();
+setupSearch();
+setupTableOfContents();
+setupCopyButtons();
+setupMobileNavigation();

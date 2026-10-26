@@ -1,0 +1,84 @@
+<div class="mx-2 mt-2 rounded-4xl bg-gray-900 py-32" id="agents">
+  <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+    <h2 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">Agent-ready</h2>
+    <p class="mt-2 max-w-3xl font-brand text-4xl font-medium tracking-tighter text-pretty text-white sm:text-6xl">Built to be read by coding agents.</p>
+    <p class="mt-6 max-w-2xl text-lg/8 text-gray-400">An agent needs a map, the rules and a way to know it got it right. YASSB ships all three in the command line, in plain text and JSON.</p>
+    <div class="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6">
+      <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 max-lg:rounded-t-4xl lg:col-span-4 lg:rounded-tl-4xl">
+        <div class="relative h-80 shrink-0 overflow-hidden px-8 pt-8"><pre class="overflow-x-auto font-mono text-[12.5px]/6 text-slate-300"><span class="text-pink-300">$</span> <span class="text-white">npx yassb inspect</span>
+YASSB project my-site@1.4.0 (yassb-web 2.0.0)
+Languages: en, it (first one served at /)
+
+Pages (6):
+  src/app/pages/index.html  "Home"
+    components: site/footer.html, site/header.html
+    data: talks.json→talkList, team.json→peopleCards
+Data sources (4):
+  talks.json   array(12) of &#123;title, date, place}
+               ← src/app/pages/index.html:18
+Renderers:
+  talkList     custom    used 2×
+  peopleCards  custom    used 1×</pre><div class="absolute inset-0 bg-linear-to-t from-gray-800 from-5% to-40%"></div></div>
+        <div class="relative p-10">
+          <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">yassb inspect</h3>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">A map of any site in one command</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Pages, components, data sources, renderers and every directive with file and line. Read-only, half a second, and <code class="text-pink-300">--json</code> for a full manifest.</p>
+        </div>
+      </div>
+      <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 lg:col-span-2 lg:rounded-tr-4xl">
+        <div class="relative h-80 shrink-0 overflow-hidden px-8 pt-8"><pre class="overflow-x-auto font-mono text-[12.5px]/6 text-slate-300"><span class="text-pink-300">$</span> <span class="text-white">npx yassb check</span>
+<span class="text-rose-400">error DATA_SOURCE_NOT_FOUND</span>
+  src/app/pages/index.html:18
+  Data source "talk.json" not found.
+<span class="text-slate-500">  hint: paths are relative to data-sources/</span>
+
+<span class="text-rose-400">✗ 1 error(s), 0 warning(s)  → exit 1</span></pre><div class="absolute inset-0 bg-linear-to-t from-gray-800 from-5% to-40%"></div></div>
+        <div class="relative p-10">
+          <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">yassb check</h3>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Knows when a change is right</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Builds and validates: directives, data, translations, links, undeclared packages. Exit code 0 means done.</p>
+        </div>
+      </div>
+      <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 lg:col-span-2 lg:rounded-bl-4xl">
+        <div class="relative h-72 shrink-0 overflow-hidden px-8 pt-8"><div class="home-code text-[12px]"><pre><code class="language-json">&#123;
+  "level": "error",
+  "code": "RENDERER_FAILED",
+  "file": "src/app/pages/index.html",
+  "line": 18,
+  "message": "Renderer \"talkList\" failed: …",
+  "fatal": true
+}</code></pre></div><div class="absolute inset-0 bg-linear-to-t from-gray-800 from-5% to-40%"></div></div>
+        <div class="relative p-10">
+          <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">Diagnostics</h3>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Errors an agent can act on</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Every problem has a stable code, the source file, the line and a hint. No more guessing from a stack trace.</p>
+        </div>
+      </div>
+      <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 lg:col-span-2">
+        <div class="relative h-72 shrink-0 overflow-hidden px-8 pt-8"><pre class="overflow-x-auto font-mono text-[12.5px]/6 text-slate-300"><span class="text-pink-300">$</span> <span class="text-white">npx yassb docs features</span>
+directive (8)
+  directive.component
+  directive.create-from-data-source
+  directive.url-to   …
+config (21)   cli (8)   i18n (2)   …</pre><div class="absolute inset-0 bg-linear-to-t from-gray-800 from-5% to-40%"></div></div>
+        <div class="relative p-10">
+          <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">yassb docs</h3>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">The manual, in the terminal</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">The whole guide ships with the package and always matches the installed version. No browsing, no hallucinated APIs.</p>
+        </div>
+      </div>
+      <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 max-lg:rounded-b-4xl lg:col-span-2 lg:rounded-br-4xl">
+        <div class="relative flex h-64 shrink-0 flex-col items-center justify-center overflow-hidden">
+          <div aria-hidden="true" class="absolute inset-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(236,72,153,0.25),transparent)]"></div>
+          <p class="relative font-brand text-8xl font-semibold tracking-tighter text-brand"><!-- create-from-data-source="../../../../docs/features.json" renderer="featureCount" --></p>
+          <p class="relative mt-2 font-mono text-xs tracking-widest text-gray-400 uppercase">features · 100% documented</p>
+        </div>
+        <div class="relative p-10">
+          <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">Feature catalogue</h3>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Docs that can't fall behind</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Every feature is tagged in the code. If one is missing from the docs, YASSB's own build fails.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

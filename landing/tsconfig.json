@@ -1,12 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
-    "jsx": "react",
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2023", "dom"],
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
+    "types": ["node"],
     "esModuleInterop": true,
+    "strict": true,
     "skipLibCheck": true,
+    "noEmit": true,
     "paths": {
-      "yassb-web": ["../src/index.ts"]
+      "yassb-web": ["../dist/index.d.ts"]
     }
-  }
+  },
+  "include": ["config", "builder", "src/app/scripts"]
 }
