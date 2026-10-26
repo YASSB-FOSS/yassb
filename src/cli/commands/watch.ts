@@ -4,6 +4,7 @@ import { dirname, extname, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 import type { Diagnostic } from '../../diagnostics/diagnostics';
 import type { SetupInfo } from '../../pipeline/build';
+import { LOCK_OWNER_ENV, releaseOutputLock } from '../../pipeline/output-lock';
 import { LiveReloadHub } from '../../server/live-reload';
 import { startStaticServer } from '../../server/static-server';
 import { ProjectWatcher } from '../../watch/project-watcher';
@@ -57,6 +58,8 @@ class WatchSession {
   private watcher: ProjectWatcher | undefined;
   private server: Server | undefined;
   private lastDiagnostics: Array<Diagnostic> = [];
+  /** Output folders locked by this session (the configuration may change the folder). */
+  private outputs = new Set<string>();
 
   constructor(private args: ParsedArgs) { }
 
@@ -65,6 +68,11 @@ class WatchSession {
     process.on('SIGTERM', () => this.stop());
 
     await this.build(FULL, this.args.flags.clean === true);
+
+    if (this.lastDiagnostics.some(item => item.code === 'OUTPUT_LOCKED')) {
+      console.error('\n✗ Not starting: another YASSB process is writing the same output folder (see above).');
+      process.exit(1);
+    }
 
     const requested = typeof this.args.flags.port === 'string' ? parseInt(this.args.flags.port, 10) : undefined;
     const port = requested ?? this.info?.devServerPort ?? 3000;
@@ -162,7 +170,8 @@ class WatchSession {
     let stderrTail = '';
 
     return new Promise(resolvePromise => {
-      const child = fork(cli, workerArgs, { stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
+      // Rebuilds share the lock of the output folder held by this process.
+      const child = fork(cli, workerArgs, { stdio: ['ignore', 'pipe', 'pipe', 'ipc'], env: { ...process.env, [LOCK_OWNER_ENV]: String(process.pid) } });
       this.child = child;
       child.stdout?.on('data', chunk => process.stdout.write(chunk));
       child.stderr?.on('data', chunk => {
@@ -170,8 +179,10 @@ class WatchSession {
         stderrTail = (stderrTail + chunk.toString()).slice(-4000);
       });
       child.on('message', (message: { type: string; info?: SetupInfo }) => {
-        if (message.type === 'setup' && message.info)
+        if (message.type === 'setup' && message.info) {
           this.info = message.info;
+          this.outputs.add(message.info.out);
+        }
         if (message.type === 'result')
           result = message as unknown as WorkerResultMessage;
       });
@@ -221,6 +232,8 @@ class WatchSession {
   }
 
   private stop(): void {
+    for (const out of this.outputs)
+      releaseOutputLock(out, process.pid);
     this.watcher?.close();
     this.liveReload.close();
     this.server?.close();

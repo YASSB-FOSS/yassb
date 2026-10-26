@@ -255,7 +255,7 @@
       ],
       "source": {
         "file": "src/diagnostics/diagnostics.ts",
-        "line": 104,
+        "line": 105,
         "symbol": "DiagnosticsCollector"
       },
       "parts": [
@@ -276,7 +276,7 @@
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 183,
+          "line": 184,
           "symbol": "formatDiagnostic"
         },
         {
@@ -324,6 +324,36 @@
       ]
     },
     {
+      "id": "behaviour.output-lock",
+      "kind": "behaviour",
+      "summary": "Only one YASSB process at a time writes an output folder; a second one stops with a clear message.",
+      "usage": "Running `yassb build` while `yassb watch` serves the same folder → error OUTPUT_LOCKED naming the other process.",
+      "options": "none (use --out <dir> to build somewhere else)",
+      "rules": "build and check hold the lock during the build; watch holds it for its whole session and its rebuilds share it; the lock file is in the system temporary folder (never in the output); a lock left by a process that no longer exists (crash, kill -9) is taken over (the message names the lock file to delete if its process id was reused); different output folders never conflict; the second process exits with code 1 without writing anything.",
+      "errors": [
+        "OUTPUT_LOCKED"
+      ],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.build",
+        "cli.watch",
+        "cli.check"
+      ],
+      "source": {
+        "file": "src/pipeline/output-lock.ts",
+        "line": 55,
+        "symbol": "acquireOutputLock"
+      },
+      "parts": [
+        {
+          "file": "src/pipeline/output-lock.ts",
+          "line": 10,
+          "symbol": "OutputLockHolder"
+        }
+      ]
+    },
+    {
       "id": "behaviour.pipeline",
       "kind": "behaviour",
       "summary": "The fixed order in which a build processes a site.",
@@ -342,7 +372,7 @@
       ],
       "source": {
         "file": "src/pipeline/build.ts",
-        "line": 109,
+        "line": 112,
         "symbol": "runBuild"
       },
       "parts": [
@@ -363,22 +393,22 @@
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 33,
+          "line": 34,
           "symbol": "BuildSteps"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 45,
+          "line": 46,
           "symbol": "BuildOptions"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 66,
+          "line": 69,
           "symbol": "SetupInfo"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 82,
+          "line": 85,
           "symbol": "DetailedBuildResult"
         }
       ]
@@ -707,7 +737,7 @@
       ],
       "source": {
         "file": "src/cli/commands/watch.ts",
-        "line": 46,
+        "line": 47,
         "symbol": "watchCommand"
       },
       "parts": [
@@ -718,7 +748,7 @@
         },
         {
           "file": "src/cli/build-worker.ts",
-          "line": 48,
+          "line": 49,
           "symbol": "WorkerResultMessage"
         },
         {
@@ -1720,6 +1750,7 @@
     "I18N_INCONSISTENT_KEYS": "A translation key exists in some languages but not in others.",
     "POST_PROCESSOR_FAILED": "A post processor threw an exception.",
     "HOOK_FAILED": "A beforeBuild/afterBuild hook threw an exception.",
+    "OUTPUT_LOCKED": "Another YASSB process (build, check or watch) is writing the same output folder; nothing was written.",
     "BUILD_CRASHED": "The build process stopped unexpectedly (watch mode keeps serving the last output).",
     "MINIFY_FAILED": "The HTML minifier could not parse a page; the page was written unminified.",
     "STYLES_FAILED": "The stylesheet could not be compiled.",

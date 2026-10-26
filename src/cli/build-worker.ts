@@ -29,6 +29,7 @@ export async function runBuildWorker(args: ParsedArgs): Promise<void> {
       clean: args.flags.clean === true,
       strict: args.flags.strict === true,
       liveReloadSnippet: LIVE_RELOAD_SNIPPET,
+      command: 'watch',
       onSetup: info => send({ type: 'setup', info })
     });
     message = { type: 'result', ok: result.ok, durationMs: result.durationMs, diagnostics: result.diagnostics, inputs: result.inputs };

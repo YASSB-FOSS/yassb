@@ -79,6 +79,7 @@ export const DIAGNOSTIC_CODES: { [code: string]: string } = {
   I18N_INCONSISTENT_KEYS: 'A translation key exists in some languages but not in others.',
   POST_PROCESSOR_FAILED: 'A post processor threw an exception.',
   HOOK_FAILED: 'A beforeBuild/afterBuild hook threw an exception.',
+  OUTPUT_LOCKED: 'Another YASSB process (build, check or watch) is writing the same output folder; nothing was written.',
   BUILD_CRASHED: 'The build process stopped unexpectedly (watch mode keeps serving the last output).',
   MINIFY_FAILED: 'The HTML minifier could not parse a page; the page was written unminified.',
   STYLES_FAILED: 'The stylesheet could not be compiled.',

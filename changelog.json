@@ -36,6 +36,10 @@
     },
     {
       "type": "added",
+      "value": "output lock: only one build/check/watch at a time writes an output folder; a second one stops with OUTPUT_LOCKED naming the other process"
+    },
+    {
+      "type": "added",
       "value": "sourcePath in renderer props, nested translation keys, i18n.allowHtml, sitemap: false, cleanOut, strict, beforeBuild/afterBuild hooks, esbuildOptions, defineConfig"
     },
     {

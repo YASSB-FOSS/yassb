@@ -371,6 +371,24 @@ home page. Port: `--port`, else `devServerPort`, else 3000 (the next free port i
 
 Watch builds are not minified and include the live-reload script; use `yassb build` for deployment.
 
+### One process per output folder
+
+<!-- feature: behaviour.output-lock -->
+
+Two YASSB processes writing the same output folder would delete and overwrite each other's files, leaving empty
+or mixed pages. So only one at a time may write it: `build` and `check` hold a lock during the build, `watch` for
+its whole session. A second process stops at once, writes nothing and exits with code 1:
+
+```
+error OUTPUT_LOCKED
+  Another YASSB process is writing …/dist/public: `yassb watch` (pid 35695 since 20:18:02, in …/my-site). …
+  hint: Stop it (Ctrl+C in its terminal, or `kill 35695`), or build into another folder with --out <dir>. If no YASSB process is running, delete …/yassb-locks/….lock.
+```
+
+The lock lives in the temporary folder of the system (never in the output). A lock left by a process that no
+longer exists is taken over, and different output folders never conflict (`yassb build --out other` works while
+`watch` runs).
+
 ## Diagnostics
 
 <!-- feature: behaviour.diagnostics -->

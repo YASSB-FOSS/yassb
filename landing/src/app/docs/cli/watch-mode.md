@@ -7,7 +7,7 @@ order: 2
 slug: watch-mode
 ---
 
-<!-- feature: cli.watch, behaviour.dev-server, behaviour.live-reload, config.devServerPort -->
+<!-- feature: cli.watch, behaviour.dev-server, behaviour.live-reload, config.devServerPort, behaviour.output-lock -->
 
 <p class="lead"><code>yassb watch</code> builds the site, serves it, and rebuilds whenever a file changes. Your browser reloads by itself, and errors show up on the page.</p>
 
@@ -50,5 +50,22 @@ The `Content-Security-Policy` meta tag is removed in watch mode so that the scri
 - `/<lang>/…` serves `<out>/<lang>/…`; other paths are looked up in the first language, then in the output root;
 - folders redirect to a trailing slash and serve their `index.html`;
 - unknown paths serve the home page.
+
+## One process per output folder
+
+Two YASSB processes writing the same output folder would overwrite each other's files and leave empty or mixed pages. So only one at a time may write it: `build` and `check` hold a lock during the build, `watch` for its whole session.
+
+Start a second one on the same folder and it stops at once, writes nothing and exits with code 1:
+
+```text
+error OUTPUT_LOCKED
+  Another YASSB process is writing …/dist/public: `yassb watch` (pid 35695 since 20:18:02, in …/my-site).
+  Two processes writing the same folder corrupt each other's pages, so nothing was written.
+  hint: Stop it (Ctrl+C in its terminal, or `kill 35695`), or build into another folder with --out <dir>. If no YASSB process is running, delete …/yassb-locks/….lock.
+```
+
+- The lock lives in the temporary folder of the system, never in the output, so it is never deployed.
+- A lock left by a process that no longer exists (a crash, `kill -9`) is taken over automatically.
+- Different folders never conflict: `yassb build --out preview` works while `watch` runs.
 
 > **Warning** The dev server is for development only. Deploy the output folder of `yassb build` to a static host.

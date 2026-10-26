@@ -5,7 +5,7 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { copyFixture, removeFixture, Runtime, startCli, waitFor } from './helpers/fixture';
+import { copyFixture, removeFixture, runCli, Runtime, startCli, waitFor } from './helpers/fixture';
 
 const dirs: Array<string> = [];
 afterAll(() => dirs.forEach(removeFixture));
@@ -23,6 +23,13 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
           base = match[1];
         return !!match;
       }, 60000, 'dev server');
+
+      // While watch runs, another build of the same output folder is refused; another folder is fine.
+      const blocked = runCli(dir, ['build'], runtime);
+      expect(blocked.status).toBe(1);
+      expect(blocked.stderr).toContain('OUTPUT_LOCKED');
+      expect(blocked.stderr).toContain('`yassb watch`');
+      expect(runCli(dir, ['build', '--out', 'elsewhere'], runtime).status).toBe(0);
 
       const page = await fetch(`${base}/`).then(response => response.text());
       expect(page).toContain('/__yassb/events');
@@ -62,6 +69,9 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
       expect(readFileSync(join(dir, 'dist/public/assets/css/styles-1-2-3.min.css'), 'utf8')).toContain('.watch-test');
     } finally {
       watch.child.kill('SIGINT');
+      await new Promise(resolvePromise => watch.child.once('exit', resolvePromise));
     }
+    // The lock is released when watch stops.
+    expect(runCli(dir, ['build'], runtime).status).toBe(0);
   }, 180000);
 });

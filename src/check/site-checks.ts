@@ -42,7 +42,7 @@ export interface CheckOptions {
  * @featurePart cli.check
  */
 export async function checkProject(options: CheckOptions = {}): Promise<CheckReport> {
-  const build = await runBuild({ outDir: options.outDir });
+  const build = await runBuild({ outDir: options.outDir, command: 'check' });
   const diagnostics: Array<Diagnostic> = [...build.diagnostics];
   const add = (diagnostic: Diagnostic) => diagnostics.push({ ...diagnostic, file: diagnostic.file ? relativeToRoot(diagnostic.file) : undefined });
 

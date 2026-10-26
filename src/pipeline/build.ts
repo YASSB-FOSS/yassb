@@ -12,6 +12,7 @@ import type { Translator } from '../i18n/translator.class';
 import { PostProcessFiles } from '../post-processing/post-process-files.class';
 import { SitemapGenerator } from '../sitemap/sitemap-generator.class';
 import { logDone, logInfo, logStep } from '../tools/loggers.function';
+import { acquireOutputLock, describeLock } from './output-lock';
 import type { BuildResult, YassbConfig } from '../yassb';
 
 /**
@@ -56,6 +57,8 @@ export interface BuildOptions {
   liveReloadSnippet?: string;
   /** Called as soon as the configuration is loaded. */
   onSetup?: (info: SetupInfo) => void;
+  /** Name of the command, shown to other processes that find the output folder locked. Default: `build`. */
+  command?: string;
 }
 
 /**
@@ -109,7 +112,6 @@ export interface DetailedBuildResult extends BuildResult {
 export async function runBuild(options: BuildOptions = {}): Promise<DetailedBuildResult> {
   const startedAt = performance.now();
   const watchMode = !!options.watchMode;
-  const steps = { html: true, styles: true, scripts: true, ...(options.steps || {}) };
   DIAGNOSTICS.reset();
 
   const result: DetailedBuildResult = {
@@ -138,6 +140,23 @@ export async function runBuild(options: BuildOptions = {}): Promise<DetailedBuil
   result.out = WORKING_DIR.out;
   result.inputs.code = loadedSiteModules();
   const strict = !!(options.strict || config.strict);
+
+  // Only one process at a time may write the output folder.
+  const lock = acquireOutputLock(WORKING_DIR.out, options.command || 'build');
+  if (!lock.ok) {
+    report({ level: 'error', code: 'OUTPUT_LOCKED', fatal: true, ...describeLock(lock.holder) });
+    return finish(result, startedAt, strict);
+  }
+  try {
+    return await buildWithLock(config, options, result, startedAt, strict);
+  } finally {
+    lock.release();
+  }
+}
+
+async function buildWithLock(config: YassbConfig, options: BuildOptions, result: DetailedBuildResult, startedAt: number, strict: boolean): Promise<DetailedBuildResult> {
+  const watchMode = !!options.watchMode;
+  const steps = { html: true, styles: true, scripts: true, ...(options.steps || {}) };
 
   options.onSetup?.({
     out: WORKING_DIR.out,
