@@ -1,0 +1,44 @@
+# YASSB
+
+> YASSB (Yet Another Static Site Builder, npm package `yassb-web`) builds static sites from HTML pages and components, JSON data rendered by TypeScript functions, Markdown and translation files. Data in JSON or Markdown, UI in HTML (directives written as HTML comments), logic in TypeScript. Built to be read by coding agents.
+
+Inside a project: `npx yassb docs` prints the complete guide (offline, always matching the installed version), `npx yassb docs features` lists every feature, `npx yassb inspect` describes the site, `npx yassb check` validates it.
+
+## Getting started
+
+- [Introduction](https://yassb-foss.github.io/docs/): the mental model
+- [Installation](https://yassb-foss.github.io/docs/getting-started/installation.html)
+- [Project structure](https://yassb-foss.github.io/docs/getting-started/project-structure.html)
+- [Working with coding agents](https://yassb-foss.github.io/docs/getting-started/agents.html)
+
+## Core concepts
+
+- [Pages and components](https://yassb-foss.github.io/docs/concepts/pages-and-components.html)
+- [Data and renderers](https://yassb-foss.github.io/docs/concepts/data-and-renderers.html)
+- [Build pipeline](https://yassb-foss.github.io/docs/concepts/build-pipeline.html)
+
+## Directives
+
+- [Directive syntax](https://yassb-foss.github.io/docs/directives/syntax.html)
+- [url-to](https://yassb-foss.github.io/docs/directives/url-to.html)
+- [public-file-list](https://yassb-foss.github.io/docs/directives/public-file-list.html)
+- [Asset tags](https://yassb-foss.github.io/docs/directives/asset-tags.html)
+- [Custom directives](https://yassb-foss.github.io/docs/directives/custom-directives.html)
+
+## Content, assets, configuration, command line
+
+- [Markdown and blogs](https://yassb-foss.github.io/docs/content/markdown-and-blogs.html)
+- [Translations](https://yassb-foss.github.io/docs/content/translations.html)
+- [Styles and scripts](https://yassb-foss.github.io/docs/configuration/styles-and-scripts.html)
+- [Configuration files](https://yassb-foss.github.io/docs/configuration/configuration-files.html)
+- [Options](https://yassb-foss.github.io/docs/configuration/options.html)
+- [Commands](https://yassb-foss.github.io/docs/cli/commands.html)
+- [Watch mode](https://yassb-foss.github.io/docs/cli/watch-mode.html)
+- [Diagnostics](https://yassb-foss.github.io/docs/cli/diagnostics.html)
+
+## Reference
+
+- [Feature reference](https://yassb-foss.github.io/docs/reference/features.html): every feature, rendered from the feature catalogue
+- [Diagnostic codes](https://yassb-foss.github.io/docs/reference/diagnostics.html)
+- [Upgrading from 1.x](https://yassb-foss.github.io/docs/reference/upgrading.html)
+- [Source](https://github.com/YASSB-FOSS/yassb): `docs/guide.md`, `AGENTS.md`

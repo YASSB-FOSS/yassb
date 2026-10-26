@@ -1,20 +1,23 @@
-import { SupportedFormats } from '@yassb/tools/files-content-helpers/supported-formats.enum';
-import { ParsedFile, TextFormatterParser } from '@yassb/tools/files-content-helpers/text-formatter-parser.class';
-import { read } from 'gray-matter';
+import matter from 'gray-matter';
+import type { YassbConfig } from '../../yassb';
+import { readTextCached } from '../file-cache';
+import { SupportedFormats } from './supported-formats.enum';
+import { ParsedFile, TextFormatterParser } from './text-formatter-parser.class';
 
 /**
- * Gets formatted content according to the type of file being processed.
+ * Contents of a component: Markdown/text files are converted to HTML; HTML/SVG files are read as they are.
+ * Front matter is separated in both cases.
  *
- * @param pathToFile the full absolute path to the file.
- * @param extension the extension as a string of the file being processed.
- * @returns  the html and the whole data gotten from `gray-matter`
+ * @featurePart directive.component
  */
-export function getFormattedContent(pathToFile: string, extension: SupportedFormats): ParsedFile {
+export function getFormattedContent(pathToFile: string, extension: SupportedFormats, config: YassbConfig): ParsedFile {
   switch (extension) {
     case SupportedFormats.md:
     case SupportedFormats.txt:
-      return new TextFormatterParser(pathToFile).do();
-    default:
-      return read(pathToFile);
+      return new TextFormatterParser(pathToFile, config).do();
+    default: {
+      const parsed = matter(readTextCached(pathToFile));
+      return { content: parsed.content, data: { ...parsed.data } };
+    }
   }
 }

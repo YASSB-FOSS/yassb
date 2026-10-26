@@ -1,0 +1,15 @@
+{
+  "name": "PROJECT_NAME",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "yassb build",
+    "watch": "yassb watch",
+    "serve": "yassb serve",
+    "check": "yassb check",
+    "inspect": "yassb inspect"
+  },
+  "devDependencies": {
+    "yassb-web": "^YASSB_VERSION"
+  }
+}

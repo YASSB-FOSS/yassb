@@ -1,13 +1,30 @@
-import { basicElement } from '@yassb/renderers/built-in/basic-element.function';
-import { liDateDescription } from '@yassb/renderers/built-in/li-date-description.function';
-import { RenderersStore } from '@yassb/yassb';
+import type { RenderersStore } from '../yassb';
+import { basicElement } from './built-in/basic-element.function';
+import { liDateDescription } from './built-in/li-date-description.function';
 
 /**
- * Store where all renderers are stored by their name as the `key`.
- * Custom renderers are added to this store during the setup.
- * In this way the logi to call a built-in renderer or a custom one is the same.
+ * Renderers that ship with YASSB.
+ *
+ * @featurePart api.custom-renderers
  */
-export const RENDERERS_STORE: RenderersStore = {
+export const BUILT_IN_RENDERERS: RenderersStore = {
   basicElement,
   liDateDescription
 };
+
+/**
+ * All renderers by name: the built-in ones plus `config.customRenderers` (added by `setupYassb`).
+ * A custom renderer with the name of a built-in one replaces it.
+ *
+ * @internal
+ */
+export const RENDERERS_STORE: RenderersStore = { ...BUILT_IN_RENDERERS };
+
+/**
+ * @internal
+ */
+export function resetRenderersStore(custom: RenderersStore = {}): void {
+  for (const name of Object.keys(RENDERERS_STORE))
+    delete RENDERERS_STORE[name];
+  Object.assign(RENDERERS_STORE, BUILT_IN_RENDERERS, custom);
+}

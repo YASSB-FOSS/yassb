@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- component="head.html" -->
+  <!-- include-styles-src -->
+</head>
+<body>
+  <!-- component="nav.html" -->
+  <main>
+    <h1 data-t="HOME.HELLO">Hello &amp; welcome</h1>
+    <img src="/assets/files/logo.svg" data-attr-t alt-t="HOME.LOGO_ALT" title-t="SITE.TITLE" alt="Logo">
+    <p data-t>Introduction</p>
+    <p data-t="GREETING" data-t-interpolate>Hi there</p>
+    <p data-t="nested.KEY">Nested</p>
+    <p data-t="MISSING.KEY">Fallback text</p>
+    <!-- component="LANG/intro.html" -->
+    <!-- component="card.md" -->
+    <section class="news">
+      <!-- create-from-data-source="news.json" renderer="newsList" options="{"limit":2}" -->
+    </section>
+    <ul class="timeline">
+      <!-- create-from-data-source="timeline.json" renderer="liDateDescription" -->
+    </ul>
+    <div class="basic">
+      <!-- create-from-data-source="simple.json" renderer="basicElement" options="{"tag":"span","attributes":{"class":["a","b"],"data-x":"1"}}" -->
+    </div>
+    <div class="fallback">
+      <!-- create-from-data-source="simple.json" -->
+    </div>
+    <div class="people">
+      <!-- create-from-data-source="people/team.json" renderer="peopleCards" options="{"order":["Bea","Al"]}" -->
+    </div>
+    <!-- public-file-list="assets/files" renderer="filesList" -->
+    <p><a href="{{ url-to="about" }}">About</a> <a href="{{ url-to="hello-world#comments" }}">Post</a></p>
+    <p>Price: 5$ &amp; $$ math $& kept { title }</p>
+    <!-- shout="loud" --> and <!-- shout="louder" -->
+    <!-- page-stamp -->
+  </main>
+  <!-- component="footer.html" -->
+  <!-- include-script-src -->
+</body>
+</html>

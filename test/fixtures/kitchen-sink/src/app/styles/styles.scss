@@ -1,0 +1,6 @@
+@use 'vars';
+
+body {
+  color: vars.$main;
+  .news { margin: 0 auto; }
+}

@@ -1,0 +1,55 @@
+<div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+  <h2 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-500 uppercase">The mental model</h2>
+  <p class="mt-2 max-w-3xl font-brand text-4xl font-medium tracking-tighter text-pretty text-gray-950 sm:text-6xl">One file per job. Readable at a glance.</p>
+  <p class="mt-6 max-w-2xl text-lg/8 text-gray-600">Data lives in JSON, the page declares what it shows, a typed function renders it. No template language to learn, no magic to reverse-engineer: you, your teammates and your coding agent can read every page and know where everything comes from.</p>
+  <div class="relative mt-16">
+    <div aria-hidden="true" class="absolute -inset-x-20 -top-16 bottom-0 bg-[radial-gradient(40%_60%_at_30%_40%,#fbcfe8_0%,transparent_100%),radial-gradient(40%_60%_at_75%_30%,#ddd6fe_0%,transparent_100%)] opacity-70 blur-2xl"></div>
+    <div class="relative rounded-4xl bg-gray-950/5 p-2 ring-1 ring-black/5">
+      <div class="overflow-hidden rounded-3xl bg-[#0b1120] shadow-2xl ring-1 ring-white/10">
+        <div class="flex items-center gap-2 border-b border-white/5 px-4 py-3">
+          <span class="h-3 w-3 rounded-full bg-[#ff5f57]"></span><span class="h-3 w-3 rounded-full bg-[#febc2e]"></span><span class="h-3 w-3 rounded-full bg-[#28c840]"></span>
+          <span class="ml-4 font-mono text-xs text-slate-500">my-site</span>
+        </div>
+        <div class="grid divide-white/5 lg:grid-cols-[1.35fr_0.8fr_1.1fr] lg:divide-x">
+          <div class="min-w-0">
+            <p class="flex items-center gap-2 border-b border-white/5 px-5 py-3 font-mono text-xs text-pink-300"><span class="rounded bg-pink-400/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-pink-300 uppercase">UI</span>src/app/pages/index.html</p>
+            <div class="home-code"><pre><code class="language-html">&lt;main&gt;
+  &lt;!-- component="site/header.html" --&gt;
+  &lt;h1 data-t="HOME.TITLE"&gt;Talks&lt;/h1&gt;
+  &lt;ul class="talks"&gt;
+    &lt;!-- create-from-data-source="talks.json" renderer="talkList" options="&#123;"limit":3}" --&gt;
+  &lt;/ul&gt;
+&lt;/main&gt;</code></pre></div>
+          </div>
+          <div class="min-w-0">
+            <p class="flex items-center gap-2 border-b border-white/5 px-5 py-3 font-mono text-xs text-amber-200"><span class="rounded bg-amber-300/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-amber-200 uppercase">Data</span>data-sources/talks.json</p>
+            <div class="home-code"><pre><code class="language-json">[
+  &#123;
+    "title": "Static sites in 2026",
+    "date": "2026-03-12",
+    "place": "Milan"
+  },
+  &#123;
+    "title": "Agents and the web",
+    "date": "2026-05-02",
+    "place": "Online"
+  }
+]</code></pre></div>
+          </div>
+          <div class="min-w-0">
+            <p class="flex items-center gap-2 border-b border-white/5 px-5 py-3 font-mono text-xs text-violet-300"><span class="rounded bg-violet-400/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-violet-300 uppercase">Logic</span>builder/renderers.ts</p>
+            <div class="home-code"><pre><code class="language-typescript">import &#123; RendererProps } from 'yassb-web';
+
+export function talkList(&#123; source, options }:
+  RendererProps&lt;Talk[], &#123; limit?: number }&gt;) &#123;
+  return source
+    .slice(0, options?.limit)
+    .map(t =&gt; `&lt;li&gt;$&#123;t.title} · $&#123;t.place}&lt;/li&gt;`)
+    .join('');
+}</code></pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

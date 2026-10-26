@@ -1,0 +1,14 @@
+{
+  "SITE.TITLE": "Cucina",
+  "HOME.HELLO": "Ciao & benvenuti",
+  "HOME.LOGO_ALT": "Il logo",
+  "HOME.INTRO_TITLE": "Introduzione",
+  "NAV.HOME": "Inizio",
+  "NAV.ABOUT": "Chi siamo",
+  "NEWS.MORE": "Altre notizie",
+  "PRESENT": "oggi",
+  "COMMON.NAME": "Cucina",
+  "GREETING": "Ciao {{COMMON.NAME}}!",
+  "nested": { "KEY": "Chiave annidata" },
+  "UNUSED.KEY": "Mai usata"
+}

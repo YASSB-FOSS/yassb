@@ -1,51 +1,47 @@
-import { BUILT_IN_DIRECTIVES } from '@yassb/config/supported-directives.const';
-import { extractDirectives } from '@yassb/directives/tools/extract-directives.function';
-import { YassbBaseDirective } from '@yassb/directives/yassb-base-directive.class';
-import { FRONT_MATTER_DATA_STORE } from '@yassb/tools/front-matter/front-matter-store.const';
-import {
-  YassbDirective,
-  YassbDirectiveConstructable,
-  YassbDirectiveProps,
-  YassbDirectiveResponse
-  } from '@yassb/yassb';
+import { BUILT_IN_DIRECTIVES } from '../../config/supported-directives.const';
+import { describeError, report } from '../../diagnostics/diagnostics';
+import { locate } from '../../diagnostics/source-location';
+import { FRONT_MATTER_DATA_STORE } from '../../tools/front-matter/front-matter-store.const';
+import type { YassbDirective, YassbDirectiveConstructable, YassbDirectiveProps, YassbDirectiveResponse } from '../../yassb';
+import { extractDirectives } from '../tools/extract-directives.function';
+import { YassbBaseDirective } from '../yassb-base-directive.class';
 
 /**
- * Invokes built-in and custom directives in the order they are found in the respective `Array` stores.
+ * Runs the built-in directives, then the custom ones, in the order of their stores.
+ * Each directive's `init()` is called once per match, with the HTML as updated by the previous calls.
+ *
+ * @feature api.custom-directives
+ * @summary Site-defined directives: classes with a static regex whose init() rewrites the HTML.
+ * @usage class YearDirective implements YassbDirective { static regex = /<!--\s*current-year\s*-->/g; constructor(private args: YassbDirectiveProps) {} init() { return { html: ..., data: {} }; } }  then customDirectives: [YearDirective]
+ * @options none (registered with config.customDirectives)
+ * @rules Built-in directives run first, then custom ones in the order of customDirectives; init() is called once per regex match with the HTML updated by the previous call, so directives must be idempotent; components are processed before the page that includes them (fileFullPath is the component in src, then the page in out); data values become { key } placeholders; YassbBaseDirective copies the props to protected fields; an exception or a missing html fails the build with the directive location.
+ * @errors DIRECTIVE_NO_REGEX, DIRECTIVE_FAILED
+ * @status stable
+ * @since 1.0.0
+ * @related config.customDirectives, directive.component
  */
 export class DirectivesInvoker extends YassbBaseDirective implements YassbDirective {
 
-  /**
-   * Object to store any Front Matter data processed by each the directive
-   */
-  private data: { [key: string]: string } = {};
+  /** Front matter values returned by the directives. */
+  private data: { [key: string]: any } = {};
 
-  /**
-   * Creates an instance of directives invoker and calls `super` on `YassbBaseDirective` to assigne args properties to the protected properies.
-   *
-   * @param args
-   */
   constructor(args: YassbDirectiveProps) {
     super(args);
   }
 
-  /**
-   * Inits directives invoker by looping with `forEach` on an `Array` where built-in and custom directives are merged.
-   *
-   * @returns init
-   */
   public init(): YassbDirectiveResponse {
-    [...BUILT_IN_DIRECTIVES, ...this.config.customDirectives].forEach(directive => this.checkIfDirectiveInvoked(directive));
+    [...BUILT_IN_DIRECTIVES, ...(this.config.customDirectives || [])].forEach(directive => this.checkIfDirectiveInvoked(directive));
     return { html: this.fileContents, data: this.data };
   }
 
-  /**
-   * Checks if directive has a rege and, if so, checks if the directive is found in the file being processed.
-   *
-   * @param directive the not yet constructed directive object with the static property `reges`
-   */
   private checkIfDirectiveInvoked(directive: YassbDirectiveConstructable): void {
-    if (!directive.regex) {
-      console.error(`ERROR: no regex found for custom directive \`${directive.name}\`\nCustom directive skipped.`);
+    if (!directive || !(directive.regex instanceof RegExp)) {
+      report({
+        level: 'error',
+        code: 'DIRECTIVE_NO_REGEX',
+        message: `Custom directive \`${directive?.name}\` has no static \`regex\`; it was skipped.`,
+        hint: 'Add `static regex = /<!--\\s*my-directive="[^"]*"\\s*-->/g;` to the class.'
+      });
       return;
     }
 
@@ -54,12 +50,6 @@ export class DirectivesInvoker extends YassbBaseDirective implements YassbDirect
       matchedDirectives.forEach(directiveFullString => this.doInvoke(directiveFullString, directive));
   }
 
-  /**
-   * Do invokes the directive if there are any matches.
-   *
-   * @param directiveFullString the full string, with decorators, of the matched directive.
-   * @param directive the not yet contructed directive object.
-   */
   private doInvoke(directiveFullString: string, directive: YassbDirectiveConstructable): void {
     const props: YassbDirectiveProps = {
       fileFullPath: this.fileFullPath,
@@ -69,17 +59,38 @@ export class DirectivesInvoker extends YassbBaseDirective implements YassbDirect
       directiveFullString,
       frontMatterStore: FRONT_MATTER_DATA_STORE
     };
-    const { html, data } = new directive(props).init();
-    this.elaborateDirectiveResponse(html, data);
+    let response: YassbDirectiveResponse;
+    try {
+      response = new directive(props).init();
+    } catch (error) {
+      const { message, detail } = describeError(error);
+      report({
+        level: 'error',
+        code: 'DIRECTIVE_FAILED',
+        fatal: true,
+        ...locate(this.fileFullPath, directiveFullString),
+        directive: directiveFullString,
+        message: `Directive ${directive.name} failed on \`${directiveFullString}\`: ${message}`,
+        detail
+      });
+      return;
+    }
+    if (!response || typeof response.html !== 'string') {
+      report({
+        level: 'error',
+        code: 'DIRECTIVE_FAILED',
+        fatal: true,
+        ...locate(this.fileFullPath, directiveFullString),
+        directive: directiveFullString,
+        message: `Directive ${directive.name} returned no HTML for \`${directiveFullString}\`.`,
+        hint: 'init() must return { html, data } with the whole updated page in `html`.'
+      });
+      return;
+    }
+    this.elaborateDirectiveResponse(response.html, response.data);
   }
 
-  /**
-   * Elaborates the directive response by updating the file contents and adding Front Matter data to the data store.
-   *
-   * @param html the new contents of the file after the directive has been executed.
-   * @param data any Front Matter data found in the file, to be stored so it's passed to DirectivesParser and saved on the file for later use.
-   */
-  private elaborateDirectiveResponse(html: string, data: { [key: string]: string }): void {
+  private elaborateDirectiveResponse(html: string, data: { [key: string]: any } = {}): void {
     this.fileContents = html;
     for (const key in data)
       if (data[key])

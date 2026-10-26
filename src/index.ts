@@ -1,44 +1,38 @@
-import { setupYassb } from '@yassb/config/setup.function';
-import { NewProjectMaker } from '@yassb/new-makers/new-project-maker.class';
-import { buildAll } from '@yassb/runners/build';
-import { devServer } from '@yassb/runners/server';
-import { watch } from '@yassb/runners/watch';
+/**
+ * Public API of `yassb-web`.
+ *
+ * - Types for configurations, renderers and directives: `YassbConfig`, `RendererProps`, `YassbDirective`, …
+ * - `YassbBaseDirective`, a base class for custom directives (also exported by `yassb-web/tools`).
+ * - `defineConfig()`, an identity function that types a configuration.
+ * - `runBuild()`, `inspectProject()`, `checkProject()` to drive YASSB from code (the current folder is the project).
+ *
+ * Importing this module has no side effects: the command line lives in `src/cli/cli.ts`.
+ */
+import type { YassbConfig } from './yassb';
+
+export * from './yassb';
+export { YassbBaseDirective } from './directives/yassb-base-directive.class';
+export { runBuild } from './pipeline/build';
+export type { BuildOptions, BuildSteps, DetailedBuildResult, SetupInfo } from './pipeline/build';
+export { inspectProject } from './inspect/project-inspector';
+export type { ProjectManifest } from './inspect/project-inspector';
+export { checkProject } from './check/site-checks';
+export type { CheckReport } from './check/site-checks';
+export { DIAGNOSTIC_CODES, formatDiagnostic } from './diagnostics/diagnostics';
 
 /**
- * Gets the second or third argument passed to the CLI to determine the command.
+ * Types a configuration: `export default defineConfig({ ... })`.
  *
- * @see
- * https://nodejs.dev/learn/nodejs-accept-arguments-from-the-command-line
+ * @feature api.define-config
+ * @summary Identity helper that types a configuration file.
+ * @usage import { defineConfig } from 'yassb-web'; export default defineConfig({ siteHost: 'https://example.com' });
+ * @options none
+ * @rules Equivalent to `export default {...} as YassbConfig`; requires yassb-web installed in the site because it is a runtime import.
+ * @errors none
+ * @status stable
+ * @since 2.0.0
+ * @related config.files
  */
-const command = process.argv[0] === 'node' ? process.argv[3] : process.argv[2];
-
-/**
- * Executes the command passed to YASSB via CLI
- *
- * @supports `build` || `watch`
- */
-export function start(): void {
-
-  switch (command) {
-    case 'build':
-      buildAll();
-      break;
-    case 'watch':
-      watch();
-      break;
-    case 'serve':
-      const config = setupYassb();
-      devServer(config);
-      break;
-    case 'new':
-      const projectName = process.argv[0] === 'node' ? process.argv[4] : process.argv[3];
-      if (!projectName)
-        return console.error('ERROR: you must provide a name for the project. Example: yassb new MyProject');
-      new NewProjectMaker(projectName).init();
-      break;
-    default:
-      console.error('No command passed to YASSB. Supported commands are:\n`build`\n`watch`\n`serve`\n`new [projectname]`');
-  }
+export function defineConfig(config: YassbConfig): YassbConfig {
+  return config;
 }
-
-start();

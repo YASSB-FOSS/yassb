@@ -1,0 +1,1762 @@
+{
+  "version": "2.0.0",
+  "features": [
+    {
+      "id": "api.custom-directives",
+      "kind": "api",
+      "summary": "Site-defined directives: classes with a static regex whose init() rewrites the HTML.",
+      "usage": "class YearDirective implements YassbDirective { static regex = /<!--\\s*current-year\\s*-->/g; constructor(private args: YassbDirectiveProps) {} init() { return { html: ..., data: {} }; } }  then customDirectives: [YearDirective]",
+      "options": "none (registered with config.customDirectives)",
+      "rules": "Built-in directives run first, then custom ones in the order of customDirectives; init() is called once per regex match with the HTML updated by the previous call, so directives must be idempotent; components are processed before the page that includes them (fileFullPath is the component in src, then the page in out); data values become { key } placeholders; YassbBaseDirective copies the props to protected fields; an exception or a missing html fails the build with the directive location.",
+      "errors": [
+        "DIRECTIVE_NO_REGEX",
+        "DIRECTIVE_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.customDirectives",
+        "directive.component"
+      ],
+      "source": {
+        "file": "src/directives/directives-helpers/directives-invoker.class.ts",
+        "line": 23,
+        "symbol": "DirectivesInvoker"
+      },
+      "parts": [
+        {
+          "file": "src/directives/yassb-base-directive.class.ts",
+          "line": 9,
+          "symbol": "YassbBaseDirective"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 97,
+          "symbol": "YassbDirective"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 106,
+          "symbol": "YassbDirectiveConstructable"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 123,
+          "symbol": "YassbDirectiveProps"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 140,
+          "symbol": "YassbDirectiveResponse"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 150,
+          "symbol": "CustomDirectivesStore"
+        }
+      ]
+    },
+    {
+      "id": "api.custom-renderers",
+      "kind": "api",
+      "summary": "Site-defined functions that turn data into HTML for create-from-data-source and public-file-list.",
+      "usage": "export function newsList({ source, options, lang }: RendererProps<News[], { limit?: number }>): string { ... }  then customRenderers: { newsList }",
+      "options": "Props: source, sourcePath, options, lang, currentFilePath, config, frontMatterStore.",
+      "rules": "A renderer returns a string and must not write files; without renderer attribute basicElement is used (warning), with an unknown name basicElement is used (error); a throwing renderer fails the build with the directive location and inserts nothing; emitted <span data-t=\"KEY\"> is translated afterwards.",
+      "errors": [
+        "RENDERER_MISSING",
+        "RENDERER_NOT_FOUND",
+        "RENDERER_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.customRenderers",
+        "directive.create-from-data-source",
+        "i18n.translation"
+      ],
+      "source": {
+        "file": "src/renderers/renderers-caller.class.ts",
+        "line": 21,
+        "symbol": "RenderersCaller"
+      },
+      "parts": [
+        {
+          "file": "src/renderers/renderers-store.constant.ts",
+          "line": 10,
+          "symbol": "BUILT_IN_RENDERERS"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 65,
+          "symbol": "RendererProps"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 81,
+          "symbol": "Renderer"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 88,
+          "symbol": "RenderersStore"
+        }
+      ]
+    },
+    {
+      "id": "api.define-config",
+      "kind": "api",
+      "summary": "Identity helper that types a configuration file.",
+      "usage": "import { defineConfig } from 'yassb-web'; export default defineConfig({ siteHost: 'https://example.com' });",
+      "options": "none",
+      "rules": "Equivalent to `export default {...} as YassbConfig`; requires yassb-web installed in the site because it is a runtime import.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "config.files"
+      ],
+      "source": {
+        "file": "src/index.ts",
+        "line": 36,
+        "symbol": "defineConfig"
+      },
+      "parts": []
+    },
+    {
+      "id": "assets.copy",
+      "kind": "assets",
+      "summary": "src/assets is copied as it is to the output.",
+      "usage": "src/assets/img/logo.png → <out>/assets/img/logo.png",
+      "options": "workingDir.assets changes the folder.",
+      "rules": "Copied first, before pages; files with unchanged size and modification time are skipped; files deleted from src stay in the output unless cleanOut.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.cleanOut"
+      ],
+      "source": {
+        "file": "src/assets/copy-assets.function.ts",
+        "line": 51,
+        "symbol": "copyAssets"
+      },
+      "parts": []
+    },
+    {
+      "id": "assets.file-names",
+      "kind": "assets",
+      "summary": "Output scripts and styles are named after their entry and the site version.",
+      "usage": "scripts/main.ts at version 1.2.0 → main-1-2-0.min.js; styles/styles.scss → styles-1-2-0.min.css",
+      "options": "none (version from the site's package.json)",
+      "rules": "Dots of the version become dashes; changing the version changes the URLs inserted by include-script-src / include-styles-src.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "directive.include-script-src",
+        "directive.include-styles-src"
+      ],
+      "source": {
+        "file": "src/assets/assets-file-name-maker.function.ts",
+        "line": 19,
+        "symbol": "assetsFileNameMaker"
+      },
+      "parts": []
+    },
+    {
+      "id": "assets.scripts",
+      "kind": "assets",
+      "summary": "The browser script entry is bundled with esbuild.",
+      "usage": "src/app/scripts/main.ts (imports, npm packages, TS/JSX) → <out>/assets/js/main-<version>.min.js",
+      "options": "config.esbuildOptions (merged), config.webpackConfig (legacy, webpack from the site), workingDir.scripts / scriptsOutFolder.",
+      "rules": "IIFE for the browser, target es2018, minified in build, inline source map in watch, process.env.NODE_ENV = \"production\", JSX settings from tsconfig.json; bundled in parallel and written at the end of the build; an empty entry is created if missing.",
+      "errors": [
+        "SCRIPTS_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "directive.include-script-src",
+        "assets.file-names"
+      ],
+      "source": {
+        "file": "src/assets/scripts/bundle-scripts.function.ts",
+        "line": 38,
+        "symbol": "bundleScripts"
+      },
+      "parts": []
+    },
+    {
+      "id": "assets.styles",
+      "kind": "assets",
+      "summary": "The stylesheet entry is compiled with Sass, or with the site's stylesParser.",
+      "usage": "src/app/styles/styles.scss → <out>/assets/css/styles-<version>.min.css",
+      "options": "config.stylesParser, config.skipsStyles, workingDir.styles / stylesOutFolder.",
+      "rules": "Sass output is compressed, imports resolved from the file and from the project root; compiled after the pages; a Sass error or a throwing stylesParser fails the build; an empty entry is created if missing.",
+      "errors": [
+        "STYLES_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "directive.include-styles-src",
+        "config.stylesParser",
+        "assets.file-names"
+      ],
+      "source": {
+        "file": "src/assets/styles/compile-styles.function.ts",
+        "line": 35,
+        "symbol": "compileStyles"
+      },
+      "parts": []
+    },
+    {
+      "id": "behaviour.dev-server",
+      "kind": "behaviour",
+      "summary": "Development server of watch and serve (not for production).",
+      "usage": "http://localhost:3000/  →  <out>/<first language>/index.html",
+      "options": "config.devServerPort, --port.",
+      "rules": "/<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; if the port is busy the next ones are tried.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "cli.watch",
+        "cli.serve",
+        "i18n.languages"
+      ],
+      "source": {
+        "file": "src/server/static-server.ts",
+        "line": 45,
+        "symbol": "startStaticServer"
+      },
+      "parts": [
+        {
+          "file": "src/server/static-server.ts",
+          "line": 16,
+          "symbol": "StaticServerOptions"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.diagnostics",
+      "kind": "behaviour",
+      "summary": "Every problem is reported with a stable code, file, line and hint.",
+      "usage": "error DATA_SOURCE_NOT_FOUND src/app/pages/index.html:12 …  /  yassb build --json  /  yassb docs diagnostics",
+      "options": "--json on build and check; config.strict.",
+      "rules": "Pages are reported on their source file (pages/, the template, or the Markdown file); the same problem reported for a component and its page is kept once; fatal problems (exceptions in site code, invalid JSON, config errors) exit 1, others only with strict; missing translations are collected and summarised.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.check",
+        "config.strict"
+      ],
+      "source": {
+        "file": "src/diagnostics/diagnostics.ts",
+        "line": 105,
+        "symbol": "DiagnosticsCollector"
+      },
+      "parts": [
+        {
+          "file": "src/diagnostics/diagnostics.ts",
+          "line": 16,
+          "symbol": "DiagnosticLevel"
+        },
+        {
+          "file": "src/diagnostics/diagnostics.ts",
+          "line": 21,
+          "symbol": "Diagnostic"
+        },
+        {
+          "file": "src/diagnostics/diagnostics.ts",
+          "line": 47,
+          "symbol": "DIAGNOSTIC_CODES"
+        },
+        {
+          "file": "src/diagnostics/diagnostics.ts",
+          "line": 184,
+          "symbol": "formatDiagnostic"
+        },
+        {
+          "file": "src/diagnostics/source-location.ts",
+          "line": 14,
+          "symbol": "sourceFileOf"
+        },
+        {
+          "file": "src/diagnostics/source-location.ts",
+          "line": 33,
+          "symbol": "locate"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.live-reload",
+      "kind": "behaviour",
+      "summary": "In watch mode pages reload by themselves and show build errors.",
+      "usage": "automatic in yassb watch (script injected before </body>, events on /__yassb/events)",
+      "options": "none",
+      "rules": "Reload after a page or script rebuild; CSS swapped without reload after a styles-only rebuild; a badge while rebuilding; an overlay lists the errors of the last build (code, file:line, message, hint), hidden when fixed; status also at /__yassb/status; reloads when the watch process restarts.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.watch",
+        "behaviour.diagnostics"
+      ],
+      "source": {
+        "file": "src/server/live-reload.ts",
+        "line": 23,
+        "symbol": "LiveReloadHub"
+      },
+      "parts": [
+        {
+          "file": "src/server/live-reload.ts",
+          "line": 78,
+          "symbol": "LiveStatus"
+        },
+        {
+          "file": "src/server/live-reload.ts",
+          "line": 89,
+          "symbol": "LIVE_RELOAD_SNIPPET"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.output-lock",
+      "kind": "behaviour",
+      "summary": "Only one YASSB process at a time writes an output folder; a second one stops with a clear message.",
+      "usage": "Running `yassb build` while `yassb watch` serves the same folder → error OUTPUT_LOCKED naming the other process.",
+      "options": "none (use --out <dir> to build somewhere else)",
+      "rules": "build and check hold the lock during the build; watch holds it for its whole session and its rebuilds share it; the lock file is in the system temporary folder (never in the output); a lock left by a process that no longer exists (crash, kill -9) is taken over (the message names the lock file to delete if its process id was reused); different output folders never conflict; the second process exits with code 1 without writing anything.",
+      "errors": [
+        "OUTPUT_LOCKED"
+      ],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.build",
+        "cli.watch",
+        "cli.check"
+      ],
+      "source": {
+        "file": "src/pipeline/output-lock.ts",
+        "line": 55,
+        "symbol": "acquireOutputLock"
+      },
+      "parts": [
+        {
+          "file": "src/pipeline/output-lock.ts",
+          "line": 10,
+          "symbol": "OutputLockHolder"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.pipeline",
+      "kind": "behaviour",
+      "summary": "The fixed order in which a build processes a site.",
+      "usage": "yassb build, yassb watch, or programmatically: await runBuild({ strict: true }) in the project folder.",
+      "options": "BuildOptions: watchMode, steps { html, styles, scripts }, strict, clean, outDir.",
+      "rules": "config → beforeBuild → assets copy → scripts bundling starts → generate-from-files → for each language: copy pages (all files of pages/), list output files (url-to, sitemap), then per HTML page: components → front matter → built-in directives → custom directives → translation → post-processing of every HTML file of the output → styles → scripts written → afterBuild; directives left in a page after processing are reported.",
+      "errors": [
+        "DIRECTIVE_UNPROCESSED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.post-processing",
+        "api.custom-directives",
+        "i18n.translation"
+      ],
+      "source": {
+        "file": "src/pipeline/build.ts",
+        "line": 112,
+        "symbol": "runBuild"
+      },
+      "parts": [
+        {
+          "file": "src/assets/copy-assets.function.ts",
+          "line": 61,
+          "symbol": "copyPages"
+        },
+        {
+          "file": "src/config/supported-directives.const.ts",
+          "line": 29,
+          "symbol": "BUILT_IN_DIRECTIVES"
+        },
+        {
+          "file": "src/directives/files-content-injector.class.ts",
+          "line": 19,
+          "symbol": "FilesContentInjector"
+        },
+        {
+          "file": "src/pipeline/build.ts",
+          "line": 34,
+          "symbol": "BuildSteps"
+        },
+        {
+          "file": "src/pipeline/build.ts",
+          "line": 46,
+          "symbol": "BuildOptions"
+        },
+        {
+          "file": "src/pipeline/build.ts",
+          "line": 69,
+          "symbol": "SetupInfo"
+        },
+        {
+          "file": "src/pipeline/build.ts",
+          "line": 85,
+          "symbol": "DetailedBuildResult"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.post-processing",
+      "kind": "behaviour",
+      "summary": "Last step for every HTML file of the output.",
+      "usage": "automatic; customize with config.postProcessors and config.htmlMinificationOptions",
+      "options": "none",
+      "rules": "For every .html/.htm in the output (assets included): { key } placeholders → postProcessors in order → minification in build, or in watch the live-reload script before </body> and removal of the Content-Security-Policy meta; runs after translation.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.postProcessors",
+        "config.htmlMinificationOptions",
+        "behaviour.live-reload"
+      ],
+      "source": {
+        "file": "src/post-processing/post-process-file.class.ts",
+        "line": 22,
+        "symbol": "PostProcessFile"
+      },
+      "parts": [
+        {
+          "file": "src/post-processing/post-process-files.class.ts",
+          "line": 13,
+          "symbol": "PostProcessFiles"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.site-code",
+      "kind": "behaviour",
+      "summary": "Configuration and site code can be TypeScript, TSX or JavaScript.",
+      "usage": "config/default.ts importing builder/renderers.tsx",
+      "options": "The site's tsconfig.json (jsx, decorators, class fields).",
+      "rules": "Under Node each file is compiled on its own to CommonJS with esbuild (like ts-node --transpile-only): __dirname, relative imports and require work as in Node; no type checking; stack traces point to the TS lines; Bun runs TypeScript natively; a syntax error is reported with file and line.",
+      "errors": [
+        "CONFIG_LOAD_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.files"
+      ],
+      "source": {
+        "file": "src/config/ts-require-hook.ts",
+        "line": 41,
+        "symbol": "installTsRequireHook"
+      },
+      "parts": [
+        {
+          "file": "src/config/ts-require-hook.ts",
+          "line": 91,
+          "symbol": "SourceCompileError"
+        }
+      ]
+    },
+    {
+      "id": "behaviour.sitemap",
+      "kind": "behaviour",
+      "summary": "sitemap.xml lists every file of the output; it is also the list url-to searches.",
+      "usage": "<out>/sitemap.xml with <loc>https://example.com/en/index.html</loc> entries",
+      "options": "config.siteHost (keeps the file and is the host of the URLs), config.sitemap: false (never written).",
+      "rules": "Regenerated before each language is processed; includes assets and every file; without siteHost the host is http://fake.host/ and the file is deleted at the end of the build (after post-processing); post processors may replace it.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "directive.url-to",
+        "config.siteHost",
+        "config.sitemap"
+      ],
+      "source": {
+        "file": "src/sitemap/sitemap-generator.class.ts",
+        "line": 32,
+        "symbol": "SitemapGenerator"
+      },
+      "parts": [
+        {
+          "file": "src/sitemap/sitemap-generator.class.ts",
+          "line": 13,
+          "symbol": "SITEMAP_URLS"
+        }
+      ]
+    },
+    {
+      "id": "cli.build",
+      "kind": "cli",
+      "summary": "yassb build: production build of the site.",
+      "usage": "yassb build [--strict] [--clean] [--out <dir>] [--json]",
+      "options": "--strict: exit 1 on any error; --clean: empty the output first (dot files kept); --out <dir>: build into another folder; --json: print { ok, durationMs, out, diagnostics } instead of logs.",
+      "rules": "Pages minified with htmlMinificationOptions, scripts minified; exit code 1 when site code throws, the config cannot load, a data source/stylesheet is invalid, or with --strict on any error; prints a summary with error/warning counts.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.pipeline",
+        "behaviour.diagnostics",
+        "config.strict",
+        "config.cleanOut"
+      ],
+      "source": {
+        "file": "src/cli/commands/build.ts",
+        "line": 20,
+        "symbol": "buildCommand"
+      },
+      "parts": []
+    },
+    {
+      "id": "cli.check",
+      "kind": "cli",
+      "summary": "yassb check: builds the site and validates it; exit code 1 on errors.",
+      "usage": "yassb check [--json] [--out <dir>] [--no-links]",
+      "options": "--json: report { ok, counts, diagnostics }; --out <dir>: build into another folder; --no-links (same as --links=false): skip the link check.",
+      "rules": "Builds in production mode (in the configured output unless --out), then adds: translation attributes left in pages, keys missing in some language file, keys never used, broken local href/src, components and data sources not used by any page, packages imported by site code but not declared in package.json; programmatic: checkProject().",
+      "errors": [
+        "I18N_UNTRANSLATED_ATTRIBUTE",
+        "I18N_INCONSISTENT_KEYS",
+        "I18N_UNUSED_KEY",
+        "LINK_BROKEN",
+        "UNUSED_COMPONENT",
+        "UNUSED_DATA_SOURCE",
+        "UNDECLARED_DEPENDENCY"
+      ],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.inspect",
+        "behaviour.diagnostics"
+      ],
+      "source": {
+        "file": "src/cli/commands/check.ts",
+        "line": 20,
+        "symbol": "checkCommand"
+      },
+      "parts": [
+        {
+          "file": "src/check/site-checks.ts",
+          "line": 18,
+          "symbol": "CheckReport"
+        },
+        {
+          "file": "src/check/site-checks.ts",
+          "line": 30,
+          "symbol": "CheckOptions"
+        },
+        {
+          "file": "src/check/site-checks.ts",
+          "line": 44,
+          "symbol": "checkProject"
+        },
+        {
+          "file": "src/config/setup.function.ts",
+          "line": 139,
+          "symbol": "undeclaredImports"
+        }
+      ]
+    },
+    {
+      "id": "cli.docs",
+      "kind": "cli",
+      "summary": "yassb docs [topic]: prints the guide shipped with the package (docs/guide.md).",
+      "usage": "yassb docs   yassb docs renderers   yassb docs diagnostics   yassb docs --list   yassb docs features [id]",
+      "options": "--list: list topics; topic: a section of the guide (by slug or words of its title); features [id]: the feature catalogue, the checklist of what documentation must cover; --json: the catalogue as JSON.",
+      "rules": "Works offline in every project; the diagnostics topic also lists every diagnostic code.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "behaviour.diagnostics"
+      ],
+      "source": {
+        "file": "src/cli/commands/docs.ts",
+        "line": 20,
+        "symbol": "docsCommand"
+      },
+      "parts": []
+    },
+    {
+      "id": "cli.help",
+      "kind": "cli",
+      "summary": "Command dispatch, help and version of the yassb command.",
+      "usage": "yassb help   yassb --help   yassb --version",
+      "options": "--help, -h: help; --version, -v: version.",
+      "rules": "Unknown commands print the help and exit 1; the command runs in the current folder, which is the project root.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "cli.build"
+      ],
+      "source": {
+        "file": "src/cli/cli.ts",
+        "line": 70,
+        "symbol": "main"
+      },
+      "parts": [
+        {
+          "file": "src/cli/cli.ts",
+          "line": 19,
+          "symbol": "HELP"
+        }
+      ]
+    },
+    {
+      "id": "cli.inspect",
+      "kind": "cli",
+      "summary": "yassb inspect [query]: describes the project without building it.",
+      "usage": "yassb inspect   yassb inspect --json   yassb inspect news.json   yassb inspect HOME.TITLE",
+      "options": "--json: full manifest (pages, templates, components, dataSources, renderers, customDirectives, postProcessors, hooks, assets, i18n, diagnostics); query: file, data source, renderer, directive or i18n key.",
+      "rules": "Read-only: loads the configuration but runs no renderer and writes nothing; directives are listed with file:line, components transitively, LANG paths expanded for every language; problems visible statically (missing files, unknown renderers, invalid options) are listed; programmatic: inspectProject().",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.check",
+        "behaviour.diagnostics"
+      ],
+      "source": {
+        "file": "src/cli/commands/inspect.ts",
+        "line": 20,
+        "symbol": "inspectCommand"
+      },
+      "parts": [
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 33,
+          "symbol": "ProjectManifest"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 76,
+          "symbol": "DirectiveUse"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 92,
+          "symbol": "PageInfo"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 106,
+          "symbol": "TemplateInfo"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 117,
+          "symbol": "ComponentInfo"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 126,
+          "symbol": "DataSourceInfo"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 136,
+          "symbol": "RendererInfo"
+        },
+        {
+          "file": "src/inspect/project-inspector.ts",
+          "line": 154,
+          "symbol": "inspectProject"
+        }
+      ]
+    },
+    {
+      "id": "cli.new",
+      "kind": "cli",
+      "summary": "yassb new <name>: creates a project from the starter.",
+      "usage": "yassb new my-site",
+      "options": "name (required): converted to kebab-case for the folder and package name.",
+      "rules": "Refuses a non-empty existing folder; the starter has config/default.ts, a renderer in builder/, a data source, components, Sass and TypeScript entries, AGENTS.md and CLAUDE.md for coding agents, and yassb-web as devDependency.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.files"
+      ],
+      "source": {
+        "file": "src/cli/commands/new.ts",
+        "line": 22,
+        "symbol": "newCommand"
+      },
+      "parts": []
+    },
+    {
+      "id": "cli.serve",
+      "kind": "cli",
+      "summary": "yassb serve: serves the output folder without building.",
+      "usage": "yassb serve [--port <n>]",
+      "options": "--port <n>: port (default devServerPort or 3000).",
+      "rules": "Uses the same routing as watch, without live reload; loads the configuration only to find the output folder and languages.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.dev-server"
+      ],
+      "source": {
+        "file": "src/cli/commands/serve.ts",
+        "line": 20,
+        "symbol": "serveCommand"
+      },
+      "parts": []
+    },
+    {
+      "id": "cli.watch",
+      "kind": "cli",
+      "summary": "yassb watch: build, serve with live reload, rebuild on every change.",
+      "usage": "yassb watch [--port <n>] [--clean] [--strict]",
+      "options": "--port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build.",
+      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; every build runs in a fresh child process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
+      "errors": [
+        "BUILD_CRASHED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.dev-server",
+        "behaviour.live-reload",
+        "behaviour.site-code"
+      ],
+      "source": {
+        "file": "src/cli/commands/watch.ts",
+        "line": 47,
+        "symbol": "watchCommand"
+      },
+      "parts": [
+        {
+          "file": "src/cli/build-worker.ts",
+          "line": 15,
+          "symbol": "runBuildWorker"
+        },
+        {
+          "file": "src/cli/build-worker.ts",
+          "line": 49,
+          "symbol": "WorkerResultMessage"
+        },
+        {
+          "file": "src/watch/project-watcher.ts",
+          "line": 22,
+          "symbol": "ProjectWatcherOptions"
+        },
+        {
+          "file": "src/watch/project-watcher.ts",
+          "line": 34,
+          "symbol": "ProjectWatcher"
+        }
+      ]
+    },
+    {
+      "id": "config.afterBuild",
+      "kind": "config",
+      "summary": "Hook called after every build, for site validations.",
+      "usage": "afterBuild: (result) => { if (!result.ok) ... }",
+      "options": "function (BuildResult: ok, durationMs, diagnostics, out, watchMode) → void | Promise",
+      "rules": "Runs in build and watch (unlike npm postbuild); an exception fails the build.",
+      "errors": [
+        "HOOK_FAILED"
+      ],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "config.beforeBuild"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 532,
+        "symbol": "YassbConfig.afterBuild"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 221,
+          "symbol": "BuildResult"
+        }
+      ]
+    },
+    {
+      "id": "config.beforeBuild",
+      "kind": "config",
+      "summary": "Hook called before every build.",
+      "usage": "beforeBuild: ({ watchMode, out, langs }) => { ... }",
+      "options": "function (BuildStartInfo) → void | Promise",
+      "rules": "Runs in build and watch after the config is loaded and the output cleaned; an exception stops the build.",
+      "errors": [
+        "HOOK_FAILED"
+      ],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "config.afterBuild"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 518,
+        "symbol": "YassbConfig.beforeBuild"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 237,
+          "symbol": "BuildStartInfo"
+        }
+      ]
+    },
+    {
+      "id": "config.cleanOut",
+      "kind": "config",
+      "summary": "Empties the output folder before each build.",
+      "usage": "cleanOut: true  (or yassb build --clean)",
+      "options": "boolean, default false",
+      "rules": "Dot files at the root of the output (.git, .nojekyll) are kept; in watch mode only full rebuilds clean (a styles- or scripts-only rebuild keeps the pages); without it, deleted pages stay in the output.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "cli.build",
+        "assets.copy"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 473,
+        "symbol": "YassbConfig.cleanOut"
+      },
+      "parts": [
+        {
+          "file": "src/assets/copy-assets.function.ts",
+          "line": 85,
+          "symbol": "cleanOut"
+        }
+      ]
+    },
+    {
+      "id": "config.customDirectives",
+      "kind": "config",
+      "summary": "Registers custom directive classes.",
+      "usage": "customDirectives: [SiteLayoutDirective]",
+      "options": "array of classes, run in this order",
+      "rules": "Run after the built-in directives, for components and pages.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "api.custom-directives"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 291,
+        "symbol": "YassbConfig.customDirectives"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.customRenderers",
+      "kind": "config",
+      "summary": "Registers renderers by name.",
+      "usage": "customRenderers: { newsList, peopleCards }",
+      "options": "object name → function",
+      "rules": "A custom renderer with the name of a built-in one replaces it.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "api.custom-renderers"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 277,
+        "symbol": "YassbConfig.customRenderers"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.devServerPort",
+      "kind": "config",
+      "summary": "Port of the dev server.",
+      "usage": "devServerPort: 4000",
+      "options": "number, default 3000",
+      "rules": "--port overrides it; the next free port is used if busy.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.dev-server"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 445,
+        "symbol": "YassbConfig.devServerPort"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.esbuildOptions",
+      "kind": "config",
+      "summary": "Extra esbuild options merged into the scripts build.",
+      "usage": "esbuildOptions: { target: 'es2020', external: ['jquery'] }",
+      "options": "esbuild build options",
+      "rules": "Merged over the defaults (entry, IIFE, target es2018, minify, define); overriding outfile/write changes where files go.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "assets.scripts"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 417,
+        "symbol": "YassbConfig.esbuildOptions"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.files",
+      "kind": "config",
+      "summary": "The configuration is read from config/ with the rules of the config npm package.",
+      "usage": "config/default.ts → export default { ... } as YassbConfig; config/production.ts merged when NODE_ENV=production.",
+      "options": "NODE_CONFIG_DIR (folder, several separated by :), NODE_CONFIG_ENV / NODE_ENV (deployment, default development), NODE_APP_INSTANCE, HOST/HOSTNAME, NODE_CONFIG (JSON merged last).",
+      "rules": "Files merged in order: default, {deployment}, {host}, {host}-{deployment}, local, local-{deployment}, each also as {name}-{instance}; extensions .js .cjs .ts .cts .mts .tsx .json; export default or module.exports; plain objects are merged deeply, arrays/functions/classes replaced; YAML/TOML/other formats are reported and skipped; a missing package imported by the config is explained (packages yassb-web 1.x used to install are named).",
+      "errors": [
+        "CONFIG_LOAD_FAILED",
+        "CONFIG_MODULE_NOT_FOUND",
+        "CONFIG_UNSUPPORTED_FILE"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "api.define-config",
+        "behaviour.site-code"
+      ],
+      "source": {
+        "file": "src/config/load-config.ts",
+        "line": 45,
+        "symbol": "loadConfig"
+      },
+      "parts": [
+        {
+          "file": "src/config/setup.function.ts",
+          "line": 48,
+          "symbol": "FORMER_DEPENDENCIES"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 249,
+          "symbol": "YassbConfig"
+        }
+      ]
+    },
+    {
+      "id": "config.grayMatterOption",
+      "kind": "config",
+      "summary": "Options of gray-matter for front matter.",
+      "usage": "grayMatterOption: { excerpt: true, excerpt_separator: '<!-- more -->' }",
+      "options": "gray-matter options",
+      "rules": "With excerpt, { excerpt } is available in generated pages.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "content.front-matter"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 389,
+        "symbol": "YassbConfig.grayMatterOption"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.htmlMinificationOptions",
+      "kind": "config",
+      "summary": "Options of html-minifier-terser for yassb build.",
+      "usage": "htmlMinificationOptions: { collapseWhitespace: true, removeComments: true, minifyCSS: true }",
+      "options": "html-minifier-terser options, default {} (almost no change)",
+      "rules": "Not applied in watch; a page the minifier cannot parse is written unminified and reported.",
+      "errors": [
+        "MINIFY_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.post-processing"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 361,
+        "symbol": "YassbConfig.htmlMinificationOptions"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 175,
+          "symbol": "HtmlMinifierOptions"
+        }
+      ]
+    },
+    {
+      "id": "config.i18n",
+      "kind": "config",
+      "summary": "Options of the translation step.",
+      "usage": "i18n: { allowHtml: true }",
+      "options": "allowHtml: insert translations as HTML (default false)",
+      "rules": "Applies to data-t content, not to attributes.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "i18n.translation"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 501,
+        "symbol": "YassbConfig.i18n"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.postProcessors",
+      "kind": "config",
+      "summary": "Functions applied to the final HTML of every page.",
+      "usage": "postProcessors: [(html) => html.replace(...)]",
+      "options": "array of (html: string) => string",
+      "rules": "Run in order after translation and front matter, before minification, in build and watch, for every HTML file of the output; an exception or a non-string result fails the build.",
+      "errors": [
+        "POST_PROCESSOR_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.post-processing"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 347,
+        "symbol": "YassbConfig.postProcessors"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 168,
+          "symbol": "PostProcessor"
+        }
+      ]
+    },
+    {
+      "id": "config.showdownConverterOptions",
+      "kind": "config",
+      "summary": "Options of the Showdown Markdown converter.",
+      "usage": "showdownConverterOptions: { tables: true, strikethrough: true }",
+      "options": "Showdown options, default { tables: true }",
+      "rules": "Replaces the default entirely (set tables again if needed).",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "content.markdown"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 375,
+        "symbol": "YassbConfig.showdownConverterOptions"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.siteHost",
+      "kind": "config",
+      "summary": "Public host of the site.",
+      "usage": "siteHost: 'https://example.com'",
+      "options": "string URL",
+      "rules": "Keeps sitemap.xml in the output, with this host in its URLs; url-to strips the host so links stay root-relative (a host without trailing slash yields //path links, as in 1.x).",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.sitemap",
+        "directive.url-to"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 431,
+        "symbol": "YassbConfig.siteHost"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.sitemap",
+      "kind": "config",
+      "summary": "Disables sitemap.xml.",
+      "usage": "sitemap: false",
+      "options": "boolean, default true",
+      "rules": "url-to keeps working from memory; a sitemap written by a post processor is not deleted.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "behaviour.sitemap"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 459,
+        "symbol": "YassbConfig.sitemap"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.skipsStyles",
+      "kind": "config",
+      "summary": "Disables the stylesheet step.",
+      "usage": "skipsStyles: true",
+      "options": "boolean, default false",
+      "rules": "No CSS file is written; include-styles-src still inserts its link.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "assets.styles"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 319,
+        "symbol": "YassbConfig.skipsStyles"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.strict",
+      "kind": "config",
+      "summary": "Every reported error fails the build.",
+      "usage": "strict: true  (or --strict)",
+      "options": "boolean, default false",
+      "rules": "Without it only fatal problems exit 1; warnings never fail.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.0.0",
+      "related": [
+        "behaviour.diagnostics"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 487,
+        "symbol": "YassbConfig.strict"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.stylesParser",
+      "kind": "config",
+      "summary": "Replaces Sass with the site's own CSS pipeline (PostCSS, Tailwind…).",
+      "usage": "stylesParser: async (entry, entryAgain, outputPath) => css",
+      "options": "function (absolute entry, same entry, absolute output path) → string | Buffer | Promise",
+      "rules": "Must return the CSS without writing it; runs after the pages (so Tailwind sees generated HTML); in watch it reruns on every page rebuild; an exception fails the build.",
+      "errors": [
+        "STYLES_FAILED"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "assets.styles"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 333,
+        "symbol": "YassbConfig.stylesParser"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 161,
+          "symbol": "CustomStylesParser"
+        }
+      ]
+    },
+    {
+      "id": "config.username",
+      "kind": "config",
+      "summary": "Replaces USERNAME in directive values.",
+      "usage": "username: 'alex' then <!-- generate-from-files=\"/home/USERNAME/notes\" -->",
+      "options": "string",
+      "rules": "Replaced in every directive before its attributes are read; unset gives the text \"undefined\".",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "directive.attributes"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 263,
+        "symbol": "YassbConfig.username"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.webpackConfig",
+      "kind": "config",
+      "summary": "Legacy: bundles the scripts with the site's webpack configuration.",
+      "usage": "webpackConfig: { entry: ..., output: ..., module: { rules: [...] } }",
+      "options": "a complete webpack configuration",
+      "rules": "Requires webpack (and loaders) installed in the site; the configuration decides entry and output; prefer esbuildOptions.",
+      "errors": [
+        "SCRIPTS_FAILED"
+      ],
+      "status": "legacy",
+      "since": "1.0.0",
+      "related": [
+        "assets.scripts"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 403,
+        "symbol": "YassbConfig.webpackConfig"
+      },
+      "parts": []
+    },
+    {
+      "id": "config.workingDir",
+      "kind": "config",
+      "summary": "Changes the folders of the project.",
+      "usage": "workingDir: { out: 'public', styles: 'styles/styles.css' }",
+      "options": "base, src, assets, i18n, app, pages, components, dataSources, pagesToGenerate, posts, scripts, styles, out, scriptsOutFolder, stylesOutFolder",
+      "rules": "base relative to the current folder; src and out to base; assets, i18n, app to src; the others to app; scriptsOutFolder and stylesOutFolder to out; missing folders and empty script/style entries are created.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.files"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 305,
+        "symbol": "YassbConfig.workingDir"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 21,
+          "symbol": "WorkingDirConfig"
+        }
+      ]
+    },
+    {
+      "id": "content.front-matter",
+      "kind": "content",
+      "summary": "{ key } placeholders are replaced with front matter values.",
+      "usage": "---\\ntitle: Hello\\ndate: 2024-01-15\\n---  then <title>{ title }</title>",
+      "options": "none",
+      "rules": "One space inside each brace; values come from Markdown files, components with front matter and the data returned by custom directives; strings inserted as they are (not escaped), dates and the date key as ISO strings, other values as JSON; replaced after components and again in post-processing.",
+      "errors": [
+        "FRONT_MATTER_INVALID_DATE"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "content.markdown",
+        "api.custom-directives"
+      ],
+      "source": {
+        "file": "src/tools/front-matter/front-matter-injector.class.ts",
+        "line": 19,
+        "symbol": "FrontMatterInjector"
+      },
+      "parts": [
+        {
+          "file": "src/tools/front-matter/front-matter-handler.class.ts",
+          "line": 8,
+          "symbol": "FrontMatterHandler"
+        },
+        {
+          "file": "src/tools/front-matter/front-matter-store.const.ts",
+          "line": 7,
+          "symbol": "FrontMatterData"
+        },
+        {
+          "file": "src/tools/front-matter/front-matter-store.const.ts",
+          "line": 16,
+          "symbol": "FrontMatterDataStore"
+        },
+        {
+          "file": "src/tools/front-matter/front-matter-store.const.ts",
+          "line": 25,
+          "symbol": "FRONT_MATTER_DATA_STORE"
+        }
+      ]
+    },
+    {
+      "id": "content.markdown",
+      "kind": "content",
+      "summary": "Markdown/text files are converted to HTML (Showdown) with YAML front matter (gray-matter).",
+      "usage": "<!-- component=\"intro.md\" -->, or the files of a generate-from-files folder.",
+      "options": "config.showdownConverterOptions (default { tables: true }); config.grayMatterOption (e.g. excerpt).",
+      "rules": "Front matter becomes { key } placeholders; excerpt and language found by gray-matter are added to the front matter; empty files are reported.",
+      "errors": [
+        "MARKDOWN_EMPTY"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "content.front-matter",
+        "directive.generate-from-files"
+      ],
+      "source": {
+        "file": "src/tools/files-content-helpers/text-formatter-parser.class.ts",
+        "line": 32,
+        "symbol": "TextFormatterParser"
+      },
+      "parts": []
+    },
+    {
+      "id": "directive.attributes",
+      "kind": "directive",
+      "summary": "Shared attribute syntax of directives: quoted values, JSON options, LANG and USERNAME placeholders.",
+      "usage": "<!-- create-from-data-source=\"LANG/news.json\" renderer=\"list\" options=\"{\"order\":[\"b\",\"a\"],\"limit\":3}\" -->",
+      "options": "options: JSON (object or array) written as is inside double or single quotes, anywhere in the directive.",
+      "rules": "Values end at the closing quote; LANG anywhere in the directive (options included) becomes the current language; USERNAME becomes config.username (the text \"undefined\" if unset); invalid options JSON is reported and ignored.",
+      "errors": [
+        "OPTIONS_INVALID_JSON"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "config.username",
+        "directive.create-from-data-source"
+      ],
+      "source": {
+        "file": "src/directives/tools/directive-props-getter.class.ts",
+        "line": 55,
+        "symbol": "DirectivePropsGetter"
+      },
+      "parts": []
+    },
+    {
+      "id": "directive.component",
+      "kind": "directive",
+      "summary": "Inserts an HTML, SVG or Markdown fragment from the components folder, recursively.",
+      "usage": "<!-- component=\"site/header.html\" -->",
+      "options": "The value is a path relative to src/app/components (workingDir.components); LANG and USERNAME are replaced (see directive.attributes).",
+      "rules": "Each component is processed on its own (its directives run with fileFullPath = the component file) before being inserted into the including file; components can nest; .md/.txt components are converted from Markdown; front matter of a component becomes { key } placeholders of the page; a missing file leaves the comment in place (removed by the minifier); more than 40 levels of nesting is reported as a cycle; the regex accepts one directive per line.",
+      "errors": [
+        "COMPONENT_NOT_FOUND",
+        "COMPONENT_UNSUPPORTED_FORMAT",
+        "COMPONENT_CYCLE"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "content.front-matter",
+        "content.markdown",
+        "directive.attributes"
+      ],
+      "source": {
+        "file": "src/directives/directives-parser.class.ts",
+        "line": 34,
+        "symbol": "DirectivesParser"
+      },
+      "parts": [
+        {
+          "file": "src/tools/files-content-helpers/can-process-file-extension.function.ts",
+          "line": 18,
+          "symbol": "canProcessFileExtension"
+        },
+        {
+          "file": "src/tools/files-content-helpers/get-formatted-content.function.ts",
+          "line": 13,
+          "symbol": "getFormattedContent"
+        },
+        {
+          "file": "src/tools/files-content-helpers/supported-formats.enum.ts",
+          "line": 7,
+          "symbol": "SupportedFormats"
+        }
+      ]
+    },
+    {
+      "id": "directive.create-from-data-source",
+      "kind": "directive",
+      "summary": "Renders a JSON data source with a renderer and inserts the resulting HTML.",
+      "usage": "<!-- create-from-data-source=\"people/team.json\" renderer=\"peopleCards\" options=\"{\"limit\":3}\" -->",
+      "options": "renderer: name in customRenderers or a built-in renderer (default basicElement); options: JSON passed to the renderer as props.options.",
+      "rules": "One JSON file per directive, path relative to src/app/data-sources (sub-folders allowed); the file is parsed again for every directive, so renderers may mutate their data; the renderer receives source (parsed JSON) and sourcePath; every occurrence of the same directive text in the file is replaced; a missing file or name leaves the comment (removed by the minifier) and is reported; invalid JSON or a throwing renderer fail the build.",
+      "errors": [
+        "DATA_SOURCE_MISSING_NAME",
+        "DATA_SOURCE_NOT_FOUND",
+        "DATA_SOURCE_INVALID_JSON"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "api.custom-renderers",
+        "directive.attributes",
+        "renderer.basicElement"
+      ],
+      "source": {
+        "file": "src/directives/data-from-source/html-from-data-source.class.ts",
+        "line": 29,
+        "symbol": "HtmlFromDataSource"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 553,
+          "symbol": "DataSourceModel"
+        }
+      ]
+    },
+    {
+      "id": "directive.generate-from-files",
+      "kind": "directive",
+      "summary": "Generates one page per Markdown/text file from a template in pages-to-generate.",
+      "usage": "In src/app/pages-to-generate/blog/post.html: <h1>{ title }</h1> <!-- generate-from-files=\"blog\" -->",
+      "options": "The value is a folder relative to src/app (workingDir.posts); USERNAME is replaced.",
+      "rules": "The directive must be in the template file itself, not in a component; .md and .txt files are read recursively; output is <out>/<template folder>/<file sub-folder>/<slug>.html with slug = front matter slug, else the title in kebab-case, else the file name; front matter placeholders are replaced at once and again in post-processing; generated pages then go through all directives; with i18n only templates inside a language folder (pages-to-generate/en/...) are translated, so a multi-language blog needs one template per language.",
+      "errors": [
+        "TEMPLATE_NO_DIRECTIVE",
+        "TEMPLATE_SOURCE_NOT_FOUND",
+        "MARKDOWN_EMPTY"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "content.markdown",
+        "content.front-matter"
+      ],
+      "source": {
+        "file": "src/directives/pages-generator/template-to-html-files.class.ts",
+        "line": 36,
+        "symbol": "TemplateToHtmlFiles"
+      },
+      "parts": [
+        {
+          "file": "src/directives/pages-generator/generate-pages-from-md.class.ts",
+          "line": 13,
+          "symbol": "GeneratePagesFromMd"
+        },
+        {
+          "file": "src/tools/md-title-extractor.function.ts",
+          "line": 9,
+          "symbol": "mdTitleExtractor"
+        },
+        {
+          "file": "src/tools/strings-formatters/camel-to-kebab-case.function.ts",
+          "line": 13,
+          "symbol": "camelToKebabCase"
+        }
+      ]
+    },
+    {
+      "id": "directive.include-script-src",
+      "kind": "directive",
+      "summary": "Inserts the script tag of the bundled browser script.",
+      "usage": "<!-- include-script-src -->  →  <script src=\"/assets/js/main-1-0-0.min.js\"></script>",
+      "options": "none",
+      "rules": "The text must be exactly <!-- include-script-src -->; the URL follows workingDir.scripts, workingDir.scriptsOutFolder and the version of package.json.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "assets.scripts",
+        "assets.file-names"
+      ],
+      "source": {
+        "file": "src/directives/insert-script-src/insert-script-src.class.ts",
+        "line": 21,
+        "symbol": "InsertScriptSrc"
+      },
+      "parts": []
+    },
+    {
+      "id": "directive.include-styles-src",
+      "kind": "directive",
+      "summary": "Inserts the stylesheet link of the compiled CSS.",
+      "usage": "<!-- include-styles-src -->  →  <link rel=\"stylesheet\" href=\"/assets/css/styles-1-0-0.min.css\">",
+      "options": "none",
+      "rules": "The text must be exactly <!-- include-styles-src -->; the URL follows workingDir.styles, workingDir.stylesOutFolder and the version of package.json.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "assets.styles",
+        "assets.file-names"
+      ],
+      "source": {
+        "file": "src/directives/insert-styles-src/insert-styles-src.class.ts",
+        "line": 21,
+        "symbol": "InsertStylesSrc"
+      },
+      "parts": []
+    },
+    {
+      "id": "directive.public-file-list",
+      "kind": "directive",
+      "summary": "Lists the files of a folder of the output and renders them with a custom renderer.",
+      "usage": "<!-- public-file-list=\"assets/downloads\" renderer=\"filesList\" -->",
+      "options": "renderer (required, must be in customRenderers); options: JSON passed to the renderer.",
+      "rules": "The folder is relative to the output folder and scanned recursively in name order; source is [{ absolutePath, absoluteUrl }], sourcePath the scanned folder; only files already in the output are listed (assets are copied first).",
+      "errors": [
+        "PUBLIC_FILE_LIST_RENDERER_NOT_FOUND",
+        "PUBLIC_FILE_LIST_NOT_FOUND"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "api.custom-renderers",
+        "assets.copy"
+      ],
+      "source": {
+        "file": "src/directives/public-file-list/public-file-list.class.ts",
+        "line": 26,
+        "symbol": "PublicFileList"
+      },
+      "parts": [
+        {
+          "file": "src/yassb.ts",
+          "line": 543,
+          "symbol": "FilePathsForPublicFileList"
+        }
+      ]
+    },
+    {
+      "id": "directive.url-to",
+      "kind": "directive",
+      "summary": "Replaced by the absolute URL of the output file whose path contains a fragment.",
+      "usage": "<a href=\"{{ url-to=\"about\" }}\">  <a href=\"{{ url-to=\"blog-post#comments\" options=\"{\"warning\":false}\" }}\">",
+      "options": "#anchor is kept; options=\"{\"warning\":false}\" silences the ambiguity warning.",
+      "rules": "The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.",
+      "errors": [
+        "URL_TO_EMPTY",
+        "URL_TO_NOT_FOUND",
+        "URL_TO_AMBIGUOUS"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "behaviour.sitemap",
+        "config.siteHost"
+      ],
+      "source": {
+        "file": "src/directives/url-to/url-to.class.ts",
+        "line": 35,
+        "symbol": "UrlTo"
+      },
+      "parts": [
+        {
+          "file": "src/directives/url-to/find-closest-path.class.ts",
+          "line": 12,
+          "symbol": "FindClosestPath"
+        },
+        {
+          "file": "src/directives/url-to/suggest-best-match.class.ts",
+          "line": 9,
+          "symbol": "SuggestBestMatch"
+        },
+        {
+          "file": "src/directives/url-to/url-to.class.ts",
+          "line": 16,
+          "symbol": "UrlToOptions"
+        }
+      ]
+    },
+    {
+      "id": "i18n.languages",
+      "kind": "i18n",
+      "summary": "The languages of the site are the names of the JSON files in src/i18n.",
+      "usage": "src/i18n/en.json, src/i18n/it.json → every page built into <out>/en/ and <out>/it/",
+      "options": "workingDir.i18n changes the folder.",
+      "rules": "Languages are sorted by name and processed in that order; the first one is served at / by the dev server; without the folder (or JSON files) the site is single-language and pages go to <out>/.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "i18n.translation",
+        "behaviour.dev-server"
+      ],
+      "source": {
+        "file": "src/i18n/langs-setter.function.ts",
+        "line": 19,
+        "symbol": "langsSetter"
+      },
+      "parts": [
+        {
+          "file": "src/i18n/langs.constant.ts",
+          "line": 7,
+          "symbol": "LANGS"
+        }
+      ]
+    },
+    {
+      "id": "i18n.translation",
+      "kind": "i18n",
+      "summary": "Translates marked text and attributes of every page into each language.",
+      "usage": "<h1 data-t=\"HOME.TITLE\">Welcome</h1>  <p data-t>Welcome</p>  <img data-attr-t alt-t=\"HOME.LOGO\">  <p data-t=\"GREET\" data-t-interpolate>",
+      "options": "config.i18n.allowHtml inserts translations as HTML; data-t-interpolate / data-attr-t-interpolate replace {{KEY}} placeholders.",
+      "rules": "Runs after all directives, so renderer output is translated; data-t with no value uses the element text as key; any <attr>-t on an element with data-attr-t sets <attr>; keys are flat (\"HOME.TITLE\") or nested objects; a missing key keeps the original text; translation attributes are removed; only translated elements are rewritten, the rest of the page is kept byte for byte; translations are escaped as text unless allowHtml; pages outside language folders are not translated.",
+      "errors": [
+        "I18N_MISSING_KEY",
+        "I18N_INVALID_FILE",
+        "I18N_UNCLOSED_ELEMENT"
+      ],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "i18n.languages",
+        "config.i18n"
+      ],
+      "source": {
+        "file": "src/i18n/translator.class.ts",
+        "line": 45,
+        "symbol": "Translator"
+      },
+      "parts": [
+        {
+          "file": "src/i18n/translator.class.ts",
+          "line": 23,
+          "symbol": "TranslatorOptions"
+        }
+      ]
+    },
+    {
+      "id": "renderer.basicElement",
+      "kind": "renderer",
+      "summary": "Built-in renderer: one element per item, with item.description as content.",
+      "usage": "<ul><!-- create-from-data-source=\"items.json\" renderer=\"basicElement\" options=\"{\"tag\":\"li\",\"attributes\":{\"class\":\"x\"}}\" --></ul>",
+      "options": "tag (default span); attributes: object applied to every element (true → bare attribute, false → omitted, arrays joined with spaces).",
+      "rules": "source is an array of { description } or, with i18n, { description: { <lang>: text } }; descriptions are inserted as HTML; used as fallback when a directive has no or an unknown renderer.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "directive.create-from-data-source"
+      ],
+      "source": {
+        "file": "src/renderers/built-in/basic-element.function.ts",
+        "line": 20,
+        "symbol": "basicElement"
+      },
+      "parts": [
+        {
+          "file": "src/renderers/built-in/html-element.function.ts",
+          "line": 10,
+          "symbol": "htmlElement"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 577,
+          "symbol": "BasicElement"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 588,
+          "symbol": "BasicElementWithI18n"
+        }
+      ]
+    },
+    {
+      "id": "renderer.liDateDescription",
+      "kind": "renderer",
+      "summary": "Built-in renderer: <li><u>date</u>: description</li> per item, with localized dates.",
+      "usage": "<ul><!-- create-from-data-source=\"timeline.json\" renderer=\"liDateDescription\" --></ul>",
+      "options": "none",
+      "rules": "date is { start, end } with YYYY, YYYY/MM or YYYY/MM/DD (formatted in the current language: \"March 2020\", \"March 5, 2020\"), end \"-\" means present (<span data-t=\"PRESENT\">, translated by i18n), or { raw } inserted as is; description as in basicElement.",
+      "errors": [],
+      "status": "stable",
+      "since": "1.0.0",
+      "related": [
+        "renderer.basicElement",
+        "i18n.translation"
+      ],
+      "source": {
+        "file": "src/renderers/built-in/li-date-description.function.ts",
+        "line": 19,
+        "symbol": "liDateDescription"
+      },
+      "parts": [
+        {
+          "file": "src/tools/dates-helpers/date-localizer.class.ts",
+          "line": 11,
+          "symbol": "DateLocalizer"
+        },
+        {
+          "file": "src/tools/dates-helpers/date-parser.class.ts",
+          "line": 10,
+          "symbol": "DateParser"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 564,
+          "symbol": "DateModel"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 601,
+          "symbol": "LiDateDescription"
+        },
+        {
+          "file": "src/yassb.ts",
+          "line": 612,
+          "symbol": "LiDateDescriptionWithI18n"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "CONFIG_LOAD_FAILED": "The configuration (config/*.ts|js|json) or a module it imports threw while loading.",
+    "CONFIG_MODULE_NOT_FOUND": "The configuration imports a package that is not installed in the site.",
+    "CONFIG_UNSUPPORTED_FILE": "A config file has a format YASSB 2 does not read (yaml, toml, …).",
+    "UNDECLARED_DEPENDENCY": "Site code imports a package missing from package.json (it may work only by accident).",
+    "COMPONENT_NOT_FOUND": "A `component` directive points to a file that does not exist.",
+    "COMPONENT_UNSUPPORTED_FORMAT": "A `component` directive points to a file type that cannot be included.",
+    "COMPONENT_CYCLE": "Components include each other endlessly.",
+    "DATA_SOURCE_MISSING_NAME": "`create-from-data-source` has no file name.",
+    "DATA_SOURCE_NOT_FOUND": "`create-from-data-source` points to a JSON file that does not exist.",
+    "DATA_SOURCE_INVALID_JSON": "A data source is not valid JSON.",
+    "OPTIONS_INVALID_JSON": "The `options` attribute of a directive is not valid JSON.",
+    "RENDERER_MISSING": "A directive has no `renderer` attribute; `basicElement` is used.",
+    "RENDERER_NOT_FOUND": "The renderer named in a directive is not registered in `customRenderers`.",
+    "RENDERER_FAILED": "A renderer threw an exception.",
+    "DIRECTIVE_NO_REGEX": "A custom directive class has no static `regex`.",
+    "DIRECTIVE_FAILED": "A custom directive threw an exception or returned no HTML.",
+    "DIRECTIVE_UNPROCESSED": "A directive is still in the page after processing; its content is missing.",
+    "URL_TO_EMPTY": "`url-to` has no value.",
+    "URL_TO_NOT_FOUND": "`url-to` matches no file of the site.",
+    "URL_TO_AMBIGUOUS": "`url-to` matches several files; the closest one is used.",
+    "PUBLIC_FILE_LIST_RENDERER_NOT_FOUND": "`public-file-list` needs a renderer registered in `customRenderers`.",
+    "PUBLIC_FILE_LIST_NOT_FOUND": "`public-file-list` points to a folder that does not exist in the output.",
+    "TEMPLATE_NO_DIRECTIVE": "A file in pages-to-generate has no `generate-from-files` directive.",
+    "TEMPLATE_SOURCE_NOT_FOUND": "The folder of a `generate-from-files` directive does not exist.",
+    "MARKDOWN_EMPTY": "A Markdown/text file used to generate a page is empty.",
+    "FRONT_MATTER_INVALID_DATE": "A `date` front matter value is not a valid date.",
+    "I18N_MISSING_KEY": "A translation key is used in a page but missing in a language file.",
+    "I18N_INVALID_FILE": "A language file in the i18n folder is not valid JSON.",
+    "I18N_UNCLOSED_ELEMENT": "An element with `data-t` has no closing tag, so it was not translated.",
+    "I18N_UNTRANSLATED_ATTRIBUTE": "A `data-t`/`data-attr-t` attribute is left in the output.",
+    "I18N_UNUSED_KEY": "A translation key is never used in the sources (it may be used by code).",
+    "I18N_INCONSISTENT_KEYS": "A translation key exists in some languages but not in others.",
+    "POST_PROCESSOR_FAILED": "A post processor threw an exception.",
+    "HOOK_FAILED": "A beforeBuild/afterBuild hook threw an exception.",
+    "OUTPUT_LOCKED": "Another YASSB process (build, check or watch) is writing the same output folder; nothing was written.",
+    "BUILD_CRASHED": "The build process stopped unexpectedly (watch mode keeps serving the last output).",
+    "MINIFY_FAILED": "The HTML minifier could not parse a page; the page was written unminified.",
+    "STYLES_FAILED": "The stylesheet could not be compiled.",
+    "SCRIPTS_FAILED": "The scripts could not be bundled.",
+    "LINK_BROKEN": "A page links to a local file that is not in the output.",
+    "UNUSED_COMPONENT": "A component is not used by any page.",
+    "UNUSED_DATA_SOURCE": "A data source is not used by any page."
+  }
+}
