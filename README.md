@@ -1,8 +1,11 @@
-[![npm version](https://badge.fury.io/js/yassb-web.svg)](https://www.npmjs.com/package/yassb-web)
-[![Node version](https://img.shields.io/node/v/yassb-web.svg)](https://www.npmjs.com/package/yassb-web)
+[![npm version](https://img.shields.io/npm/v/yassb-web)](https://www.npmjs.com/package/yassb-web)
+[![Node version](https://img.shields.io/node/v/yassb-web)](https://www.npmjs.com/package/yassb-web)
 [![License](https://img.shields.io/npm/l/yassb-web)](https://www.npmjs.com/package/yassb-web)
+[![Website](https://img.shields.io/badge/website-yassb--foss.github.io-ec4899)](https://yassb-foss.github.io)
 
 # YASSB (*Yet Another Static Site Builder*)
+
+**Website and documentation: [yassb-foss.github.io](https://yassb-foss.github.io)**
 
 YASSB builds static websites from HTML pages and components, JSON data, Markdown and translation files.
 
