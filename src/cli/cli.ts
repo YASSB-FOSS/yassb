@@ -12,6 +12,8 @@ import { watchCommand } from './commands/watch';
 
 /**
  * Entry point of the `yassb` command (see `bin.js`).
+ *
+ * @featurePart cli.help
  */
 
 export const HELP = `YASSB — Yet Another Static Site Builder
@@ -47,10 +49,24 @@ Run inside a project folder (the one containing config/ and src/).
 Agents: start with \`yassb docs\` and \`yassb inspect\`.
 `;
 
+/**
+ * @internal
+ */
 export function version(): string {
   return JSON.parse(readFileSync(resolve(__dirname, '..', '..', 'package.json'), 'utf8')).version;
 }
 
+/**
+ * @feature cli.help
+ * @summary Command dispatch, help and version of the yassb command.
+ * @usage yassb help   yassb --help   yassb --version
+ * @options --help, -h: help; --version, -v: version.
+ * @rules Unknown commands print the help and exit 1; the command runs in the current folder, which is the project root.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related cli.build
+ */
 export async function main(argv: Array<string> = process.argv.slice(2)): Promise<number> {
   const args: ParsedArgs = parseArgs(argv);
 
@@ -96,7 +112,11 @@ export async function main(argv: Array<string> = process.argv.slice(2)): Promise
 if (require.main === module)
   run();
 
-/** Runs the CLI and sets the exit code. */
+/**
+ * Runs the CLI and sets the exit code.
+ *
+ * @internal
+ */
 export function run(): void {
   main().then(code => {
     process.exitCode = code;

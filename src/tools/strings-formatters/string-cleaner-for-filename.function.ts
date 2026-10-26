@@ -3,6 +3,8 @@
  *
  * @param source the string to clean.
  * @returns the cleaned string.
+ *
+ * @internal
  */
 export function cleanString(source: string): string {
   let r = source.toLowerCase();

@@ -1,6 +1,8 @@
 /* eslint-disable no-shadow */
 /**
  * File types that can be included with the `component` directive. `.md` and `.txt` are converted from Markdown.
+ *
+ * @featurePart directive.component
  */
 export enum SupportedFormats {
   html = '.html',

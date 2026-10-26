@@ -1,6 +1,8 @@
 /* eslint-disable no-shadow */
 /**
  * Keys of all the options that can be set in the configuration file. See `YassbConfig` in `src/yassb.ts`.
+ *
+ * @internal
  */
 export enum OptionsKeys {
   username = 'username',

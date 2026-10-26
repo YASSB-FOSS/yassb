@@ -6,6 +6,16 @@ import type { ParsedArgs } from '../args';
 
 /**
  * `yassb serve [--port <n>]`: serves the output folder as it is, without building.
+ *
+ * @feature cli.serve
+ * @summary yassb serve: serves the output folder without building.
+ * @usage yassb serve [--port <n>]
+ * @options --port <n>: port (default devServerPort or 3000).
+ * @rules Uses the same routing as watch, without live reload; loads the configuration only to find the output folder and languages.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related behaviour.dev-server
  */
 export async function serveCommand(args: ParsedArgs): Promise<number> {
   let devServerPort: number | undefined;

@@ -12,6 +12,16 @@ import { YassbBaseDirective } from '../yassb-base-directive.class';
 /**
  * `<!-- public-file-list="downloads" renderer="filesList" -->`: lists the files of a folder of `out`
  * (recursively) and passes them to a custom renderer as `[{ absolutePath, absoluteUrl }]`.
+ *
+ * @feature directive.public-file-list
+ * @summary Lists the files of a folder of the output and renders them with a custom renderer.
+ * @usage <!-- public-file-list="assets/downloads" renderer="filesList" -->
+ * @options renderer (required, must be in customRenderers); options: JSON passed to the renderer.
+ * @rules The folder is relative to the output folder and scanned recursively in name order; source is [{ absolutePath, absoluteUrl }], sourcePath the scanned folder; only files already in the output are listed (assets are copied first).
+ * @errors PUBLIC_FILE_LIST_RENDERER_NOT_FOUND, PUBLIC_FILE_LIST_NOT_FOUND
+ * @status stable
+ * @since 1.0.0
+ * @related api.custom-renderers, assets.copy
  */
 export class PublicFileList extends YassbBaseDirective implements YassbDirective {
 

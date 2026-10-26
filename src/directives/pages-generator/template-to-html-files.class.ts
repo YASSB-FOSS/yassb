@@ -22,6 +22,16 @@ import { GENERATED_PAGES } from './generated-pages.store';
  * Output: `out/<template folder>/<file's subfolder>/<slug>.html`, where the slug is the front matter `slug`,
  * else the title (front matter `title`, else the first `# Title`), else the file name.
  * Front matter placeholders (`{ title }`) are replaced right away and again at the end of the build.
+ *
+ * @feature directive.generate-from-files
+ * @summary Generates one page per Markdown/text file from a template in pages-to-generate.
+ * @usage In src/app/pages-to-generate/blog/post.html: <h1>{ title }</h1> <!-- generate-from-files="blog" -->
+ * @options The value is a folder relative to src/app (workingDir.posts); USERNAME is replaced.
+ * @rules The directive must be in the template file itself, not in a component; .md and .txt files are read recursively; output is <out>/<template folder>/<file sub-folder>/<slug>.html with slug = front matter slug, else the title in kebab-case, else the file name; front matter placeholders are replaced at once and again in post-processing; generated pages then go through all directives; with i18n only templates inside a language folder (pages-to-generate/en/...) are translated, so a multi-language blog needs one template per language.
+ * @errors TEMPLATE_NO_DIRECTIVE, TEMPLATE_SOURCE_NOT_FOUND, MARKDOWN_EMPTY
+ * @status stable
+ * @since 1.0.0
+ * @related content.markdown, content.front-matter
  */
 export class TemplateToHtmlFiles {
 

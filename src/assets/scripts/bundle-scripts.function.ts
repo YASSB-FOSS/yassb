@@ -6,7 +6,11 @@ import { describeError, report } from '../../diagnostics/diagnostics';
 import type { YassbConfig } from '../../yassb';
 import { assetsFileNameMaker } from '../assets-file-name-maker.function';
 
-/** Bundled JavaScript, ready to be written. */
+/**
+ * Bundled JavaScript, ready to be written.
+ *
+ * @internal
+ */
 export interface ScriptsBundle {
   /** Writes the bundle to `scriptsOutFolder`. */
   write(): void;
@@ -20,6 +24,16 @@ export interface ScriptsBundle {
  * The result is kept in memory and written at the end of the build.
  *
  * A legacy `webpackConfig` is run with the site's own webpack instead.
+ *
+ * @feature assets.scripts
+ * @summary The browser script entry is bundled with esbuild.
+ * @usage src/app/scripts/main.ts (imports, npm packages, TS/JSX) → <out>/assets/js/main-<version>.min.js
+ * @options config.esbuildOptions (merged), config.webpackConfig (legacy, webpack from the site), workingDir.scripts / scriptsOutFolder.
+ * @rules IIFE for the browser, target es2018, minified in build, inline source map in watch, process.env.NODE_ENV = "production", JSX settings from tsconfig.json; bundled in parallel and written at the end of the build; an empty entry is created if missing.
+ * @errors SCRIPTS_FAILED
+ * @status stable
+ * @since 1.0.0
+ * @related directive.include-script-src, assets.file-names
  */
 export async function bundleScripts(config: YassbConfig, watchMode: boolean): Promise<ScriptsBundle | undefined> {
   mkdirSync(WORKING_DIR.scriptsOutFolder, { recursive: true });

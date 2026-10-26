@@ -3,6 +3,8 @@ import type { YassbConfig, YassbDirectiveProps } from '../yassb';
 /**
  * Base class for directives: copies `YassbDirectiveProps` onto protected properties.
  * Exported as `YassbBaseDirective` by `yassb-web` and `yassb-web/tools`.
+ *
+ * @featurePart api.custom-directives
  */
 export class YassbBaseDirective {
 

@@ -7,6 +7,16 @@ import { RENDERERS_STORE } from './renderers-store.constant';
 /**
  * Calls the renderer named in a directive. Without a (known) renderer, falls back on `basicElement` as 1.x did,
  * and reports it. Exceptions thrown by renderers are reported with the directive's location.
+ *
+ * @feature api.custom-renderers
+ * @summary Site-defined functions that turn data into HTML for create-from-data-source and public-file-list.
+ * @usage export function newsList({ source, options, lang }: RendererProps<News[], { limit?: number }>): string { ... }  then customRenderers: { newsList }
+ * @options Props: source, sourcePath, options, lang, currentFilePath, config, frontMatterStore.
+ * @rules A renderer returns a string and must not write files; without renderer attribute basicElement is used (warning), with an unknown name basicElement is used (error); a throwing renderer fails the build with the directive location and inserts nothing; emitted <span data-t="KEY"> is translated afterwards.
+ * @errors RENDERER_MISSING, RENDERER_NOT_FOUND, RENDERER_FAILED
+ * @status stable
+ * @since 1.0.0
+ * @related config.customRenderers, directive.create-from-data-source, i18n.translation
  */
 export class RenderersCaller<T> {
 

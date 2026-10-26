@@ -14,6 +14,9 @@ import { COMPILED_FILES, SourceCompileError } from './ts-require-hook';
 import { workingDirSetter } from './working-dir-setter.function';
 import { WORKING_DIR } from './working-dir.constant';
 
+/**
+ * @internal
+ */
 export interface SetupOptions {
   /** Replaces `workingDir.out` (absolute or relative to the project root). */
   outDir?: string;
@@ -21,17 +24,26 @@ export interface SetupOptions {
   createDirs?: boolean;
 }
 
+/**
+ * @internal
+ */
 export interface SetupResult {
   config: YassbConfig;
   /** Config files that were loaded, in merge order. */
   configFiles: Array<string>;
 }
 
-/** Thrown when the configuration cannot be loaded. The problem has already been reported as a diagnostic. */
+/**
+ * Thrown when the configuration cannot be loaded. The problem has already been reported as a diagnostic.
+ *
+ * @internal
+ */
 export class ConfigLoadError extends Error { }
 
 /**
  * Packages that 1.x installed as its own dependencies. Sites sometimes imported them without declaring them.
+ *
+ * @featurePart config.files
  */
 export const FORMER_DEPENDENCIES = [
   'amd-loader', 'cheerio', 'clean-css', 'config', 'create-html-element', 'express', 'fs-extra', 'html-minifier',
@@ -41,6 +53,8 @@ export const FORMER_DEPENDENCIES = [
 
 /**
  * Clears every store of the previous run (languages, renderers, front matter, caches).
+ *
+ * @internal
  */
 export function resetBuildState(): void {
   clearFileCache();
@@ -55,6 +69,8 @@ export function resetBuildState(): void {
  *
  * @returns the configuration, with `workingDir` replaced by the absolute paths of `WORKING_DIR`.
  * @throws ConfigLoadError if the configuration cannot be loaded (already reported).
+ *
+ * @internal
  */
 export function setupYassb(options: SetupOptions = {}): SetupResult {
   resetBuildState();
@@ -103,6 +119,8 @@ export function setupYassb(options: SetupOptions = {}): SetupResult {
 /**
  * Site files (TypeScript/JavaScript) loaded by the configuration, outside node_modules.
  * Used by `watch` to know which changes need a full rebuild, and by `check` for undeclared imports.
+ *
+ * @internal
  */
 export function loadedSiteModules(): Array<string> {
   const root = process.cwd();
@@ -115,6 +133,8 @@ export function loadedSiteModules(): Array<string> {
 
 /**
  * Packages imported by site files but not declared in the site's package.json.
+ *
+ * @featurePart cli.check
  */
 export function undeclaredImports(files: Array<string>): Array<{ pkg: string; file: string }> {
   const packageJsonPath = resolve(process.cwd(), 'package.json');

@@ -7,6 +7,8 @@ import { UrlTo } from '../directives/url-to/url-to.class';
 
 /**
  * Names of the built-in directives, as written in HTML.
+ *
+ * @internal
  */
 export enum SupportedDirectives {
   component = 'component',
@@ -21,6 +23,8 @@ export enum SupportedDirectives {
 /**
  * Built-in directives run on every file after `component` (see `DirectivesInvoker`), in this order.
  * `component` and `generate-from-files` are handled separately (`DirectivesParser`, `GeneratePagesFromMd`).
+ *
+ * @featurePart behaviour.pipeline
  */
 export const BUILT_IN_DIRECTIVES = [
   HtmlFromDataSource,

@@ -13,13 +13,31 @@ const EXTENSIONS = ['.ts', '.tsx', '.mts', '.cts', '.jsx'];
 
 let installed = false;
 
-/** Files compiled by the hook in this process (used to know which site modules the config loaded). */
+/**
+ * Files compiled by the hook in this process (used to know which site modules the config loaded).
+ *
+ * @internal
+ */
 export const COMPILED_FILES = new Set<string>();
 
+/**
+ * @internal
+ */
 export function isBun(): boolean {
   return typeof (process.versions as { bun?: string }).bun === 'string';
 }
 
+/**
+ * @feature behaviour.site-code
+ * @summary Configuration and site code can be TypeScript, TSX or JavaScript.
+ * @usage config/default.ts importing builder/renderers.tsx
+ * @options The site's tsconfig.json (jsx, decorators, class fields).
+ * @rules Under Node each file is compiled on its own to CommonJS with esbuild (like ts-node --transpile-only): __dirname, relative imports and require work as in Node; no type checking; stack traces point to the TS lines; Bun runs TypeScript natively; a syntax error is reported with file and line.
+ * @errors CONFIG_LOAD_FAILED
+ * @status stable
+ * @since 1.0.0
+ * @related config.files
+ */
 export function installTsRequireHook(): void {
   if (installed || isBun())
     return;
@@ -65,7 +83,11 @@ export function installTsRequireHook(): void {
     processWithSourceMaps.setSourceMapsEnabled(true);
 }
 
-/** A site file could not be compiled (syntax error). */
+/**
+ * A site file could not be compiled (syntax error).
+ *
+ * @featurePart behaviour.site-code
+ */
 export class SourceCompileError extends Error {
   constructor(message: string, public file: string, public line?: number, public lineText?: string) {
     super(`${file}${line ? `:${line}` : ''}: ${message}`);

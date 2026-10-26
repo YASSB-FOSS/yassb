@@ -2,6 +2,8 @@ import { FRONT_MATTER_DATA_STORE, FrontMatterData } from './front-matter-store.c
 
 /**
  * Reads and writes the front matter of pages in `FRONT_MATTER_DATA_STORE`, by absolute output path.
+ *
+ * @featurePart content.front-matter
  */
 export class FrontMatterHandler {
 

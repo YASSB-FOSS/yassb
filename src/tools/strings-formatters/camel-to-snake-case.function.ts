@@ -7,6 +7,8 @@ import { cleanString } from './string-cleaner-for-filename.function';
  * @param source the stirng to format.
  * @param [clean] disables cleaning the string from special characters.
  * @returns the string formatted in snake_case
+ *
+ * @internal
  */
 export function camelToSnakeCase(source: string, clean: boolean = true): string {
   let kebab = source.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1_$2').toLowerCase();

@@ -7,6 +7,8 @@ import type { YassbConfig } from '../yassb';
 
 /**
  * URLs of every file currently in `out`, as listed in `sitemap.xml`. Used by `url-to`.
+ *
+ * @featurePart behaviour.sitemap
  */
 export const SITEMAP_URLS: Array<string> = [];
 
@@ -16,6 +18,16 @@ export const SITEMAP_URLS: Array<string> = [];
  * It is regenerated before each language is processed, so `url-to` sees the pages copied so far.
  * The XML is the same as the one written by `xml-sitemap` in 1.x. Without `siteHost` the host is `http://fake.host/`
  * and the file is deleted at the end of the build; with `sitemap: false` it is never written.
+ *
+ * @feature behaviour.sitemap
+ * @summary sitemap.xml lists every file of the output; it is also the list url-to searches.
+ * @usage <out>/sitemap.xml with <loc>https://example.com/en/index.html</loc> entries
+ * @options config.siteHost (keeps the file and is the host of the URLs), config.sitemap: false (never written).
+ * @rules Regenerated before each language is processed; includes assets and every file; without siteHost the host is http://fake.host/ and the file is deleted at the end of the build (after post-processing); post processors may replace it.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related directive.url-to, config.siteHost, config.sitemap
  */
 export class SitemapGenerator {
 

@@ -7,6 +7,8 @@ import { PostProcessFile } from './post-process-file.class';
 
 /**
  * Post-processes every HTML file of `out`, then deletes `sitemap.xml` if `siteHost` is not set (as 1.x did).
+ *
+ * @featurePart behaviour.post-processing
  */
 export class PostProcessFiles {
 

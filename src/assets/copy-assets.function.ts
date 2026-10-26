@@ -7,6 +7,8 @@ import { WORKING_DIR } from '../config/working-dir.constant';
  * so repeated builds (watch mode) only copy what changed.
  *
  * @returns the number of files copied.
+ *
+ * @internal
  */
 export function copyDirIncremental(from: string, to: string): number {
   if (!existsSync(from))
@@ -35,6 +37,16 @@ export function copyDirIncremental(from: string, to: string): number {
 
 /**
  * Copies `src/assets` to `out/assets` (same relative path as in `src`).
+ *
+ * @feature assets.copy
+ * @summary src/assets is copied as it is to the output.
+ * @usage src/assets/img/logo.png → <out>/assets/img/logo.png
+ * @options workingDir.assets changes the folder.
+ * @rules Copied first, before pages; files with unchanged size and modification time are skipped; files deleted from src stay in the output unless cleanOut.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related config.cleanOut
  */
 export function copyAssets(): number {
   const relativeAssetsPath = relative(WORKING_DIR.src, WORKING_DIR.assets);
@@ -43,6 +55,8 @@ export function copyAssets(): number {
 
 /**
  * Copies every file of `pages` into `out/<lang>` (or `out`), overwriting the pages processed by the previous build.
+ *
+ * @featurePart behaviour.pipeline
  */
 export function copyPages(lang?: string): void {
   const dest = lang ? resolve(WORKING_DIR.out, lang) : WORKING_DIR.out;
@@ -65,6 +79,8 @@ function copyAll(from: string, to: string): void {
 
 /**
  * Empties the output folder, keeping dot files at its root (`.git`, `.nojekyll`, …).
+ *
+ * @featurePart config.cleanOut
  */
 export function cleanOut(): void {
   if (!existsSync(WORKING_DIR.out))

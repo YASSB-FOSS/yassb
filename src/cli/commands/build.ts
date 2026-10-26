@@ -6,6 +6,16 @@ import type { ParsedArgs } from '../args';
 
 /**
  * `yassb build [--strict] [--clean] [--out <dir>] [--json]`
+ *
+ * @feature cli.build
+ * @summary yassb build: production build of the site.
+ * @usage yassb build [--strict] [--clean] [--out <dir>] [--json]
+ * @options --strict: exit 1 on any error; --clean: empty the output first (dot files kept); --out <dir>: build into another folder; --json: print { ok, durationMs, out, diagnostics } instead of logs.
+ * @rules Pages minified with htmlMinificationOptions, scripts minified; exit code 1 when site code throws, the config cannot load, a data source/stylesheet is invalid, or with --strict on any error; prints a summary with error/warning counts.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related behaviour.pipeline, behaviour.diagnostics, config.strict, config.cleanOut
  */
 export async function buildCommand(args: ParsedArgs): Promise<number> {
   const json = args.flags.json === true;
@@ -29,6 +39,9 @@ export async function buildCommand(args: ParsedArgs): Promise<number> {
   return result.ok ? 0 : 1;
 }
 
+/**
+ * @internal
+ */
 export function printSummary(ok: boolean, durationMs: number, out: string, diagnostics: Array<{ level: string; fatal?: boolean }>): void {
   const errors = diagnostics.filter(item => item.level === 'error').length;
   const warnings = diagnostics.filter(item => item.level === 'warning').length;
@@ -42,6 +55,9 @@ export function printSummary(ok: boolean, durationMs: number, out: string, diagn
     console.log(`\n✓ Built in ${formatMs(durationMs)}${where} — ${counts}`);
 }
 
+/**
+ * @internal
+ */
 export function formatMs(ms: number): string {
   return ms >= 1000 ? `${(ms / 1000).toFixed(2)} s` : `${Math.round(ms)} ms`;
 }

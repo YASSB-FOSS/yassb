@@ -20,6 +20,9 @@ import { installTsRequireHook } from './ts-require-hook';
 const EXTENSIONS = ['js', 'cjs', 'ts', 'cts', 'mts', 'tsx', 'json'];
 const UNSUPPORTED_EXTENSIONS = ['json5', 'hjson', 'toml', 'coffee', 'iced', 'yaml', 'yml', 'cson', 'properties', 'xml'];
 
+/**
+ * @internal
+ */
 export interface LoadedConfig {
   config: YassbConfig;
   /** Absolute paths of the files that were merged, in order. */
@@ -28,6 +31,17 @@ export interface LoadedConfig {
   skippedFiles: Array<string>;
 }
 
+/**
+ * @feature config.files
+ * @summary The configuration is read from config/ with the rules of the config npm package.
+ * @usage config/default.ts → export default { ... } as YassbConfig; config/production.ts merged when NODE_ENV=production.
+ * @options NODE_CONFIG_DIR (folder, several separated by :), NODE_CONFIG_ENV / NODE_ENV (deployment, default development), NODE_APP_INSTANCE, HOST/HOSTNAME, NODE_CONFIG (JSON merged last).
+ * @rules Files merged in order: default, {deployment}, {host}, {host}-{deployment}, local, local-{deployment}, each also as {name}-{instance}; extensions .js .cjs .ts .cts .mts .tsx .json; export default or module.exports; plain objects are merged deeply, arrays/functions/classes replaced; YAML/TOML/other formats are reported and skipped; a missing package imported by the config is explained (packages yassb-web 1.x used to install are named).
+ * @errors CONFIG_LOAD_FAILED, CONFIG_MODULE_NOT_FOUND, CONFIG_UNSUPPORTED_FILE
+ * @status stable
+ * @since 1.0.0
+ * @related api.define-config, behaviour.site-code
+ */
 export function loadConfig(cwd: string = process.cwd()): LoadedConfig {
   const dirs = configDirs(cwd);
   const names = configFileNames();
@@ -124,7 +138,11 @@ function isPlainObject(value: unknown): value is { [key: string]: unknown } {
   return proto === Object.prototype || proto === null;
 }
 
-/** Deep merge of plain objects; any other value replaces the previous one. */
+/**
+ * Deep merge of plain objects; any other value replaces the previous one.
+ *
+ * @internal
+ */
 export function mergeDeep(target: { [key: string]: unknown }, source: unknown): { [key: string]: unknown } {
   if (!isPlainObject(source))
     return target;

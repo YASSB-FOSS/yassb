@@ -26,6 +26,8 @@ import type { BuildResult, YassbConfig } from '../yassb';
  *    delete `sitemap.xml` unless `siteHost` is set;
  * 6. compile the stylesheet; write the scripts bundle;
  * 7. `afterBuild` hook.
+ *
+ * @featurePart behaviour.pipeline
  */
 
 export interface BuildSteps {
@@ -37,6 +39,9 @@ export interface BuildSteps {
   scripts?: boolean;
 }
 
+/**
+ * @featurePart behaviour.pipeline
+ */
 export interface BuildOptions {
   /** `yassb watch` mode: no minification, live-reload script injected. */
   watchMode?: boolean;
@@ -53,7 +58,11 @@ export interface BuildOptions {
   onSetup?: (info: SetupInfo) => void;
 }
 
-/** What the watcher needs to know about a project. */
+/**
+ * What the watcher needs to know about a project.
+ *
+ * @featurePart behaviour.pipeline
+ */
 export interface SetupInfo {
   out: string;
   src: string;
@@ -65,7 +74,11 @@ export interface SetupInfo {
   configFiles: Array<string>;
 }
 
-/** Build result with the details used by `watch`, `check` and `inspect`. */
+/**
+ * Build result with the details used by `watch`, `check` and `inspect`.
+ *
+ * @featurePart behaviour.pipeline
+ */
 export interface DetailedBuildResult extends BuildResult {
   /** Files read by each step, to rebuild only what a change affects. */
   inputs: {
@@ -82,6 +95,16 @@ export interface DetailedBuildResult extends BuildResult {
 
 /**
  * Runs a build in the current folder (`process.cwd()` is the project root, as in 1.x).
+ *
+ * @feature behaviour.pipeline
+ * @summary The fixed order in which a build processes a site.
+ * @usage yassb build, yassb watch, or programmatically: await runBuild({ strict: true }) in the project folder.
+ * @options BuildOptions: watchMode, steps { html, styles, scripts }, strict, clean, outDir.
+ * @rules config → beforeBuild → assets copy → scripts bundling starts → generate-from-files → for each language: copy pages (all files of pages/), list output files (url-to, sitemap), then per HTML page: components → front matter → built-in directives → custom directives → translation → post-processing of every HTML file of the output → styles → scripts written → afterBuild; directives left in a page after processing are reported.
+ * @errors DIRECTIVE_UNPROCESSED
+ * @status stable
+ * @since 1.0.0
+ * @related behaviour.post-processing, api.custom-directives, i18n.translation
  */
 export async function runBuild(options: BuildOptions = {}): Promise<DetailedBuildResult> {
   const startedAt = performance.now();

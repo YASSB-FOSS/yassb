@@ -27,6 +27,8 @@ import type { YassbConfig } from '../yassb';
  * Static description of a YASSB project, built without running a build or any renderer.
  * Paths are relative to the project root, except component and data source names, which are relative to their
  * folders (as written in directives).
+ *
+ * @featurePart cli.inspect
  */
 export interface ProjectManifest {
   yassb: { version: string };
@@ -68,6 +70,9 @@ export interface ProjectManifest {
   diagnostics: Array<Diagnostic>;
 }
 
+/**
+ * @featurePart cli.inspect
+ */
 export interface DirectiveUse {
   /** `component`, `create-from-data-source`, `public-file-list`, `url-to`, `include-script-src`, `include-styles-src`, `generate-from-files`, or the class name of a custom directive. */
   type: string;
@@ -81,6 +86,9 @@ export interface DirectiveUse {
   exists?: boolean;
 }
 
+/**
+ * @featurePart cli.inspect
+ */
 export interface PageInfo {
   source: string;
   outputs: Array<string>;
@@ -92,6 +100,9 @@ export interface PageInfo {
   i18nKeys: Array<string>;
 }
 
+/**
+ * @featurePart cli.inspect
+ */
 export interface TemplateInfo {
   source: string;
   from?: string;
@@ -100,12 +111,18 @@ export interface TemplateInfo {
   directives: Array<DirectiveUse>;
 }
 
+/**
+ * @featurePart cli.inspect
+ */
 export interface ComponentInfo {
   name: string;
   file: string;
   usedBy: Array<string>;
 }
 
+/**
+ * @featurePart cli.inspect
+ */
 export interface DataSourceInfo {
   name: string;
   file: string;
@@ -113,6 +130,9 @@ export interface DataSourceInfo {
   usedBy: Array<{ file: string; line: number; renderer?: string }>;
 }
 
+/**
+ * @featurePart cli.inspect
+ */
 export interface RendererInfo {
   name: string;
   builtIn: boolean;
@@ -128,6 +148,8 @@ interface ScanResult {
 /**
  * Builds the manifest of the project in the current folder. Loads the configuration (to know folders, renderers
  * and custom directives) but runs nothing else and writes nothing.
+ *
+ * @featurePart cli.inspect
  */
 export function inspectProject(): ProjectManifest {
   DIAGNOSTICS.reset();
@@ -481,7 +503,11 @@ function withGlobal(regex: RegExp): RegExp {
   return new RegExp(regex.source, regex.flags.includes('g') ? regex.flags : `${regex.flags}g`);
 }
 
-/** Translation keys written in HTML: `data-t="KEY"`, text of `data-t` elements, `<attr>-t="KEY"` with `data-attr-t`. */
+/**
+ * Translation keys written in HTML: `data-t="KEY"`, text of `data-t` elements, `<attr>-t="KEY"` with `data-attr-t`.
+ *
+ * @internal
+ */
 export function i18nKeysOf(html: string): Set<string> {
   const keys = new Set<string>();
   if (!html.includes('data-t') && !html.includes('data-attr-t'))
@@ -502,7 +528,11 @@ export function i18nKeysOf(html: string): Set<string> {
   return keys;
 }
 
-/** Flat keys of a translation file (nested objects become dotted keys). */
+/**
+ * Flat keys of a translation file (nested objects become dotted keys).
+ *
+ * @internal
+ */
 export function flattenKeys(translations: { [key: string]: unknown }, prefix: string = ''): Array<string> {
   const keys: Array<string> = [];
   for (const [key, value] of Object.entries(translations)) {

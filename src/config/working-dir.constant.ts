@@ -3,6 +3,8 @@ import type { WorkingDirConfig } from '../yassb';
 /**
  * Absolute paths of the project folders, set by `workingDirSetter` at the start of every run.
  * See `WorkingDirConfig` in `src/yassb.ts` for what each folder holds and its default.
+ *
+ * @internal
  */
 export const WORKING_DIR: WorkingDirConfig = {
   base: undefined as unknown as string,

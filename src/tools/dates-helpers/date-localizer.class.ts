@@ -5,6 +5,8 @@
  * - `2020` → `2020`
  * - `2020/03` → `March 2020` (en), `marzo 2020` (it)
  * - `2020/03/05` → `March 5, 2020` (en), `5 marzo 2020` (it)
+ *
+ * @featurePart renderer.liDateDescription
  */
 export class DateLocalizer {
 

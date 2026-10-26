@@ -17,6 +17,9 @@ import { HtmlElement, escapeAttribute, escapeText, parseElements, textContent } 
 
 type Translations = { [key: string]: unknown };
 
+/**
+ * @featurePart i18n.translation
+ */
 export interface TranslatorOptions {
   /** Insert translations as HTML instead of text. */
   allowHtml?: boolean;
@@ -28,6 +31,17 @@ interface Edit {
   text: string;
 }
 
+/**
+ * @feature i18n.translation
+ * @summary Translates marked text and attributes of every page into each language.
+ * @usage <h1 data-t="HOME.TITLE">Welcome</h1>  <p data-t>Welcome</p>  <img data-attr-t alt-t="HOME.LOGO">  <p data-t="GREET" data-t-interpolate>
+ * @options config.i18n.allowHtml inserts translations as HTML; data-t-interpolate / data-attr-t-interpolate replace {{KEY}} placeholders.
+ * @rules Runs after all directives, so renderer output is translated; data-t with no value uses the element text as key; any <attr>-t on an element with data-attr-t sets <attr>; keys are flat ("HOME.TITLE") or nested objects; a missing key keeps the original text; translation attributes are removed; only translated elements are rewritten, the rest of the page is kept byte for byte; translations are escaped as text unless allowHtml; pages outside language folders are not translated.
+ * @errors I18N_MISSING_KEY, I18N_INVALID_FILE, I18N_UNCLOSED_ELEMENT
+ * @status stable
+ * @since 1.0.0
+ * @related i18n.languages, config.i18n
+ */
 export class Translator {
 
   /** Keys found in pages, translated or not. */

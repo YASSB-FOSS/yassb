@@ -15,6 +15,16 @@ import { YassbBaseDirective } from '../yassb-base-directive.class';
  *
  * Reads the JSON file (relative to the data-sources folder) and replaces the directive with the HTML returned by
  * the renderer. The renderer receives the parsed JSON as `source` and its absolute path as `sourcePath`.
+ *
+ * @feature directive.create-from-data-source
+ * @summary Renders a JSON data source with a renderer and inserts the resulting HTML.
+ * @usage <!-- create-from-data-source="people/team.json" renderer="peopleCards" options="{"limit":3}" -->
+ * @options renderer: name in customRenderers or a built-in renderer (default basicElement); options: JSON passed to the renderer as props.options.
+ * @rules One JSON file per directive, path relative to src/app/data-sources (sub-folders allowed); the file is parsed again for every directive, so renderers may mutate their data; the renderer receives source (parsed JSON) and sourcePath; every occurrence of the same directive text in the file is replaced; a missing file or name leaves the comment (removed by the minifier) and is reported; invalid JSON or a throwing renderer fail the build.
+ * @errors DATA_SOURCE_MISSING_NAME, DATA_SOURCE_NOT_FOUND, DATA_SOURCE_INVALID_JSON
+ * @status stable
+ * @since 1.0.0
+ * @related api.custom-renderers, directive.attributes, renderer.basicElement
  */
 export class HtmlFromDataSource extends YassbBaseDirective implements YassbDirective {
 

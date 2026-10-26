@@ -7,6 +7,16 @@ import { YassbBaseDirective } from '../yassb-base-directive.class';
 
 /**
  * `<!-- include-styles-src -->` → `<link rel="stylesheet" href="/assets/css/styles-1-0-0.min.css">`.
+ *
+ * @feature directive.include-styles-src
+ * @summary Inserts the stylesheet link of the compiled CSS.
+ * @usage <!-- include-styles-src -->  →  <link rel="stylesheet" href="/assets/css/styles-1-0-0.min.css">
+ * @options none
+ * @rules The text must be exactly <!-- include-styles-src -->; the URL follows workingDir.styles, workingDir.stylesOutFolder and the version of package.json.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related assets.styles, assets.file-names
  */
 export class InsertStylesSrc extends YassbBaseDirective implements YassbDirective {
 

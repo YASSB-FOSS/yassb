@@ -20,7 +20,19 @@ export { checkProject } from './check/site-checks';
 export type { CheckReport } from './check/site-checks';
 export { DIAGNOSTIC_CODES, formatDiagnostic } from './diagnostics/diagnostics';
 
-/** Types a configuration: `export default defineConfig({ ... })`. */
+/**
+ * Types a configuration: `export default defineConfig({ ... })`.
+ *
+ * @feature api.define-config
+ * @summary Identity helper that types a configuration file.
+ * @usage import { defineConfig } from 'yassb-web'; export default defineConfig({ siteHost: 'https://example.com' });
+ * @options none
+ * @rules Equivalent to `export default {...} as YassbConfig`; requires yassb-web installed in the site because it is a runtime import.
+ * @errors none
+ * @status stable
+ * @since 2.0.0
+ * @related config.files
+ */
 export function defineConfig(config: YassbConfig): YassbConfig {
   return config;
 }

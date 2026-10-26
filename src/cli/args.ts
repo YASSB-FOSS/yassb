@@ -1,5 +1,7 @@
 /**
  * Minimal argument parser: `yassb <command> [positionals] [--flag] [--key value] [--key=value]`.
+ *
+ * @internal
  */
 export interface ParsedArgs {
   command: string | undefined;
@@ -10,6 +12,9 @@ export interface ParsedArgs {
 /** Flags that take a value when written as `--key value`. */
 const VALUE_FLAGS = new Set(['port', 'out', 'steps', 'section']);
 
+/**
+ * @internal
+ */
 export function parseArgs(argv: Array<string>): ParsedArgs {
   const positionals: Array<string> = [];
   const flags: { [name: string]: string | boolean } = {};

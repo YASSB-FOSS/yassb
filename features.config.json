@@ -1,0 +1,9 @@
+{
+  "$comment": "Feature catalogue check (scripts/check-features.ts). Every feature id must be referenced with <!-- feature: id --> in each docs target; enforce:false only reports.",
+  "sources": "src",
+  "manifest": "docs/features.json",
+  "docs": [
+    { "path": "docs/guide.md", "enforce": true },
+    { "path": "landing/src/app/guides", "enforce": false }
+  ]
+}

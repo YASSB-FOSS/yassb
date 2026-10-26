@@ -4,6 +4,8 @@ import { VOID_ELEMENTS } from '../../html/html-scanner';
  * Builds an HTML element, like the `create-html-element` package used by 1.x:
  * the default tag is `div`; `html` is inserted as is; attribute values are escaped; `true` writes a bare
  * attribute, `false` skips it, arrays are joined with spaces.
+ *
+ * @featurePart renderer.basicElement
  */
 export function htmlElement({ name = 'div', attributes = {}, html = '' }: { name?: string; attributes?: { [name: string]: unknown }; html?: string }): string {
   let attrs = '';

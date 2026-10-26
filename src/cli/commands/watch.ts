@@ -32,6 +32,17 @@ interface Plan {
 
 const FULL: Plan = { html: true, styles: true, scripts: true };
 
+/**
+ * @feature cli.watch
+ * @summary yassb watch: build, serve with live reload, rebuild on every change.
+ * @usage yassb watch [--port <n>] [--clean] [--strict]
+ * @options --port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build.
+ * @rules The whole project is watched except the output folder, node_modules, .git and editor temp files; every build runs in a fresh child process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.
+ * @errors BUILD_CRASHED
+ * @status stable
+ * @since 1.0.0
+ * @related behaviour.dev-server, behaviour.live-reload, behaviour.site-code
+ */
 export async function watchCommand(args: ParsedArgs): Promise<void> {
   await new WatchSession(args).start();
 }

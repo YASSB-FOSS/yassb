@@ -10,6 +10,9 @@ import { YassbBaseDirective } from '../yassb-base-directive.class';
 import { FindClosestPath } from './find-closest-path.class';
 import { SuggestBestMatch } from './suggest-best-match.class';
 
+/**
+ * @featurePart directive.url-to
+ */
 export interface UrlToOptions {
   warning: boolean;
 }
@@ -18,6 +21,16 @@ export interface UrlToOptions {
  * `{{ url-to="fragment#anchor" }}` → absolute URL (`/it/blog/post.html#anchor`) of the file of the site whose URL
  * contains the fragment (also tried in kebab-case and snake_case). With several matches the closest file wins;
  * `options="{"warning":false}"` silences the warning.
+ *
+ * @feature directive.url-to
+ * @summary Replaced by the absolute URL of the output file whose path contains a fragment.
+ * @usage <a href="{{ url-to="about" }}">  <a href="{{ url-to="blog-post#comments" options="{"warning":false}" }}">
+ * @options #anchor is kept; options="{"warning":false}" silences the ambiguity warning.
+ * @rules The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.
+ * @errors URL_TO_EMPTY, URL_TO_NOT_FOUND, URL_TO_AMBIGUOUS
+ * @status stable
+ * @since 1.0.0
+ * @related behaviour.sitemap, config.siteHost
  */
 export class UrlTo extends YassbBaseDirective implements YassbDirective {
 

@@ -11,6 +11,8 @@ import type { WorkingDirConfig, YassbConfig } from '../../yassb';
  * @property `directiveName` name of the directive.
  * @property `directiveMainValue` value of the attribute named like the directive (the file path).
  * @property `fullPath` absolute path of that file.
+ *
+ * @internal
  */
 export interface DirectiveData {
   directiveProps: DirectiveProps;
@@ -27,6 +29,8 @@ export interface DirectiveData {
  * @param directiveName name of the directive (its main attribute).
  * @param baseDir project folder the path is relative to.
  * @param lang current language, replaces `LANG` in the directive.
+ *
+ * @internal
  */
 export function getDirectiveValues(fullDirectiveString: string, configOptions: YassbConfig, directiveName: SupportedDirectives, baseDir: keyof WorkingDirConfig, lang?: string): DirectiveData | undefined {
   const directiveProps = new DirectivePropsGetter(fullDirectiveString, configOptions, lang).parse();

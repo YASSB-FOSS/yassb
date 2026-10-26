@@ -3,6 +3,8 @@ import type { YassbConfig } from '../../yassb';
 
 /**
  * Names of the attributes of built-in directives.
+ *
+ * @internal
  */
 export enum DirectivePropsKeys {
   component = 'component',
@@ -15,12 +17,18 @@ export enum DirectivePropsKeys {
 
 /**
  * Attributes of a directive: `options` is parsed JSON, every other value is a string.
+ *
+ * @internal
  */
 export interface DirectiveProps {
   [key: string]: string | { [key: string]: unknown } | Array<unknown>;
 }
 
-/** Problem found while reading the attributes of a directive. */
+/**
+ * Problem found while reading the attributes of a directive.
+ *
+ * @internal
+ */
 export interface DirectivePropsError {
   code: 'OPTIONS_INVALID_JSON';
   message: string;
@@ -33,6 +41,16 @@ export interface DirectivePropsError {
  * - `LANG` in the directive is replaced by the current language, `USERNAME` by `config.username` (as in 1.x);
  * - `options` holds JSON, written as is inside double (or single) quotes;
  * - other values are read up to the closing quote.
+ *
+ * @feature directive.attributes
+ * @summary Shared attribute syntax of directives: quoted values, JSON options, LANG and USERNAME placeholders.
+ * @usage <!-- create-from-data-source="LANG/news.json" renderer="list" options="{"order":["b","a"],"limit":3}" -->
+ * @options options: JSON (object or array) written as is inside double or single quotes, anywhere in the directive.
+ * @rules Values end at the closing quote; LANG anywhere in the directive (options included) becomes the current language; USERNAME becomes config.username (the text "undefined" if unset); invalid options JSON is reported and ignored.
+ * @errors OPTIONS_INVALID_JSON
+ * @status stable
+ * @since 1.0.0
+ * @related config.username, directive.create-from-data-source
  */
 export class DirectivePropsGetter {
 

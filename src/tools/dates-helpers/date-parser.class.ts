@@ -4,6 +4,8 @@ import { DateLocalizer } from './date-localizer.class';
 /**
  * Formats a `DateModel` (`{ start, end }` or `{ raw }`) as text, e.g. `March 2019 - present`.
  * `end: "-"` becomes `<span data-t="PRESENT"></span>`, translated by i18n.
+ *
+ * @featurePart renderer.liDateDescription
  */
 export class DateParser {
 

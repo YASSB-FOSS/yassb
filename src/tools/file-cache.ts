@@ -7,6 +7,9 @@ import { readFileSync } from 'fs';
  */
 const TEXT_CACHE = new Map<string, string>();
 
+/**
+ * @internal
+ */
 export function readTextCached(path: string): string {
   let text = TEXT_CACHE.get(path);
   if (text === undefined) {
@@ -18,6 +21,9 @@ export function readTextCached(path: string): string {
   return text;
 }
 
+/**
+ * @internal
+ */
 export function clearFileCache(): void {
   TEXT_CACHE.clear();
 }

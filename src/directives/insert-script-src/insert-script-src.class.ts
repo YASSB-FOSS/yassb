@@ -7,6 +7,16 @@ import { YassbBaseDirective } from '../yassb-base-directive.class';
 
 /**
  * `<!-- include-script-src -->` → `<script src="/assets/js/main-1-0-0.min.js"></script>`.
+ *
+ * @feature directive.include-script-src
+ * @summary Inserts the script tag of the bundled browser script.
+ * @usage <!-- include-script-src -->  →  <script src="/assets/js/main-1-0-0.min.js"></script>
+ * @options none
+ * @rules The text must be exactly <!-- include-script-src -->; the URL follows workingDir.scripts, workingDir.scriptsOutFolder and the version of package.json.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related assets.scripts, assets.file-names
  */
 export class InsertScriptSrc extends YassbBaseDirective implements YassbDirective {
 

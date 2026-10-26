@@ -7,6 +7,8 @@ import { TemplateToHtmlFiles } from './template-to-html-files.class';
  * Generates pages from Markdown/text files: for every template in `pages-to-generate`, one page per file of the
  * folder named in its `generate-from-files` directive. Runs before the pages are processed, so generated pages
  * then go through all the other directives.
+ *
+ * @featurePart directive.generate-from-files
  */
 export class GeneratePagesFromMd {
 

@@ -6,6 +6,8 @@ import { readTextCached } from '../file-cache';
 
 /**
  * A text file converted to HTML, with its front matter.
+ *
+ * @internal
  */
 export interface ParsedFile {
   content: string;
@@ -16,6 +18,16 @@ export interface ParsedFile {
  * Reads a Markdown/text file: front matter with gray-matter (`config.grayMatterOption`),
  * content converted to HTML with Showdown (`config.showdownConverterOptions`, default `{ tables: true }`).
  * `excerpt` and `language` found by gray-matter are added to the front matter.
+ *
+ * @feature content.markdown
+ * @summary Markdown/text files are converted to HTML (Showdown) with YAML front matter (gray-matter).
+ * @usage <!-- component="intro.md" -->, or the files of a generate-from-files folder.
+ * @options config.showdownConverterOptions (default { tables: true }); config.grayMatterOption (e.g. excerpt).
+ * @rules Front matter becomes { key } placeholders; excerpt and language found by gray-matter are added to the front matter; empty files are reported.
+ * @errors MARKDOWN_EMPTY
+ * @status stable
+ * @since 1.0.0
+ * @related content.front-matter, directive.generate-from-files
  */
 export class TextFormatterParser {
 

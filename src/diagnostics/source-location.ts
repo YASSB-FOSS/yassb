@@ -8,6 +8,8 @@ import { lineOf } from './diagnostics';
 /**
  * Source file of a file being processed: pages are processed as copies in `out`, so their problems are reported
  * on the original file in `pages` (or on the template, for generated pages).
+ *
+ * @featurePart behaviour.diagnostics
  */
 export function sourceFileOf(fileFullPath: string): string {
   const generated = GENERATED_PAGES.get(fileFullPath);
@@ -23,7 +25,11 @@ export function sourceFileOf(fileFullPath: string): string {
   return existsSync(candidate) ? candidate : fileFullPath;
 }
 
-/** File and line where `needle` (usually a directive) appears, for diagnostics. */
+/**
+ * File and line where `needle` (usually a directive) appears, for diagnostics.
+ *
+ * @featurePart behaviour.diagnostics
+ */
 export function locate(fileFullPath: string, needle?: string): { file: string; line?: number } {
   const file = sourceFileOf(fileFullPath);
   const line = lineOf(file, needle);

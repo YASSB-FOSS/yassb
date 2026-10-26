@@ -3,6 +3,8 @@ import { SitemapGenerator } from '../../sitemap/sitemap-generator.class';
 /**
  * Suggests the URL most similar to a fragment that matched nothing (Dice coefficient on letter pairs,
  * the algorithm of the `string-similarity` package used by 1.x).
+ *
+ * @featurePart directive.url-to
  */
 export class SuggestBestMatch {
 
@@ -27,6 +29,9 @@ export class SuggestBestMatch {
 
 }
 
+/**
+ * @internal
+ */
 export function compareTwoStrings(first: string, second: string): number {
   first = first.replace(/\s+/g, '');
   second = second.replace(/\s+/g, '');

@@ -6,6 +6,16 @@ import { formatMs } from './build';
 
 /**
  * `yassb check [--json] [--out <dir>] [--no-links]`: builds and validates the site. Exit code 1 on errors.
+ *
+ * @feature cli.check
+ * @summary yassb check: builds the site and validates it; exit code 1 on errors.
+ * @usage yassb check [--json] [--out <dir>] [--no-links]
+ * @options --json: report { ok, counts, diagnostics }; --out <dir>: build into another folder; --no-links (same as --links=false): skip the link check.
+ * @rules Builds in production mode (in the configured output unless --out), then adds: translation attributes left in pages, keys missing in some language file, keys never used, broken local href/src, components and data sources not used by any page, packages imported by site code but not declared in package.json; programmatic: checkProject().
+ * @errors I18N_UNTRANSLATED_ATTRIBUTE, I18N_INCONSISTENT_KEYS, I18N_UNUSED_KEY, LINK_BROKEN, UNUSED_COMPONENT, UNUSED_DATA_SOURCE, UNDECLARED_DEPENDENCY
+ * @status stable
+ * @since 2.0.0
+ * @related cli.inspect, behaviour.diagnostics
  */
 export async function checkCommand(args: ParsedArgs): Promise<number> {
   const json = args.flags.json === true;

@@ -6,6 +6,8 @@ import { SitemapGenerator } from '../../sitemap/sitemap-generator.class';
  * Picks, among several URLs matching a `url-to` fragment, the one closest to the current file
  * (fewest path segments between them). Ties go to an `index.html`, else to the first match.
  * Kept identical to 1.x so links resolve to the same pages.
+ *
+ * @featurePart directive.url-to
  */
 export class FindClosestPath {
 

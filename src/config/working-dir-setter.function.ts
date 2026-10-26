@@ -10,6 +10,8 @@ import { WORKING_DIR } from './working-dir.constant';
  * @param workingDir the `workingDir` option of the configuration.
  * @param skipOut skip the creation of the `out` folders (used by `yassb new`).
  * @param createDirs create missing folders and entry files (false for read-only commands such as `inspect`).
+ *
+ * @internal
  */
 export function workingDirSetter(workingDir: Partial<WorkingDirConfig> = {}, skipOut: boolean = false, createDirs: boolean = true): void {
   const base = workingDir.base ? resolve(process.cwd(), workingDir.base) : process.cwd();

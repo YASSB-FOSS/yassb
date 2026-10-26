@@ -3,6 +3,8 @@ import { resolve } from 'path';
 
 /**
  * Lists files recursively starting from a given path, in directory order.
+ *
+ * @internal
  */
 export class ListFiles {
 
@@ -36,7 +38,11 @@ export class ListFiles {
 
 }
 
-/** Whether `path` is an existing directory. */
+/**
+ * Whether `path` is an existing directory.
+ *
+ * @internal
+ */
 export function isDirectory(path: string): boolean {
   try {
     return statSync(path).isDirectory();

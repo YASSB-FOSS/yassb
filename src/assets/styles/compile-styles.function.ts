@@ -6,7 +6,11 @@ import { describeError, report } from '../../diagnostics/diagnostics';
 import type { YassbConfig } from '../../yassb';
 import { assetsFileNameMaker } from '../assets-file-name-maker.function';
 
-/** Result of the styles step. */
+/**
+ * Result of the styles step.
+ *
+ * @internal
+ */
 export interface StylesResult {
   /** Absolute paths of the stylesheets that were read (Sass only). */
   inputs: Array<string>;
@@ -17,6 +21,16 @@ export interface StylesResult {
  *
  * - default: Sass, compressed; imports are resolved from the file, then from the project root (as 1.x did);
  * - `config.stylesParser`: the site's own compiler (e.g. Tailwind), called with the source and destination paths.
+ *
+ * @feature assets.styles
+ * @summary The stylesheet entry is compiled with Sass, or with the site's stylesParser.
+ * @usage src/app/styles/styles.scss → <out>/assets/css/styles-<version>.min.css
+ * @options config.stylesParser, config.skipsStyles, workingDir.styles / stylesOutFolder.
+ * @rules Sass output is compressed, imports resolved from the file and from the project root; compiled after the pages; a Sass error or a throwing stylesParser fails the build; an empty entry is created if missing.
+ * @errors STYLES_FAILED
+ * @status stable
+ * @since 1.0.0
+ * @related directive.include-styles-src, config.stylesParser, assets.file-names
  */
 export async function compileStyles(config: YassbConfig): Promise<StylesResult> {
   mkdirSync(WORKING_DIR.stylesOutFolder, { recursive: true });

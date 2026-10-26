@@ -9,6 +9,16 @@ import type { Diagnostic } from '../diagnostics/diagnostics';
  * - `reload`: pages changed, reload;
  * - `css`: only the stylesheet changed, swap it without reloading;
  * - `status`: errors of the last build, shown in an overlay (or hidden when there are none).
+ *
+ * @feature behaviour.live-reload
+ * @summary In watch mode pages reload by themselves and show build errors.
+ * @usage automatic in yassb watch (script injected before </body>, events on /__yassb/events)
+ * @options none
+ * @rules Reload after a page or script rebuild; CSS swapped without reload after a styles-only rebuild; a badge while rebuilding; an overlay lists the errors of the last build (code, file:line, message, hint), hidden when fixed; status also at /__yassb/status; reloads when the watch process restarts.
+ * @errors none
+ * @status stable
+ * @since 2.0.0
+ * @related cli.watch, behaviour.diagnostics
  */
 export class LiveReloadHub {
 
@@ -62,6 +72,9 @@ export class LiveReloadHub {
 
 }
 
+/**
+ * @featurePart behaviour.live-reload
+ */
 export interface LiveStatus {
   building: boolean;
   errors: Array<Diagnostic>;
@@ -70,6 +83,8 @@ export interface LiveStatus {
 
 /**
  * Script injected before `</body>` of every page in watch mode.
+ *
+ * @featurePart behaviour.live-reload
  */
 export const LIVE_RELOAD_SNIPPET = `<script data-yassb-live-reload>(function(){
 var es=new EventSource('/__yassb/events'),session=null,box=null,badge=null;

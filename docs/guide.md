@@ -32,6 +32,8 @@ To understand an existing site quickly:
 
 ## Project structure
 
+<!-- feature: config.workingDir -->
+
 ```
 config/default.ts            configuration (renderers, custom directives, options)
 src/
@@ -53,7 +55,26 @@ With i18n, every page exists once per language: `src/app/pages/about.html` → `
 
 Assets get versioned names from the site's `package.json` version: `main-1-2-0.min.js`, `styles-1-2-0.min.css`.
 
+## Styles, scripts and assets
+
+<!-- feature: assets.copy, assets.styles, assets.scripts, assets.file-names -->
+
+- `src/assets/` is copied as it is to `<out>/assets/` at the start of every build (unchanged files are skipped).
+  Files deleted from `src/assets` stay in the output unless `cleanOut` is on.
+- `src/app/styles/styles.scss` is compiled with Sass (compressed; imports resolved from the file and from the
+  project root) after the pages, into `<out>/assets/css/styles-<version>.min.css`. With `stylesParser` the site
+  compiles the CSS itself (PostCSS, Tailwind); `skipsStyles: true` disables the step.
+- `src/app/scripts/main.ts` is bundled with esbuild for the browser (IIFE, ES2018, minified in `build`, inline
+  source map in `watch`, `process.env.NODE_ENV` = `"production"`, JSX settings of `tsconfig.json`) into
+  `<out>/assets/js/main-<version>.min.js`. `esbuildOptions` adds esbuild options; a legacy `webpackConfig` is
+  run with the site's own webpack.
+- `<version>` is the `version` of the site's `package.json` with dashes (`1.2.0` → `main-1-2-0.min.js`);
+  `include-styles-src` and `include-script-src` insert the right URLs.
+- Missing entry files are created empty.
+
 ## Commands
+
+<!-- feature: cli.build, cli.watch, cli.serve, cli.new, cli.inspect, cli.check, cli.docs, cli.help -->
 
 | Command | What it does |
 |---|---|
@@ -71,6 +92,8 @@ unknown renderer, unresolved `url-to`…) are printed with file and line but onl
 or `strict: true`.
 
 ## Build pipeline
+
+<!-- feature: behaviour.pipeline, behaviour.post-processing, behaviour.sitemap -->
 
 The order is stable and part of the contract with custom code:
 
@@ -98,10 +121,14 @@ Consequences:
 
 ## Directives
 
+<!-- feature: directive.attributes -->
+
 All directives are HTML comments, except `url-to`. Attribute values use double quotes. `LANG` inside a
 directive is replaced by the current language, `USERNAME` by `config.username`.
 
 ### component
+
+<!-- feature: directive.component -->
 
 ```html
 <!-- component="site/header.html" -->
@@ -114,6 +141,8 @@ Inserts the file (relative to `src/app/components`) and processes its directives
 
 ### create-from-data-source
 
+<!-- feature: directive.create-from-data-source -->
+
 ```html
 <!-- create-from-data-source="people/team.json" renderer="peopleCards" options="{"limit":3,"order":["Bea","Al"]}" -->
 ```
@@ -125,6 +154,8 @@ several files. The directive must fit on one line.
 
 ### public-file-list
 
+<!-- feature: directive.public-file-list -->
+
 ```html
 <!-- public-file-list="assets/downloads" renderer="filesList" -->
 ```
@@ -133,6 +164,8 @@ Lists the files of a folder of the output (recursively) and passes `[{ absoluteP
 renderer registered in `customRenderers`.
 
 ### url-to
+
+<!-- feature: directive.url-to -->
 
 ```html
 <a href="{{ url-to="about" }}">About</a>
@@ -145,12 +178,16 @@ warning is printed. Only files already in the output are visible: with i18n, pag
 
 ### include-styles-src / include-script-src
 
+<!-- feature: directive.include-styles-src, directive.include-script-src -->
+
 ```html
 <!-- include-styles-src -->   → <link rel="stylesheet" href="/assets/css/styles-1-0-0.min.css">
 <!-- include-script-src -->   → <script src="/assets/js/main-1-0-0.min.js"></script>
 ```
 
 ### generate-from-files
+
+<!-- feature: directive.generate-from-files -->
 
 In a template inside `src/app/pages-to-generate/`:
 
@@ -168,6 +205,8 @@ For a multi-language blog, put one template per language: `pages-to-generate/en/
 `pages-to-generate/it/blog/post.html`.
 
 ## Renderers
+
+<!-- feature: api.custom-renderers, renderer.basicElement, renderer.liDateDescription -->
 
 ```ts
 import { RendererProps } from 'yassb-web';
@@ -199,6 +238,8 @@ Built-in renderers:
 
 ## Custom directives
 
+<!-- feature: api.custom-directives -->
+
 For structural needs that `create-from-data-source` cannot express (selections spanning a folder, layouts).
 
 ```ts
@@ -228,6 +269,8 @@ Register it: `customDirectives: [YearDirective]`. Facts to rely on:
 
 ## Translations (i18n)
 
+<!-- feature: i18n.languages, i18n.translation, config.i18n -->
+
 Create `src/i18n/en.json`, `src/i18n/it.json`… (flat keys; dots allowed; nested objects also work). Each file
 name is a language; pages are built once per language into `<out>/<lang>/`. The first language (alphabetical)
 is served at `/` by the dev server.
@@ -245,6 +288,8 @@ removed from the output. Pages generated outside a language folder are not trans
 
 ## Front matter
 
+<!-- feature: content.front-matter, content.markdown -->
+
 Markdown files, components and templates can start with YAML front matter:
 
 ```md
@@ -255,11 +300,14 @@ slug: hello
 ---
 ```
 
-Values replace `{ key }` placeholders (one space inside the braces) anywhere in the page: strings as they are,
+Markdown is converted with Showdown (`showdownConverterOptions`, default `{ tables: true }`); empty files are
+reported. Values replace `{ key }` placeholders (one space inside the braces) anywhere in the page: strings as they are,
 dates as ISO strings, other values as JSON. Use `grayMatterOption` for excerpts
 (`{ excerpt: true, excerpt_separator: '<!-- more -->' }` gives `{ excerpt }`).
 
 ## Configuration
+
+<!-- feature: config.files, api.define-config, behaviour.site-code -->
 
 `config/default.ts` (or `.js`, `.json`) exports the configuration. Files for environments are merged on top,
 as with the `config` npm package: `config/production.ts` when `NODE_ENV=production`, `config/default-2.ts`
@@ -297,10 +345,14 @@ export default defineConfig({
 | `username` | — | Replaces `USERNAME` in directives. |
 | `beforeBuild` / `afterBuild` | — | Hooks run in `build` and `watch`; `afterBuild` receives `{ ok, diagnostics, out, … }`. |
 
+<!-- feature: config.customRenderers, config.customDirectives, config.postProcessors, config.htmlMinificationOptions, config.stylesParser, config.skipsStyles, config.esbuildOptions, config.webpackConfig, config.showdownConverterOptions, config.grayMatterOption, config.siteHost, config.sitemap, config.cleanOut, config.strict, config.devServerPort, config.username, config.beforeBuild, config.afterBuild -->
+
 Configuration and site code (renderers, directives) can be TypeScript or TSX: each file is compiled on its own
 with the site's `tsconfig.json` (`__dirname` and relative paths work as in Node).
 
 ## Watch mode
+
+<!-- feature: behaviour.live-reload, behaviour.dev-server -->
 
 `yassb watch` builds, serves the output with live reload, and rebuilds on every change in the project (except
 the output folder, `node_modules`, `.git`):
@@ -313,9 +365,15 @@ the output folder, `node_modules`, `.git`):
   by the scripts only rebundles them; anything else rebuilds the pages (and the styles when a custom
   `stylesParser`, such as Tailwind, may depend on them).
 
+The dev server (also used by `yassb serve`) maps `/<lang>/…` to `<out>/<lang>/…` and other paths to the first
+language, then to `<out>/…`; folders redirect to a trailing slash and serve `index.html`; unknown paths serve the
+home page. Port: `--port`, else `devServerPort`, else 3000 (the next free port if busy). Not for production.
+
 Watch builds are not minified and include the live-reload script; use `yassb build` for deployment.
 
 ## Diagnostics
+
+<!-- feature: behaviour.diagnostics -->
 
 Problems are reported with a stable code, file and line, e.g.:
 
@@ -373,6 +431,12 @@ Multi-language: one template per language folder (`pages-to-generate/en/blog/…
 
 **Use Tailwind.** Set `workingDir.styles: 'styles/styles.css'` and a `stylesParser` that runs PostCSS with
 Tailwind and returns the CSS.
+
+## Feature catalogue
+
+Every feature of YASSB is listed, with its syntax, options, rules, errors and status, by `yassb docs features`
+(and in `docs/features.json` in the package). Use it as the checklist when writing documentation, a guide or a
+website about YASSB: each feature must be covered. `yassb docs features <id>` shows one feature.
 
 ## Upgrading from 1.x
 

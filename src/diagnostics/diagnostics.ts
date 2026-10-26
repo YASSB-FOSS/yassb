@@ -10,9 +10,14 @@ import { relative } from 'path';
  *
  * - `fatal`: the problem made 1.x crash, so the build still exits with code 1.
  * - other errors only make the build fail with `strict: true` / `--strict` (1.x only logged them).
+ *
+ * @featurePart behaviour.diagnostics
  */
 export type DiagnosticLevel = 'error' | 'warning' | 'info';
 
+/**
+ * @featurePart behaviour.diagnostics
+ */
 export interface Diagnostic {
   level: DiagnosticLevel;
   /** Stable identifier, e.g. `DATA_SOURCE_NOT_FOUND`. */
@@ -34,7 +39,11 @@ export interface Diagnostic {
   quiet?: boolean;
 }
 
-/** Every code YASSB can report, with what it means. Printed by `yassb docs diagnostics`. */
+/**
+ * Every code YASSB can report, with what it means. Printed by `yassb docs diagnostics`.
+ *
+ * @featurePart behaviour.diagnostics
+ */
 export const DIAGNOSTIC_CODES: { [code: string]: string } = {
   CONFIG_LOAD_FAILED: 'The configuration (config/*.ts|js|json) or a module it imports threw while loading.',
   CONFIG_MODULE_NOT_FOUND: 'The configuration imports a package that is not installed in the site.',
@@ -81,6 +90,16 @@ export const DIAGNOSTIC_CODES: { [code: string]: string } = {
 
 /**
  * Collects diagnostics for the current run. One instance per process (a build runs in its own process in watch mode).
+ *
+ * @feature behaviour.diagnostics
+ * @summary Every problem is reported with a stable code, file, line and hint.
+ * @usage error DATA_SOURCE_NOT_FOUND src/app/pages/index.html:12 …  /  yassb build --json  /  yassb docs diagnostics
+ * @options --json on build and check; config.strict.
+ * @rules Pages are reported on their source file (pages/, the template, or the Markdown file); the same problem reported for a component and its page is kept once; fatal problems (exceptions in site code, invalid JSON, config errors) exit 1, others only with strict; missing translations are collected and summarised.
+ * @errors none
+ * @status stable
+ * @since 2.0.0
+ * @related cli.check, config.strict
  */
 export class DiagnosticsCollector {
 
@@ -140,15 +159,27 @@ export class DiagnosticsCollector {
 
 }
 
-/** Diagnostics of the current process. */
+/**
+ * Diagnostics of the current process.
+ *
+ * @internal
+ */
 export const DIAGNOSTICS = new DiagnosticsCollector();
 
-/** Shortcut for `DIAGNOSTICS.report`. */
+/**
+ * Shortcut for `DIAGNOSTICS.report`.
+ *
+ * @internal
+ */
 export function report(diagnostic: Diagnostic): void {
   DIAGNOSTICS.report(diagnostic);
 }
 
-/** Formats a diagnostic on one line (plus hint), e.g. `error DATA_SOURCE_NOT_FOUND src/app/pages/index.html:12 …`. */
+/**
+ * Formats a diagnostic on one line (plus hint), e.g. `error DATA_SOURCE_NOT_FOUND src/app/pages/index.html:12 …`.
+ *
+ * @featurePart behaviour.diagnostics
+ */
 export function formatDiagnostic(diagnostic: Diagnostic): string {
   const where = diagnostic.file ? ` ${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ''}` : '';
   let text = `${diagnostic.level} ${diagnostic.code}${where}\n  ${diagnostic.message}`;
@@ -175,6 +206,8 @@ const sourceCache = new Map<string, string>();
 
 /**
  * Finds the 1-based line of `needle` in `file`. Returns undefined when the file or the text cannot be found.
+ *
+ * @internal
  */
 export function lineOf(file: string | undefined, needle: string | undefined): number | undefined {
   if (!file || !needle)
@@ -194,7 +227,11 @@ export function lineOf(file: string | undefined, needle: string | undefined): nu
   return line;
 }
 
-/** Text and stack of an exception thrown by site code. */
+/**
+ * Text and stack of an exception thrown by site code.
+ *
+ * @internal
+ */
 export function describeError(error: unknown): { message: string; detail?: string } {
   if (error instanceof Error)
     return { message: error.message, detail: error.stack };

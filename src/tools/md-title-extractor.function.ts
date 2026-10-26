@@ -3,6 +3,8 @@
  *
  * @param mdContents content of the MarkDown file.
  * @returns the title extracted, if any was found.
+ *
+ * @featurePart directive.generate-from-files
  */
 export function mdTitleExtractor(mdContents: string): string | undefined {
   const regExResult = mdContents.match(/^# .+/gm);

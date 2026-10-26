@@ -5,6 +5,16 @@ import type { FrontMatterData } from './front-matter-store.const';
 /**
  * Replaces `{ key }` placeholders (one space inside each brace) with front matter values.
  * Strings are inserted as they are, dates (and the `date` key) as ISO strings, other values as JSON.
+ *
+ * @feature content.front-matter
+ * @summary { key } placeholders are replaced with front matter values.
+ * @usage ---\ntitle: Hello\ndate: 2024-01-15\n---  then <title>{ title }</title>
+ * @options none
+ * @rules One space inside each brace; values come from Markdown files, components with front matter and the data returned by custom directives; strings inserted as they are (not escaped), dates and the date key as ISO strings, other values as JSON; replaced after components and again in post-processing.
+ * @errors FRONT_MATTER_INVALID_DATE
+ * @status stable
+ * @since 1.0.0
+ * @related content.markdown, api.custom-directives
  */
 export class FrontMatterInjector {
 

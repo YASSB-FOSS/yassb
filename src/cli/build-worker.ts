@@ -9,6 +9,8 @@ import type { ParsedArgs } from './args';
  * are always picked up, and a crash in site code cannot take down the dev server.
  *
  * Messages: `{ type: 'setup', info }` once the configuration is loaded, then `{ type: 'result', … }`.
+ *
+ * @featurePart cli.watch
  */
 export async function runBuildWorker(args: ParsedArgs): Promise<void> {
   const steps: BuildSteps = {};
@@ -40,6 +42,9 @@ export async function runBuildWorker(args: ParsedArgs): Promise<void> {
   });
 }
 
+/**
+ * @featurePart cli.watch
+ */
 export interface WorkerResultMessage {
   type: 'result';
   ok: boolean;

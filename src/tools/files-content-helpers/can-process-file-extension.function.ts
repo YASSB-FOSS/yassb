@@ -12,6 +12,8 @@ import { SupportedFormats } from './supported-formats.enum';
  * @param directiveName the value written in the directive, for the report.
  * @param includingFile the file containing the directive, for the report.
  * @returns the file extension, or undefined if the file cannot be included (already reported).
+ *
+ * @featurePart directive.component
  */
 export function canProcessFileExtension(directiveFullString: string, pathToFile: string, directiveName: string, includingFile?: string): SupportedFormats | undefined {
   if (!existsSync(pathToFile)) {

@@ -9,6 +9,16 @@ import { YassbBaseDirective } from '../yassb-base-directive.class';
 /**
  * Runs the built-in directives, then the custom ones, in the order of their stores.
  * Each directive's `init()` is called once per match, with the HTML as updated by the previous calls.
+ *
+ * @feature api.custom-directives
+ * @summary Site-defined directives: classes with a static regex whose init() rewrites the HTML.
+ * @usage class YearDirective implements YassbDirective { static regex = /<!--\s*current-year\s*-->/g; constructor(private args: YassbDirectiveProps) {} init() { return { html: ..., data: {} }; } }  then customDirectives: [YearDirective]
+ * @options none (registered with config.customDirectives)
+ * @rules Built-in directives run first, then custom ones in the order of customDirectives; init() is called once per regex match with the HTML updated by the previous call, so directives must be idempotent; components are processed before the page that includes them (fileFullPath is the component in src, then the page in out); data values become { key } placeholders; YassbBaseDirective copies the props to protected fields; an exception or a missing html fails the build with the directive location.
+ * @errors DIRECTIVE_NO_REGEX, DIRECTIVE_FAILED
+ * @status stable
+ * @since 1.0.0
+ * @related config.customDirectives, directive.component
  */
 export class DirectivesInvoker extends YassbBaseDirective implements YassbDirective {
 

@@ -4,6 +4,8 @@
  * Used by the translator (to change only the elements with `data-t` / `data-attr-t`), by `yassb check` and
  * `yassb inspect`. It is lenient like browsers: comments, doctype and raw text elements (`script`, `style`,
  * `textarea`, `title`, …) are skipped, optional end tags (`p`, `li`, `td`, …) are closed implicitly.
+ *
+ * @internal
  */
 
 export interface HtmlAttribute {
@@ -21,6 +23,9 @@ export interface HtmlAttribute {
   end: number;
 }
 
+/**
+ * @internal
+ */
 export interface StartTagToken {
   type: 'start';
   /** Lowercase tag name. */
@@ -33,6 +38,9 @@ export interface StartTagToken {
   selfClosing: boolean;
 }
 
+/**
+ * @internal
+ */
 export interface EndTagToken {
   type: 'end';
   name: string;
@@ -40,17 +48,30 @@ export interface EndTagToken {
   end: number;
 }
 
+/**
+ * @internal
+ */
 export interface OtherToken {
   type: 'text' | 'comment';
   start: number;
   end: number;
 }
 
+/**
+ * @internal
+ */
 export type HtmlToken = StartTagToken | EndTagToken | OtherToken;
 
-/** Elements whose content is text, not markup. */
+/**
+ * Elements whose content is text, not markup.
+ *
+ * @internal
+ */
 export const RAW_TEXT_ELEMENTS = new Set(['script', 'style', 'textarea', 'title', 'xmp', 'iframe', 'noembed', 'noframes', 'noscript', 'plaintext']);
 
+/**
+ * @internal
+ */
 export const VOID_ELEMENTS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
 
 const WHITESPACE = /\s/;
@@ -61,6 +82,8 @@ function isAsciiLetter(char: string | undefined): boolean {
 
 /**
  * Splits HTML into tokens, in document order.
+ *
+ * @internal
  */
 export function tokenize(html: string): Array<HtmlToken> {
   const tokens: Array<HtmlToken> = [];
@@ -205,7 +228,11 @@ function findRawTextEnd(html: string, from: number, name: string): number {
   }
 }
 
-/** An element found in the document, with the extent of its content. */
+/**
+ * An element found in the document, with the extent of its content.
+ *
+ * @internal
+ */
 export interface HtmlElement {
   tag: StartTagToken;
   /** Start of the content (end of the start tag). */
@@ -244,6 +271,8 @@ function impliedClose(open: string, incoming: string): boolean {
 
 /**
  * Finds every element of the document with the extent of its content, in document order.
+ *
+ * @internal
  */
 export function parseElements(html: string, tokens: Array<HtmlToken> = tokenize(html)): Array<HtmlElement> {
   const elements: Array<HtmlElement> = [];
@@ -306,7 +335,11 @@ const NAMED_ENTITIES: { [name: string]: string } = {
   ccedil: 'ç', ntilde: 'ñ', uuml: 'ü', ouml: 'ö', auml: 'ä', szlig: 'ß', sect: '§', para: '¶', shy: '­'
 };
 
-/** Decodes the most common named entities and all numeric ones. Unknown entities are left as they are. */
+/**
+ * Decodes the most common named entities and all numeric ones. Unknown entities are left as they are.
+ *
+ * @internal
+ */
 export function decodeEntities(text: string): string {
   if (!text.includes('&'))
     return text;
@@ -319,17 +352,29 @@ export function decodeEntities(text: string): string {
   });
 }
 
-/** Escapes text for HTML content. */
+/**
+ * Escapes text for HTML content.
+ *
+ * @internal
+ */
 export function escapeText(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-/** Escapes text for a double-quoted attribute value. */
+/**
+ * Escapes text for a double-quoted attribute value.
+ *
+ * @internal
+ */
 export function escapeAttribute(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
-/** Text content of an HTML fragment: tags and comments removed, entities decoded. */
+/**
+ * Text content of an HTML fragment: tags and comments removed, entities decoded.
+ *
+ * @internal
+ */
 export function textContent(html: string): string {
   let text = '';
   for (const token of tokenize(html))

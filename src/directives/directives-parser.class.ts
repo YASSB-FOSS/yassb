@@ -20,6 +20,16 @@ const MAX_COMPONENT_DEPTH = 40;
  * 1. `component` directives, recursively: each component is processed (with its own path) before being inserted;
  * 2. front matter placeholders collected so far;
  * 3. built-in directives, then custom directives (see `DirectivesInvoker`).
+ *
+ * @feature directive.component
+ * @summary Inserts an HTML, SVG or Markdown fragment from the components folder, recursively.
+ * @usage <!-- component="site/header.html" -->
+ * @options The value is a path relative to src/app/components (workingDir.components); LANG and USERNAME are replaced (see directive.attributes).
+ * @rules Each component is processed on its own (its directives run with fileFullPath = the component file) before being inserted into the including file; components can nest; .md/.txt components are converted from Markdown; front matter of a component becomes { key } placeholders of the page; a missing file leaves the comment in place (removed by the minifier); more than 40 levels of nesting is reported as a cycle; the regex accepts one directive per line.
+ * @errors COMPONENT_NOT_FOUND, COMPONENT_UNSUPPORTED_FORMAT, COMPONENT_CYCLE
+ * @status stable
+ * @since 1.0.0
+ * @related content.front-matter, content.markdown, directive.attributes
  */
 export class DirectivesParser {
 

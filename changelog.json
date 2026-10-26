@@ -40,6 +40,10 @@
     },
     {
       "type": "added",
+      "value": "feature catalogue: every export tagged @feature/@featurePart/@internal, build fails if a feature, CLI flag or diagnostic code is undocumented; yassb docs features"
+    },
+    {
+      "type": "added",
       "value": "docs/guide.md, AGENTS.md, llms.txt; starter project with AGENTS.md"
     },
     {

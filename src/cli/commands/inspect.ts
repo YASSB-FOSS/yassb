@@ -6,6 +6,16 @@ import type { ParsedArgs } from '../args';
 
 /**
  * `yassb inspect [query] [--json]`: describes the project without building it.
+ *
+ * @feature cli.inspect
+ * @summary yassb inspect [query]: describes the project without building it.
+ * @usage yassb inspect   yassb inspect --json   yassb inspect news.json   yassb inspect HOME.TITLE
+ * @options --json: full manifest (pages, templates, components, dataSources, renderers, customDirectives, postProcessors, hooks, assets, i18n, diagnostics); query: file, data source, renderer, directive or i18n key.
+ * @rules Read-only: loads the configuration but runs no renderer and writes nothing; directives are listed with file:line, components transitively, LANG paths expanded for every language; problems visible statically (missing files, unknown renderers, invalid options) are listed; programmatic: inspectProject().
+ * @errors none
+ * @status stable
+ * @since 2.0.0
+ * @related cli.check, behaviour.diagnostics
  */
 export function inspectCommand(args: ParsedArgs): number {
   const manifest = inspectProject();

@@ -8,6 +8,16 @@ import { version } from '../cli';
 /**
  * `yassb new <name>`: creates `./<name>` from `templates/starter`, with the standard folders.
  * `PROJECT_NAME` and `YASSB_VERSION` are replaced in the template files.
+ *
+ * @feature cli.new
+ * @summary yassb new <name>: creates a project from the starter.
+ * @usage yassb new my-site
+ * @options name (required): converted to kebab-case for the folder and package name.
+ * @rules Refuses a non-empty existing folder; the starter has config/default.ts, a renderer in builder/, a data source, components, Sass and TypeScript entries, AGENTS.md and CLAUDE.md for coding agents, and yassb-web as devDependency.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related config.files
  */
 export function newCommand(args: ParsedArgs): number {
   const name = args.positionals[0];

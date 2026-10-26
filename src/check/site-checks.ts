@@ -10,7 +10,11 @@ import { Translator } from '../i18n/translator.class';
 import { runBuild } from '../pipeline/build';
 import { ListFiles } from '../tools/file-system-helpers/list-files.class';
 
-/** Result of `yassb check`. */
+/**
+ * Result of `yassb check`.
+ *
+ * @featurePart cli.check
+ */
 export interface CheckReport {
   /** False if any error was found. */
   ok: boolean;
@@ -20,6 +24,9 @@ export interface CheckReport {
   diagnostics: Array<Diagnostic>;
 }
 
+/**
+ * @featurePart cli.check
+ */
 export interface CheckOptions {
   outDir?: string;
   /** Check local links in the output (default: true). */
@@ -31,6 +38,8 @@ export interface CheckOptions {
  * every problem reported by the build, plus translation attributes left in pages, missing/inconsistent/unused
  * translation keys, broken local links, unused components and data sources, and packages imported by site code
  * without being declared in package.json.
+ *
+ * @featurePart cli.check
  */
 export async function checkProject(options: CheckOptions = {}): Promise<CheckReport> {
   const build = await runBuild({ outDir: options.outDir });

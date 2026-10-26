@@ -1,6 +1,6 @@
 {
   "name": "yassb-landing",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "private": true,
   "description": "Website of YASSB (https://yassb-foss.github.io), built with YASSB itself.",
   "scripts": {

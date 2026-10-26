@@ -10,6 +10,8 @@ import type { LiveReloadHub } from './live-reload';
  * - multi-language sites: `/<lang>/…` → `out/<lang>/…`; other paths → `out/<first lang>/…`, then `out/…`;
  * - folders redirect to a trailing slash and serve their `index.html`;
  * - anything not found → the home page (`index.html` of the first language), with status 200.
+ *
+ * @featurePart behaviour.dev-server
  */
 export interface StaticServerOptions {
   /** Current output folder and languages (read on every request, so a config change is picked up). */
@@ -29,6 +31,17 @@ const MIME_TYPES: { [extension: string]: string } = {
   '.vcf': 'text/vcard', '.webmanifest': 'application/manifest+json'
 };
 
+/**
+ * @feature behaviour.dev-server
+ * @summary Development server of watch and serve (not for production).
+ * @usage http://localhost:3000/  →  <out>/<first language>/index.html
+ * @options config.devServerPort, --port.
+ * @rules /<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; if the port is busy the next ones are tried.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related cli.watch, cli.serve, i18n.languages
+ */
 export function startStaticServer(options: StaticServerOptions): Promise<{ server: Server; port: number }> {
   const server = createServer((request, response) => handle(request, response, options));
   return listen(server, options.port);

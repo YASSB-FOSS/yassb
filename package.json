@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
   "engines": {
     "node": ">=20.0.0"
@@ -30,14 +30,15 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "bun scripts/check-features.ts && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
     "test": "bun run build && bun test",
     "prepack": "bun run build",
     "landing:build": "cd landing && node ../bin.js build",
     "landing:watch": "cd landing && node ../bin.js watch",
     "deploy": "cglg --action=newRelease && bun run build && cglg --action=closeRelease && npm publish",
-    "deploy-landing": "bun run build && bun run landing:build && cd landing/YASSB-FOSS.github.io && npm run deploy"
+    "deploy-landing": "bun run build && bun run landing:build && cd landing/YASSB-FOSS.github.io && npm run deploy",
+    "features": "bun scripts/check-features.ts"
   },
   "homepage": "https://yassb-foss.github.io/",
   "repository": {

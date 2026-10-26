@@ -8,6 +8,16 @@ import type { YassbConfig } from '../yassb';
 /**
  * Final step for one page: front matter placeholders, custom post processors, then minification
  * (`yassb build`) or the live-reload script (`yassb watch`).
+ *
+ * @feature behaviour.post-processing
+ * @summary Last step for every HTML file of the output.
+ * @usage automatic; customize with config.postProcessors and config.htmlMinificationOptions
+ * @options none
+ * @rules For every .html/.htm in the output (assets included): { key } placeholders → postProcessors in order → minification in build, or in watch the live-reload script before </body> and removal of the Content-Security-Policy meta; runs after translation.
+ * @errors none
+ * @status stable
+ * @since 1.0.0
+ * @related config.postProcessors, config.htmlMinificationOptions, behaviour.live-reload
  */
 export class PostProcessFile {
 

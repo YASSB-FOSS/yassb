@@ -16,6 +16,9 @@ function isEditorTempFile(name: string): boolean {
   return name.startsWith('.!') || name.endsWith('~') || name.endsWith('.swp') || name.endsWith('.swx') || name.endsWith('.tmp') || name.startsWith('.#') || /^\d+$/.test(name) || name.endsWith('.crswap');
 }
 
+/**
+ * @featurePart cli.watch
+ */
 export interface ProjectWatcherOptions {
   roots: Array<string>;
   /** Extra paths to ignore (e.g. the output folder), checked on every event. */
@@ -25,6 +28,9 @@ export interface ProjectWatcherOptions {
   debounceMs?: number;
 }
 
+/**
+ * @featurePart cli.watch
+ */
 export class ProjectWatcher {
 
   private watchers = new Map<string, FSWatcher>();
