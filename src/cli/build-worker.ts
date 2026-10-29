@@ -64,6 +64,8 @@ export interface WorkerBuildRequest {
   strict: boolean;
   /** Build into this folder instead of the configured output (verification builds). */
   outDir?: string;
+  /** With `outDir`: the folder paths in the output are computed against (the configured output). */
+  referenceOutDir?: string;
 }
 
 /**
@@ -85,6 +87,7 @@ async function build(request: Omit<WorkerBuildRequest, 'type'>): Promise<WorkerR
       clean: request.clean,
       strict: request.strict,
       outDir: request.outDir,
+      referenceOutDir: request.referenceOutDir,
       liveReloadSnippet: LIVE_RELOAD_SNIPPET,
       command: 'watch',
       onSetup: info => void send({ type: 'setup', info })
