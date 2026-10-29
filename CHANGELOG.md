@@ -7,6 +7,10 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [2.1.1] - 2026-10-29
+### Changed
+- watch: the verification folder moved from .<out>.yassb-verify, next to the output, to .yassb/verify in the project root; .yassb holds its own .gitignore, so git always ignores it, and the scripts' source maps are computed as if the files were in the output.
+
 ## [2.1.0] - 2026-10-29
 ### Added
 - watch: the next build process is started ahead of time, so a save no longer waits for Node, the engine and the site's packages to load.

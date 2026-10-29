@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Static site builder: HTML components, JSON data, Markdown and i18n, with TypeScript renderers. Fast (esbuild), five dependencies, and a CLI coding agents use to inspect and check a site.",
   "engines": {
     "node": ">=20.0.0"
