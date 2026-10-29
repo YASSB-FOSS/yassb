@@ -357,7 +357,8 @@ with the site's `tsconfig.json` (`__dirname` and relative paths work as in Node)
 <!-- feature: behaviour.live-reload, behaviour.dev-server -->
 
 `yassb watch` builds, serves the output with live reload, and rebuilds on every change in the project (except
-the output folder, `node_modules`, `.git`):
+the output folder, `node_modules`, `.git`; events that do not change a file, such as those Bun reports on the
+source of a copy, are ignored):
 
 - builds run in processes started ahead of time: while you edit, the next one loads Node, YASSB and the packages
   your configuration imports (by loading the configuration once, without building), so a save only waits for the

@@ -6,7 +6,17 @@ import { basename, resolve, sep } from 'path';
  *
  * Uses the native `fs.watch`: one recursive watcher on macOS and Windows, one watcher per folder elsewhere
  * (so that ignored folders such as node_modules are never watched).
+ *
+ * Only real changes are reported. Some events do not change the file: Bun reports one on the source of a copy
+ * (`copyFileSync` of a large file on macOS, as the asset copy does), and backups or indexing can touch metadata.
+ * A file counts as changed when its status-change time (`ctime`) is recent (the last 2 seconds, which also
+ * covers file systems with coarse timestamps) or differs from the last one seen, or, the first time, is later
+ * than the start of the watcher. `ctime` changes with every write, rename or copy, even when the modification
+ * time is preserved (Finder, `cp -p`). Removed files always count.
  */
+
+/** A `ctime` this recent always counts as a change. */
+const RECENT_MS = 2000;
 
 /** Folder and file names never watched. */
 const IGNORED_NAMES = new Set(['node_modules', '.git', '.hg', '.svn', '.yarn', '.cache', '.idea', '.vscode', '.DS_Store', '.turbo', '.next', 'Thumbs.db']);
@@ -37,10 +47,14 @@ export class ProjectWatcher {
   private pending = new Set<string>();
   private timer: NodeJS.Timeout | undefined;
   private recursive = process.platform === 'darwin' || process.platform === 'win32';
+  /** Last `ctime` seen for each path. */
+  private seen = new Map<string, number>();
+  private startedAt = 0;
 
   constructor(private options: ProjectWatcherOptions) { }
 
   public start(): void {
+    this.startedAt = Date.now();
     for (const root of this.options.roots) {
       if (!existsSync(root))
         continue;
@@ -127,7 +141,7 @@ export class ProjectWatcher {
   }
 
   private queue(path: string): void {
-    if (this.isIgnored(path))
+    if (this.isIgnored(path) || !this.hasChanged(path))
       return;
     this.pending.add(path);
     if (this.timer)
@@ -137,6 +151,22 @@ export class ProjectWatcher {
       this.pending.clear();
       this.options.onChange(paths);
     }, this.options.debounceMs ?? 30);
+  }
+
+  /** Whether an event on `path` comes with a change of the file (see the header). */
+  private hasChanged(path: string): boolean {
+    let ctime: number;
+    try {
+      ctime = statSync(path).ctimeMs;
+    } catch {
+      this.seen.delete(path);
+      return true;
+    }
+    const last = this.seen.get(path);
+    this.seen.set(path, ctime);
+    if (ctime >= Date.now() - RECENT_MS)
+      return true;
+    return last === undefined ? ctime >= this.startedAt - RECENT_MS : ctime !== last;
   }
 
 }

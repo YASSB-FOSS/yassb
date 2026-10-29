@@ -1,10 +1,12 @@
 import { describe, expect, test } from 'bun:test';
-import { mkdtempSync, rmSync, utimesSync, writeFileSync } from 'fs';
+import { copyFileSync, mkdtempSync, rmSync, utimesSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { basicElement } from '../src/renderers/built-in/basic-element.function';
 import { htmlElement } from '../src/renderers/built-in/html-element.function';
 import { startStaticServer } from '../src/server/static-server';
+import { ProjectWatcher } from '../src/watch/project-watcher';
+import { waitFor } from './helpers/fixture';
 import { SitemapGenerator } from '../src/sitemap/sitemap-generator.class';
 import { DateLocalizer } from '../src/tools/dates-helpers/date-localizer.class';
 import { DateParser } from '../src/tools/dates-helpers/date-parser.class';
@@ -82,6 +84,40 @@ describe('dev server', () => {
     } finally {
       server.close();
       rmSync(out, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('project watcher', () => {
+  test('ignores events that do not change a file (Bun reports one on the source of a copy)', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'yassb-watcher-'));
+    const outside = mkdtempSync(join(tmpdir(), 'yassb-watcher-out-'));
+    const big = join(root, 'big.jpg');
+    // Large enough for Bun's copyFileSync to report a change on the source (macOS).
+    writeFileSync(big, Buffer.alloc(300 * 1024, 7));
+    const wait = (ms: number) => new Promise(resolvePromise => setTimeout(resolvePromise, ms));
+    // Older than the "recent" window, as an asset nobody edited.
+    await wait(2300);
+    const changes: Array<string> = [];
+    const watcher = new ProjectWatcher({ roots: [root], ignore: () => [], onChange: paths => changes.push(...paths), debounceMs: 10 });
+    watcher.start();
+    try {
+      await wait(200);
+      copyFileSync(big, join(outside, 'copy.jpg'));
+      copyFileSync(big, join(outside, 'copy-2.jpg'));
+      await wait(500);
+      expect(changes).toEqual([]);
+
+      // A real change is reported, also when the modification time is set back (cp -p, Finder).
+      writeFileSync(join(root, 'new.txt'), 'new');
+      utimesSync(join(root, 'new.txt'), new Date(2020, 0, 1), new Date(2020, 0, 1));
+      await waitFor(() => changes.some(path => path.endsWith('new.txt')), 3000, 'new file');
+      writeFileSync(big, Buffer.alloc(300 * 1024, 8));
+      await waitFor(() => changes.some(path => path.endsWith('big.jpg')), 3000, 'changed file');
+    } finally {
+      watcher.close();
+      rmSync(root, { recursive: true, force: true });
+      rmSync(outside, { recursive: true, force: true });
     }
   });
 });
