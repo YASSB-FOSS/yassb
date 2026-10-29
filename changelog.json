@@ -4,6 +4,40 @@
   "temp": [],
   "changes": [
     {
+      "version": "2.1.0",
+      "date": "2026-10-29",
+      "items": [
+        {
+          "type": "added",
+          "value": "watch: the next build process is started ahead of time, so a save no longer waits for Node, the engine and the site's packages to load"
+        },
+        {
+          "type": "added",
+          "value": "watch: content changes are built by the warm process and then verified by a fresh one in a shadow folder (.<out>.yassb-verify); --fresh runs every build in a new process"
+        },
+        {
+          "type": "added",
+          "value": "dev server (watch and serve): ETag and 304 for unchanged files, so a reload no longer downloads every asset again"
+        },
+        {
+          "type": "changed",
+          "value": "restyled console output: version banner, steps with aligned durations, coloured diagnostics, DONE / PASS / FAIL summaries, timestamps in watch; colours only on a TTY (NO_COLOR / FORCE_COLOR respected), --json and diagnostic lines unchanged"
+        },
+        {
+          "type": "changed",
+          "value": "watch: save to refresh from about 500 to 370 ms on a real site; watcher debounce from 80 to 30 ms"
+        },
+        {
+          "type": "fixed",
+          "value": "url-to and sitemap.xml listed files left in the output by an earlier build (pages of other languages, deleted pages) when the output was not emptied"
+        },
+        {
+          "type": "fixed",
+          "value": "watch under Bun on macOS rebuilt in a loop on sites with large assets (spurious change events from file copies)"
+        }
+      ]
+    },
+    {
       "version": "2.0.0",
       "date": "2026-10-26",
       "items": [

@@ -7,6 +7,20 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [2.1.0] - 2026-10-29
+### Added
+- watch: the next build process is started ahead of time, so a save no longer waits for Node, the engine and the site's packages to load.
+- watch: content changes are built by the warm process and then verified by a fresh one in a shadow folder (.<out>.yassb-verify); --fresh runs every build in a new process.
+- dev server (watch and serve): ETag and 304 for unchanged files, so a reload no longer downloads every asset again.
+
+### Changed
+- restyled console output: version banner, steps with aligned durations, coloured diagnostics, DONE / PASS / FAIL summaries, timestamps in watch; colours only on a TTY (NO_COLOR / FORCE_COLOR respected), --json and diagnostic lines unchanged.
+- watch: save to refresh from about 500 to 370 ms on a real site; watcher debounce from 80 to 30 ms.
+
+### Fixed
+- url-to and sitemap.xml listed files left in the output by an earlier build (pages of other languages, deleted pages) when the output was not emptied.
+- watch under Bun on macOS rebuilt in a loop on sites with large assets (spurious change events from file copies).
+
 ## [2.0.0] - 2026-10-26
 ### Added
 - watch: every build runs in a fresh process, so config, renderers and directives are reloaded; errors shown in an in-browser overlay without stopping the server; CSS hot swap; whole project watched.

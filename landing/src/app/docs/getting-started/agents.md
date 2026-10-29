@@ -18,7 +18,7 @@ npx yassb inspect
 ```
 
 ```text
-YASSB project my-site@1.0.0 (yassb-web 2.0.0)
+YASSB project my-site@1.0.0 (yassb-web 2.1.0)
 Languages: en, it (from src/i18n/*.json; first one served at /)
 
 Pages (4):
