@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="550" viewBox="0 0 760 550" role="img" aria-label="YASSB animated build pipeline. JSON, HTML and TypeScript files fall into a central funnel and shrink, then a beautiful website emerges below, assembles in stages, and refreshes when TypeScript is edited.">
+<defs>
+ <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="10%"><stop stop-color="#FFA62C"/><stop offset=".4" stop-color="#FE5A7D"/><stop offset=".75" stop-color="#DA43AB"/><stop offset="1" stop-color="#9652DD"/></linearGradient>
+ <linearGradient id="brandSoft" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F7D4AA"/><stop offset=".48" stop-color="#F8CBDD"/><stop offset="1" stop-color="#D6C2F7"/></linearGradient>
+ <linearGradient id="siteHero" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#FFF3D9"/><stop offset=".48" stop-color="#FFE6E7"/><stop offset="1" stop-color="#EADCFD"/></linearGradient>
+ <linearGradient id="siteHeroNew" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#E6EDF9"/><stop offset=".42" stop-color="#F3E1FF"/><stop offset="1" stop-color="#FFDCE6"/></linearGradient>
+ <linearGradient id="coralPink" x1="0%" x2="100%"><stop stop-color="#FA9C73"/><stop offset=".55" stop-color="#EC5F9F"/><stop offset="1" stop-color="#B66ED9"/></linearGradient>
+ <radialGradient id="ambient"><stop stop-color="#F26AB0" stop-opacity=".16"/><stop offset="1" stop-color="#F26AB0" stop-opacity="0"/></radialGradient>
+ <filter id="docShadow" x="-40%" y="-40%" width="180%" height="200%"><feGaussianBlur in="SourceAlpha" stdDeviation="4" result="a"/><feOffset in="a" dy="4.5" result="b"/><feComponentTransfer in="b" result="c"><feFuncA type="linear" slope=".17"/></feComponentTransfer><feMerge><feMergeNode in="c"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="deviceShadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="10" result="a"/><feOffset in="a" dy="9" result="b"/><feComponentTransfer in="b" result="c"><feFuncA type="linear" slope=".19"/></feComponentTransfer><feMerge><feMergeNode in="c"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <clipPath id="screenClip"><rect x="218" y="338" width="324" height="187" rx="14"/></clipPath>
+ <clipPath id="heroClip"><rect x="232" y="395" width="296" height="83" rx="11"/></clipPath>
+ <style>
+    .anim { animation-duration:14s; animation-iteration-count:infinite; animation-timing-function:linear; animation-fill-mode:both; }
+    .doc {transform-box:fill-box;transform-origin:center center}
+    /* The outer motion is untouched. The inner plane twists in 3D.
+       Negative rotateX moves the bottom edge AWAY from the viewer,
+       producing real perspective taper rather than uniform scaling. */
+    .swirl { transform-box:fill-box; transform-origin:50% 33%; backface-visibility:visible; }
+    .swirl-json { animation-name:swirlJson; }
+    .swirl-html { animation-name:swirlHtml; }
+    .swirl-ts { animation-name:swirlTs; }
+    .swirl-patch { animation-name:swirlPatch; }
+    @keyframes swirlJson {
+      0%,5% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+      8% {transform:perspective(225px) rotateX(-15deg) rotateY(-20deg) rotateZ(-4deg)}
+      12% {transform:perspective(225px) rotateX(-47deg) rotateY(-61deg) rotateZ(-9deg)}
+      16% {transform:perspective(225px) rotateX(-59deg) rotateY(-113deg) rotateZ(8deg)}
+      19%,92% {transform:perspective(225px) rotateX(-67deg) rotateY(-186deg) rotateZ(12deg)}
+      98%,100% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+    }
+    @keyframes swirlHtml {
+      0%,9% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+      12% {transform:perspective(225px) rotateX(-16deg) rotateY(20deg) rotateZ(3deg)}
+      16% {transform:perspective(225px) rotateX(-47deg) rotateY(58deg) rotateZ(8deg)}
+      20% {transform:perspective(225px) rotateX(-59deg) rotateY(119deg) rotateZ(-8deg)}
+      23%,92% {transform:perspective(225px) rotateX(-67deg) rotateY(186deg) rotateZ(-12deg)}
+      98%,100% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+    }
+    @keyframes swirlTs {
+      0%,12% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+      16% {transform:perspective(225px) rotateX(-16deg) rotateY(21deg) rotateZ(5deg)}
+      20% {transform:perspective(225px) rotateX(-47deg) rotateY(61deg) rotateZ(9deg)}
+      24% {transform:perspective(225px) rotateX(-59deg) rotateY(116deg) rotateZ(-8deg)}
+      27%,92% {transform:perspective(225px) rotateX(-67deg) rotateY(186deg) rotateZ(-12deg)}
+      98%,100% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+    }
+    @keyframes swirlPatch {
+      0%,69%,75% {transform:perspective(225px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+      77% {transform:perspective(225px) rotateX(-15deg) rotateY(17deg) rotateZ(4deg)}
+      79% {transform:perspective(225px) rotateX(-47deg) rotateY(61deg) rotateZ(9deg)}
+      82% {transform:perspective(225px) rotateX(-59deg) rotateY(116deg) rotateZ(-8deg)}
+      84%,100% {transform:perspective(225px) rotateX(-67deg) rotateY(186deg) rotateZ(-12deg)}
+    }
+
+    .json {animation-name:jsonFall} .html {animation-name:htmlFall} .ts {animation-name:tsFall}
+    .patch {animation-name:patchFall;transform-box:fill-box;transform-origin:center center}
+    .pencil {animation-name:pencilShow}
+    .funnel {animation-name:funnelMove;transform-box:fill-box;transform-origin:center center}
+    .halo {animation-name:haloLight}
+    .stream {animation-name:streamOut}
+    .spark1 {animation-name:particle1} .spark2 {animation-name:particle2} .spark3 {animation-name:particle3}
+    .browser {animation-name:browserEmerge;transform-box:fill-box;transform-origin:center top}
+    .navigation {animation-name:navBuild} .heroBackground {animation-name:heroBuild}
+    .copy {animation-name:copyBuild} .illustration {animation-name:artBuild;transform-box:fill-box;transform-origin:center}
+    .action {animation-name:actionBuild} .teasers {animation-name:teasersBuild}
+    .initial {animation-name:initialContent}
+    .updated {animation-name:updatedContent}
+    .newHero {animation-name:newHeroBuild} .newCopy {animation-name:newCopyBuild}
+    .newArt {animation-name:newArtBuild;transform-box:fill-box;transform-origin:center}
+    .newTiles {animation-name:newTilesBuild}
+    .rebuildGlint {animation-name:rebuildGlint}
+    @keyframes jsonFall {
+      0%,5% {transform:translate(0px,0px) scale(1);opacity:1}
+      12% {transform:translate(90px,62px) scale(.78);opacity:1}
+      19% {transform:translate(158px,127px) scale(.04);opacity:0}
+      19.01%,92% {transform:translate(158px,127px) scale(.04);opacity:0}
+      98% {transform:translate(0px,0px) scale(1);opacity:1} 100% {transform:translate(0px,0px) scale(1);opacity:1}
+    }
+    @keyframes htmlFall {
+      0%,9% {transform:translate(0px,0px) scale(1);opacity:1}
+      16% {transform:translate(0px,64px) scale(.74);opacity:1}
+      23% {transform:translate(0px,138px) scale(.04);opacity:0}
+      23.01%,92% {transform:translate(0px,138px) scale(.04);opacity:0}
+      98%,100% {transform:translate(0px,0px) scale(1);opacity:1}
+    }
+    @keyframes tsFall {
+      0%,12% {transform:translate(0px,0px) scale(1);opacity:1}
+      20% {transform:translate(-91px,65px) scale(.72);opacity:1}
+      27% {transform:translate(-158px,127px) scale(.04);opacity:0}
+      27.01%,92% {transform:translate(-158px,127px) scale(.04);opacity:0}
+      98%,100% {transform:translate(0px,0px) scale(1);opacity:1}
+    }
+    @keyframes patchFall {
+      0%,69% {opacity:0;transform:translate(0px,9px) scale(.92)}
+      73%,75% {opacity:1;transform:translate(0px,0px) scale(1)}
+      79% {opacity:1;transform:translate(-90px,62px) scale(.74)}
+      84% {opacity:0;transform:translate(-158px,127px) scale(.04)}
+      84.01%,100% {opacity:0;transform:translate(-158px,127px) scale(.04)}
+    }
+    @keyframes pencilShow {0%,70%{opacity:0;transform:translateY(4px)}74%,77%{opacity:1;transform:translateY(0)}83%,100%{opacity:0;transform:translateY(-7px)}}
+    @keyframes funnelMove {0%,12%,30%,70%,96%,100% {transform:scale(1)} 17%,24%,28%,78%,83% {transform:scale(1.035)} 20%,26%,81% {transform:scale(.985)}}
+    @keyframes haloLight {0%,9%{opacity:.25}16%,32%{opacity:1}43%,70%{opacity:.3}77%,85%{opacity:1}93%,100%{opacity:.25}}
+    @keyframes streamOut {0%,25%{opacity:0;stroke-dashoffset:42}30%{opacity:.85;stroke-dashoffset:22}38%{opacity:0;stroke-dashoffset:0}76%,81%{opacity:0;stroke-dashoffset:42}84%{opacity:1;stroke-dashoffset:20}91%,100%{opacity:0;stroke-dashoffset:0}}
+    @keyframes particle1 {0%,25%{opacity:0;transform:translateY(-15px)}31%{opacity:1;transform:translateY(5px)}38%,100%{opacity:0;transform:translateY(37px)}}
+    @keyframes particle2 {0%,27%{opacity:0;transform:translateY(-13px)}34%{opacity:1;transform:translateY(9px)}42%,100%{opacity:0;transform:translateY(37px)}}
+    @keyframes particle3 {0%,77%{opacity:0;transform:translateY(-13px)}84%{opacity:1;transform:translateY(8px)}91%,100%{opacity:0;transform:translateY(34px)}}
+    @keyframes browserEmerge {
+      0%,26% {transform:translateY(-25px) scale(.16);opacity:0}
+      33% {transform:translateY(0) scale(1.02);opacity:1}
+      36%,94% {transform:translateY(0) scale(1);opacity:1}
+      98%,100% {transform:translateY(12px) scale(.93);opacity:0}
+    }
+    @keyframes navBuild {0%,33%{opacity:0;transform:translateY(6px)}38%,100%{opacity:1;transform:translateY(0)}}
+    @keyframes heroBuild {0%,36%{opacity:0;transform:scaleX(.65);transform-origin:center center}43%,100%{opacity:1;transform:scaleX(1)}}
+    @keyframes copyBuild {0%,40%{opacity:0;transform:translateY(11px)}47%,100%{opacity:1;transform:translateY(0)}}
+    @keyframes artBuild {0%,44%{opacity:0;transform:scale(.48) rotate(-27deg)}52%,100%{opacity:1;transform:scale(1) rotate(0deg)}}
+    @keyframes actionBuild {0%,49%{opacity:0;transform:translateY(10px)}56%,100%{opacity:1;transform:translateY(0)}}
+    @keyframes teasersBuild {0%,54%{opacity:0;transform:translateY(12px)}62%,100%{opacity:1;transform:translateY(0)}}
+    @keyframes initialContent {0%,79%{opacity:1}84%,100%{opacity:0}}
+    @keyframes updatedContent {0%,83%{opacity:0}86%,96%{opacity:1}99%,100%{opacity:0}}
+    @keyframes newHeroBuild {0%,83%{opacity:0;transform:scaleX(.72);transform-origin:center}88%,100%{opacity:1;transform:scaleX(1)}}
+    @keyframes newCopyBuild {0%,85%{opacity:0;transform:translateY(9px)}90%,100%{opacity:1;transform:translateY(0)}}
+    @keyframes newArtBuild {0%,86%{opacity:0;transform:scale(.4) rotate(23deg)}91%,100%{opacity:1;transform:scale(1) rotate(0deg)}}
+    @keyframes newTilesBuild {0%,87%{opacity:0;transform:translateY(8px)}93%,100%{opacity:1;transform:translateY(0)}}
+    @keyframes rebuildGlint {0%,82%{opacity:0}85%{opacity:.55}89%,100%{opacity:0}}
+    @media (prefers-reduced-motion:reduce) { .anim { animation-play-state:paused!important; } }
+ </style>
+</defs>
+<!-- Transparent canvas: only shaped artwork and a soft radial light. -->
+<ellipse cx="380" cy="231" rx="155" ry="159" fill="url(#ambient)" class="anim halo"/>
+<!-- All source files remain ABOVE the funnel in a symmetric arrangement. -->
+<g transform="translate(170 23)"><g class="anim doc json"><g class="anim swirl swirl-json">
+      <g filter="url(#docShadow)"><path d="M9 2H71L97 28V114Q97 121 90 121H9Q3 121 3 115V8Q3 2 9 2Z" fill="#FFFCFA" stroke="#E5DCE3" stroke-width="1.25"/>
+      <path d="M71 2V22Q71 28 77 28H97Z" fill="#F59C37" opacity=".15"/><path d="M71 2V22Q71 28 77 28H97" fill="none" stroke="#F59C37" stroke-width="1.1" opacity=".5"/></g>
+      <rect x="15" y="15" width="35" height="33" rx="8" fill="#F59C37"/>
+      <text x="32.5" y="37" font-size="13" font-family="Arial,sans-serif" font-weight="800" fill="white" text-anchor="middle">{ }</text>
+      <text x="15" y="65" font-size="12" font-weight="800" fill="#1E2333" font-family="Arial,sans-serif">JSON</text><rect x="15" y="73" width="65" height="3.5" rx="1.75" fill="#EFAA69" opacity=".78"/><rect x="15" y="83" width="51" height="3.5" rx="1.75" fill="#CEB1CA" opacity=".78"/><rect x="15" y="93" width="61" height="3.5" rx="1.75" fill="#9FB6D0" opacity=".78"/>
+      <text x="15" y="112" font-size="8.2" font-family="Arial,sans-serif" fill="#959AAA">content.json</text>
+    </g></g></g><g transform="translate(331 10)"><g class="anim doc html"><g class="anim swirl swirl-html">
+      <g filter="url(#docShadow)"><path d="M9 2H71L97 28V114Q97 121 90 121H9Q3 121 3 115V8Q3 2 9 2Z" fill="#FFFCFA" stroke="#E5DCE3" stroke-width="1.25"/>
+      <path d="M71 2V22Q71 28 77 28H97Z" fill="#E56AAE" opacity=".15"/><path d="M71 2V22Q71 28 77 28H97" fill="none" stroke="#E56AAE" stroke-width="1.1" opacity=".5"/></g>
+      <rect x="15" y="15" width="35" height="33" rx="8" fill="#E56AAE"/>
+      <text x="32.5" y="37" font-size="13" font-family="Arial,sans-serif" font-weight="800" fill="white" text-anchor="middle">&lt;&gt;</text>
+      <text x="15" y="65" font-size="12" font-weight="800" fill="#1E2333" font-family="Arial,sans-serif">HTML</text><rect x="15" y="73" width="61" height="3.5" rx="1.75" fill="#E2A4C8" opacity=".78"/><rect x="15" y="83" width="67" height="3.5" rx="1.75" fill="#BCADD7" opacity=".78"/><rect x="15" y="93" width="48" height="3.5" rx="1.75" fill="#9FC4D5" opacity=".78"/>
+      <text x="15" y="112" font-size="8.2" font-family="Arial,sans-serif" fill="#959AAA">index.html</text>
+    </g></g></g><g transform="translate(491 23)"><g class="anim doc ts"><g class="anim swirl swirl-ts">
+      <g filter="url(#docShadow)"><path d="M9 2H71L97 28V114Q97 121 90 121H9Q3 121 3 115V8Q3 2 9 2Z" fill="#FFFCFA" stroke="#E5DCE3" stroke-width="1.25"/>
+      <path d="M71 2V22Q71 28 77 28H97Z" fill="#568CD5" opacity=".15"/><path d="M71 2V22Q71 28 77 28H97" fill="none" stroke="#568CD5" stroke-width="1.1" opacity=".5"/></g>
+      <rect x="15" y="15" width="35" height="33" rx="8" fill="#568CD5"/>
+      <text x="32.5" y="37" font-size="13" font-family="Arial,sans-serif" font-weight="800" fill="white" text-anchor="middle">TS</text>
+      <text x="15" y="65" font-size="12" font-weight="800" fill="#1E2333" font-family="Arial,sans-serif">TypeScript</text><rect x="15" y="73" width="63" height="3.5" rx="1.75" fill="#86B5EA" opacity=".78"/><rect x="15" y="83" width="53" height="3.5" rx="1.75" fill="#D2A1C9" opacity=".78"/><rect x="15" y="93" width="66" height="3.5" rx="1.75" fill="#B8ADD9" opacity=".78"/>
+      <text x="15" y="112" font-size="8.2" font-family="Arial,sans-serif" fill="#959AAA">app.ts</text>
+    </g></g></g>
+<!-- Changed TypeScript document enters after the initial build. -->
+<g transform="translate(491 23)"><g class="anim patch"><g class="anim swirl swirl-patch">
+      <g filter="url(#docShadow)"><path d="M9 2H71L97 28V114Q97 121 90 121H9Q3 121 3 115V8Q3 2 9 2Z" fill="#FFFCFA" stroke="#E5DCE3" stroke-width="1.25"/>
+      <path d="M71 2V22Q71 28 77 28H97Z" fill="#568CD5" opacity=".15"/><path d="M71 2V22Q71 28 77 28H97" fill="none" stroke="#568CD5" stroke-width="1.1" opacity=".5"/></g>
+      <rect x="15" y="15" width="35" height="33" rx="8" fill="#568CD5"/>
+      <text x="32.5" y="37" font-size="13" font-family="Arial,sans-serif" font-weight="800" fill="white" text-anchor="middle">TS</text>
+      <text x="15" y="65" font-size="12" font-weight="800" fill="#1E2333" font-family="Arial,sans-serif">TypeScript</text><rect x="15" y="73" width="63" height="3.5" rx="1.75" fill="#86B5EA" opacity=".78"/><rect x="15" y="83" width="53" height="3.5" rx="1.75" fill="#F3899B" opacity=".78"/><rect x="15" y="93" width="66" height="3.5" rx="1.75" fill="#B8ADD9" opacity=".78"/>
+      <text x="15" y="112" font-size="8.2" font-family="Arial,sans-serif" fill="#959AAA">app.ts</text><g transform="translate(80 -12)"><rect x="0" y="0" width="37" height="26" rx="13" fill="#FFEDF8" stroke="#E9B4D9"/><g transform="translate(10 5)" stroke="#CC499A" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none"><path d="M2 13L14 1L17 4L5 16L2 16Z"/><path d="M12 3L15 6"/></g></g>
+    </g></g></g>
+<!-- Central logo: same orientation as header, never rotated. Rendered IN FRONT of incoming files. -->
+<g transform="translate(380 218)"><g class="anim funnel" filter="url(#docShadow)">
+  <path d="M-90 -52 H90 L24 16 V85 Q24 96 15 91 L-1 77 Q-6 73 -6 69 V16 Z" fill="url(#brand)"/>
+  <path d="M-76 -41H76L17 13H-2Z" fill="#FFF" opacity=".12"/>
+  <path d="M-90 -52H90L24 16V85Q24 96 15 91L-1 77Q-6 73 -6 69V16Z" fill="none" stroke="#CB5096" stroke-opacity=".19" stroke-width="1"/>
+  <path d="M-29 -14L-3 17V54" stroke="#FFF" opacity=".24" stroke-width="3.7" fill="none" stroke-linecap="round"/>
+</g></g>
+<!-- Tiny emission marks below the spout: website is built strictly DOWNWARDS. -->
+<path d="M393 307V345" stroke="url(#brand)" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 7" class="anim stream" fill="none"/>
+<circle cx="393" cy="316" r="4.3" fill="#ED6DAD" class="anim spark1"/>
+<circle cx="393" cy="323" r="3.2" fill="#F6AC64" class="anim spark2"/>
+<circle cx="393" cy="320" r="3.7" fill="#B48BE4" class="anim spark3"/>
+<!-- The website is centred on x=380, the same axis as the funnel. -->
+<g class="anim browser">
+  <g filter="url(#deviceShadow)"><rect x="218" y="338" width="324" height="187" rx="14" fill="#FFFCF9" stroke="#DED5DD" stroke-width="1.2"/></g>
+  <g clip-path="url(#screenClip)">
+    <rect x="218" y="338" width="324" height="26" fill="#111728"/>
+    <circle cx="232" cy="351" r="3.3" fill="#FE6E7E"/><circle cx="244" cy="351" r="3.3" fill="#F8C46E"/><circle cx="256" cy="351" r="3.3" fill="#71CF9E"/>
+    <rect x="308" y="344" width="143" height="14" rx="7" fill="#313A4E"/>
+    <text x="379.5" y="353.5" font-size="8.5" fill="#D5D9E6" font-family="Arial,sans-serif" text-anchor="middle">beautiful-site.dev</text>
+    <rect x="218" y="364" width="324" height="161" fill="#FFFCFA"/>
+    <g class="anim navigation">
+      <g transform="translate(233 376)"><path d="M0 0H11L7.3 4V11Q7.3 12 6 11L4 9.5V4Z" fill="url(#brand)"/></g>
+      <text x="250" y="387" font-size="11" font-weight="750" letter-spacing=".2" font-family="Arial,sans-serif" fill="#22243B">atelier</text>
+      <text x="473" y="386" font-size="7.5" font-family="Arial,sans-serif" fill="#6A6173">WORK</text>
+      <text x="508" y="386" font-size="7.5" font-family="Arial,sans-serif" fill="#6A6173">ABOUT</text>
+    </g>
+    <!-- First pass: stages appear in dependency order, from skeleton to finished UI. -->
+    <g class="anim initial">
+      <rect class="anim heroBackground" x="232" y="395" width="296" height="83" rx="11" fill="url(#siteHero)"/>
+      <g class="anim copy">
+         <text x="245" y="421" font-size="17" font-family="Arial,sans-serif" fill="#23233E" font-weight="800" letter-spacing="-.55">Ideas into</text>
+         <text x="245" y="441" font-size="17" font-family="Arial,sans-serif" fill="#23233E" font-weight="800" letter-spacing="-.55">beautiful sites.</text>
+         <text x="245" y="455" font-size="8.5" font-family="Arial,sans-serif" fill="#6B697E">Created with clarity, built to last.</text>
+      </g>
+      <g class="anim illustration">
+        <circle cx="474" cy="432" r="31" fill="url(#brand)" opacity=".89"/>
+        <ellipse cx="476" cy="432" rx="27" ry="12" transform="rotate(-32 476 432)" stroke="#FFF7F2" stroke-width="5.4" fill="none"/>
+        <circle cx="489" cy="418" r="5" fill="#FFE9A8"/><circle cx="453" cy="452" r="4" fill="#FFF" opacity=".84"/>
+      </g>
+      <g class="anim action"><rect x="245" y="464" width="75" height="18" rx="9" fill="url(#coralPink)"/><text x="282" y="476" font-size="8.5" font-family="Arial,sans-serif" font-weight="750" fill="#FFF" text-anchor="middle">Explore more</text></g>
+      <g class="anim teasers">
+        <rect x="232" y="488" width="93" height="25" rx="8" fill="#F0DAF3"/>
+        <rect x="333" y="488" width="93" height="25" rx="8" fill="#F7DAC9"/>
+        <rect x="434" y="488" width="94" height="25" rx="8" fill="#D7E4F6"/>
+        <path d="M259 506L277 493L294 506Z" fill="#A66AC6" opacity=".78"/>
+        <circle cx="377" cy="501" r="7" fill="#F19A7C"/><path d="M371 506L383 494" stroke="#FFF3E7" stroke-width="2"/>
+        <path d="M465 506L479 494L491 506Z" stroke="#7898CC" stroke-width="3" stroke-linejoin="round" fill="none"/>
+      </g>
+    </g>
+    <!-- Second pass: changed TS triggers a visible rebuild with different creative output. -->
+    <g class="anim updated">
+      <rect class="anim newHero" x="232" y="395" width="296" height="83" rx="11" fill="url(#siteHeroNew)"/>
+      <g class="anim newCopy">
+        <text x="245" y="422" font-size="17" font-family="Arial,sans-serif" fill="#23233E" font-weight="800" letter-spacing="-.55">Make it yours.</text>
+        <text x="245" y="442" font-size="17" font-family="Arial,sans-serif" fill="#23233E" font-weight="800" letter-spacing="-.55">Ship with joy.</text>
+        <text x="245" y="456" font-size="8.5" font-family="Arial,sans-serif" fill="#6B697E">Every change, beautifully rebuilt.</text>
+      </g>
+      <g class="anim newArt"><circle cx="475" cy="432" r="30" fill="#7C82DA" opacity=".9"/><rect x="454" y="411" width="42" height="42" rx="10" transform="rotate(20 475 432)" fill="#F2A7C5"/><circle cx="476" cy="432" r="12" fill="#F8E6FE"/><circle cx="476" cy="432" r="5" fill="#9369D9"/></g>
+      <g class="anim newTiles">
+        <rect x="245" y="464" width="75" height="18" rx="9" fill="#656FE0"/><text x="282" y="476" font-size="8.5" font-family="Arial,sans-serif" font-weight="750" fill="#FFF" text-anchor="middle">Explore more</text>
+        <rect x="232" y="488" width="93" height="25" rx="8" fill="#D7DBFA"/><rect x="333" y="488" width="93" height="25" rx="8" fill="#E9C9EE"/><rect x="434" y="488" width="94" height="25" rx="8" fill="#F3CFCF"/>
+        <circle cx="279" cy="501" r="7" fill="#8889D8"/><path d="M367 505L380 494L393 505Z" fill="#BD78C9"/><path d="M465 506H495L480 493Z" fill="#E18D9D"/>
+      </g>
+    </g>
+    <rect x="218" y="364" width="324" height="161" fill="#FFF" class="anim rebuildGlint"/>
+  </g>
+</g>
+</svg>
