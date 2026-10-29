@@ -29,6 +29,7 @@ Commands:
   watch              Build, serve on http://localhost:3000 and rebuild on every change
       --port <n>       port of the dev server (default: devServerPort or 3000)
       --clean          empty the output folder before the first build
+      --fresh          every build in a new process (slower; no warm builds or verification)
   serve              Serve the output folder without building
       --port <n>
   new <name>         Create a new project in ./<name>

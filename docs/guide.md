@@ -79,7 +79,7 @@ Assets get versioned names from the site's `package.json` version: `main-1-2-0.m
 | Command | What it does |
 |---|---|
 | `yassb build` | Production build. `--strict`: exit 1 on any error. `--clean`: empty the output first. `--out <dir>`. `--json`. |
-| `yassb watch` | Build, serve on http://localhost:3000 with live reload, rebuild on every change. `--port <n>`, `--clean`. |
+| `yassb watch` | Build, serve on http://localhost:3000 with live reload, rebuild on every change. `--port <n>`, `--clean`, `--fresh`. |
 | `yassb serve` | Serve the output folder without building. `--port <n>`. |
 | `yassb new <name>` | Create a project from the starter. |
 | `yassb inspect [query]` | Describe the project without building (read-only). `--json` for a full manifest. |
@@ -357,13 +357,22 @@ with the site's `tsconfig.json` (`__dirname` and relative paths work as in Node)
 `yassb watch` builds, serves the output with live reload, and rebuilds on every change in the project (except
 the output folder, `node_modules`, `.git`):
 
-- every build runs in a fresh process, so changes to the configuration, renderers, directives, `package.json`
-  or `tsconfig.json` are always picked up;
-- that process is started as soon as the previous build ends: it loads Node, YASSB and the packages your
-  configuration imports (by loading the configuration once, without building) while you edit, so a save only
-  waits for the build itself. The build then loads the configuration and your code again, so keep load-time code
-  free of side effects (writing files, starting servers); it is replaced if site code, the configuration or a
-  file outside `src` changes in the meantime;
+- builds run in processes started ahead of time: while you edit, the next one loads Node, YASSB and the packages
+  your configuration imports (by loading the configuration once, without building), so a save only waits for the
+  build itself. Every build loads the configuration and your code again, so keep load-time code free of side
+  effects (writing files, starting servers);
+- a change to site code, the configuration, `package.json`, `tsconfig.json` or any file outside `src` is built by
+  a new process, so it is always picked up;
+- **fast, then verified**: a content change (pages, components, data, translations, Markdown, styles) is built by
+  the process that built last, which runs already-optimized code (about a third faster), and the browser reloads
+  at once. Packages may keep state between builds of a process (Tailwind keeps the class names it has seen), so a
+  process that never built then rebuilds the same steps into `.<out name>.yassb-verify` next to the output folder;
+  files that differ are copied into the output and the browser refreshes again (stylesheets are swapped without
+  reloading). The terminal prints `✓ Verified` or `↻ Verified … differed`. That process becomes the one used for the
+  next change. A save during a verification cancels it, and the next one covers its steps. The `afterBuild` hook
+  also runs for verification builds, with `out` set to the verification folder, which is deleted when watch
+  stops (add `*.yassb-verify/` to `.gitignore` if the output's parent folder is not ignored). `--fresh` turns this
+  off: every build in a new process;
 - if site code throws, the error is printed and shown in the browser in an overlay; the server keeps running,
   and the next save rebuilds;
 - a stylesheet change only recompiles the styles and swaps them without reloading; a change to a file used only

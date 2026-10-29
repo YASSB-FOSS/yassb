@@ -66,7 +66,7 @@ Because every block of a page declares exactly the data it shows, you can read a
 - **Built for agents.** `yassb inspect` describes a site with file and line numbers, `yassb check` validates a change, `yassb docs` ships the whole guide offline, and every error has a stable code.
 - **Small.** Five runtime dependencies. Runs on Node.js 20+ and Bun.
 - **Fast.** esbuild for scripts and TypeScript, a translator that only touches translated elements, in-memory URL lookups.
-- **Robust watch mode.** Every rebuild runs in a fresh process: changes to the config and to your renderers are always picked up, and a crash in your code shows up in the browser without stopping the server.
+- **Fast, robust watch mode.** Code changes are built by a new process, so changes to the config and to your renderers are always picked up; content changes are built by a warm process and then verified by a clean one; a crash in your code shows up in the browser without stopping the server.
 - **Multi-language, Markdown, Sass or Tailwind** out of the box.
 
 > **Agents** Starting on an existing YASSB site? Run `npx yassb inspect`, then read `AGENTS.md` if the project has one. `npx yassb docs` prints this documentation in the terminal.

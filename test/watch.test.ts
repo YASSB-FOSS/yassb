@@ -3,7 +3,7 @@
  * the server, and fixing them recovers.
  */
 import { afterAll, describe, expect, test } from 'bun:test';
-import { readFileSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { copyFixture, removeFixture, runCli, Runtime, startCli, waitFor } from './helpers/fixture';
 
@@ -84,6 +84,56 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
     }
     // The lock is released when watch stops.
     expect(runCli(dir, ['build'], runtime).status).toBe(0);
+  }, 180000);
+
+  test('verifies warm builds: state kept by a package is corrected; --fresh skips it', async () => {
+    const dir = copyFixture('kitchen-sink');
+    dirs.push(dir);
+    // A package that keeps state between builds of the same process, used by a renderer.
+    const pkg = join(dir, 'node_modules/stateful-counter');
+    mkdirSync(pkg, { recursive: true });
+    writeFileSync(join(pkg, 'package.json'), '{ "name": "stateful-counter", "version": "1.0.0", "main": "index.js" }');
+    writeFileSync(join(pkg, 'index.js'), 'let count = 0;\nmodule.exports = () => ++count;\n');
+    const renderers = join(dir, 'builder/renderers.ts');
+    writeFileSync(renderers, `import counter = require('stateful-counter');\n${readFileSync(renderers, 'utf8').replace('<ul class="news" data-label="', '<ul class="news" data-count="${counter()}" data-label="')}`);
+    const indexFile = join(dir, 'dist/public/en/index.html');
+    const page = () => readFileSync(indexFile, 'utf8');
+    const en = join(dir, 'src/i18n/en.json');
+    const enOriginal = readFileSync(en, 'utf8');
+
+    const watch = startCli(dir, ['watch', '--port', '0'], runtime);
+    try {
+      await waitFor(() => /on http:\/\/localhost:\d+/.test(watch.output()), 60000, 'dev server');
+      // The first build runs in a process that never built.
+      expect(page()).toContain('data-count="1"');
+      expect(existsSync(join(dir, 'dist/.public.yassb-verify'))).toBe(false);
+
+      // A content change is built by the warm process (count 2), then verified by a new one (count 1).
+      writeFileSync(en, enOriginal.replace('"Hello & welcome"', '"Hello & warm welcome"'));
+      await waitFor(() => /Verified in \d+ ms: \d+ file\(s\) differed/.test(watch.output()), 30000, 'verification');
+      await waitFor(() => page().includes('Hello &amp; warm welcome') && page().includes('data-count="1"'), 30000, 'verified output');
+      expect(existsSync(join(dir, 'dist/.public.yassb-verify/en/index.html'))).toBe(true);
+    } finally {
+      watch.child.kill('SIGINT');
+      await new Promise(resolvePromise => watch.child.once('exit', resolvePromise));
+    }
+    // The shadow folder is deleted when watch stops.
+    expect(existsSync(join(dir, 'dist/.public.yassb-verify'))).toBe(false);
+
+    // --fresh: every build in a new process, nothing to verify.
+    writeFileSync(en, enOriginal);
+    const fresh = startCli(dir, ['watch', '--port', '0', '--fresh'], runtime);
+    try {
+      await waitFor(() => /on http:\/\/localhost:\d+/.test(fresh.output()), 60000, 'dev server (--fresh)');
+      writeFileSync(en, enOriginal.replace('"Hello & welcome"', '"Hello & fresh welcome"'));
+      await waitFor(() => page().includes('Hello &amp; fresh welcome'), 30000, 'fresh rebuild');
+      expect(page()).toContain('data-count="1"');
+      await new Promise(resolvePromise => setTimeout(resolvePromise, 1500));
+      expect(fresh.output()).not.toContain('Verified');
+    } finally {
+      fresh.child.kill('SIGINT');
+      await new Promise(resolvePromise => fresh.child.once('exit', resolvePromise));
+    }
   }, 180000);
 
   test('picks up directives changed, added and removed, and data read by site code at load time', async () => {

@@ -605,7 +605,7 @@
       ],
       "source": {
         "file": "src/cli/cli.ts",
-        "line": 70,
+        "line": 71,
         "symbol": "main"
       },
       "parts": [
@@ -722,9 +722,9 @@
       "id": "cli.watch",
       "kind": "cli",
       "summary": "yassb watch: build, serve with live reload, rebuild on every change.",
-      "usage": "yassb watch [--port <n>] [--clean] [--strict]",
-      "options": "--port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build.",
-      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; every build runs in a fresh child process, so config, renderers, directives, package.json and tsconfig changes are always picked up; the process of the next build is started when a build ends and loads Node, the engine and the site's packages (by loading the configuration once) before the next change, and is replaced if site code, the configuration or a file outside src changes meanwhile; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
+      "usage": "yassb watch [--port <n>] [--clean] [--strict] [--fresh]",
+      "options": "--port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build; --fresh: every build in a new process, without warm builds and verification.",
+      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; builds run in child processes started ahead of time (Node, the engine and the site's packages loaded before the next change), and every build loads the configuration and site code again; a change to site code, the configuration or a file outside src is built by a new process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a content change is built by the warm process that built last (faster, reloads at once), then verified: a process that never built rebuilds the same steps into a shadow folder next to the output (.<out name>.yassb-verify, deleted when watch stops), files that differ are copied into the output and the browser refreshes again (CSS swapped if only stylesheets differ), and that process becomes the warm one; a change during a verification cancels it and its steps are verified with the next one; the afterBuild hook also runs for verification builds, with out set to the shadow folder; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
       "errors": [
         "BUILD_CRASHED"
       ],
@@ -737,7 +737,7 @@
       ],
       "source": {
         "file": "src/cli/commands/watch.ts",
-        "line": 64,
+        "line": 85,
         "symbol": "watchCommand"
       },
       "parts": [
@@ -748,12 +748,12 @@
         },
         {
           "file": "src/cli/build-worker.ts",
-          "line": 63,
+          "line": 60,
           "symbol": "WorkerBuildRequest"
         },
         {
           "file": "src/cli/build-worker.ts",
-          "line": 73,
+          "line": 72,
           "symbol": "WorkerResultMessage"
         },
         {

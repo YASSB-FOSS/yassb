@@ -6,15 +6,15 @@ import { LIVE_RELOAD_SNIPPET } from '../server/live-reload';
 import type { ParsedArgs } from './args';
 
 /**
- * Child process of `yassb watch` (`yassb __build`): runs one build and reports to the parent over IPC, then exits.
+ * Child process of `yassb watch` (`yassb __build`): runs builds requested by the parent over IPC.
  *
- * Every build runs in a new process, so changes to the configuration, renderers and directives are always picked
- * up, nothing is kept from a previous build, and a crash in site code cannot take down the dev server. The parent
- * starts the process ahead of time, while nothing is building: it loads the configuration once, so that Node, the
- * engine and the site's packages (node_modules) are ready, then forgets the site modules. The build loads the
- * configuration and site code again, so content read by site code is always current.
+ * The parent starts it ahead of time, while nothing is building: it loads the configuration once, so that Node,
+ * the engine and the site's packages (node_modules) are ready, then forgets the site modules. Every build loads
+ * the configuration and the site code again, so content read by site code is always current. Packages in
+ * node_modules stay loaded between builds, with whatever state they keep: the parent decides when a process may
+ * build again and verifies those builds (see `watch`).
  *
- * Messages from the parent: `{ type: 'build', steps, clean, strict }`.
+ * Messages from the parent: `{ type: 'build', steps, clean, strict, outDir? }`.
  * Messages to the parent: `{ type: 'setup', info }` once the configuration is loaded, then `{ type: 'result', … }`.
  *
  * Without an IPC channel (run by hand, e.g. for profiling) it runs one build from the flags.
@@ -27,19 +27,16 @@ export async function runBuildWorker(args: ParsedArgs): Promise<void> {
     return;
   }
 
-  let finished = false;
-  // The parent stopped before the build (e.g. it replaced this process): nothing to finish.
-  process.on('disconnect', () => {
-    if (!finished)
-      process.exit(0);
-  });
-  process.once('message', async (request: WorkerBuildRequest) => {
-    if (request && request.type === 'build')
+  // The parent stopped or replaced this process.
+  process.on('disconnect', () => process.exit(0));
+  let queue = Promise.resolve();
+  process.on('message', (request: WorkerBuildRequest) => {
+    if (!request || request.type !== 'build')
+      return;
+    queue = queue.then(async () => {
+      forgetSiteModules();
       await send(await build(request));
-    // Exits once its output is written (no process.exit: pipes are asynchronous on macOS).
-    finished = true;
-    if (process.connected)
-      process.disconnect();
+    });
   });
   warmUp();
 }
@@ -65,6 +62,8 @@ export interface WorkerBuildRequest {
   steps: BuildSteps;
   clean: boolean;
   strict: boolean;
+  /** Build into this folder instead of the configured output (verification builds). */
+  outDir?: string;
 }
 
 /**
@@ -85,6 +84,7 @@ async function build(request: Omit<WorkerBuildRequest, 'type'>): Promise<WorkerR
       steps: request.steps,
       clean: request.clean,
       strict: request.strict,
+      outDir: request.outDir,
       liveReloadSnippet: LIVE_RELOAD_SNIPPET,
       command: 'watch',
       onSetup: info => void send({ type: 'setup', info })
