@@ -49,7 +49,7 @@ Try the CLI on a fixture: `cd test/fixtures/kitchen-sink && node ../../../bin.js
 | `scripts/features/` | Feature catalogue check: parser of the tags, rules, surfaces read from the registries. |
 | `features.config.json` | Docs targets the catalogue check verifies (`enforce: false` = warnings only). |
 | `templates/starter/` | Files of `yassb new`. |
-| `landing/` | The project website, a real YASSB site (React TSX renderers, Tailwind 2). |
+| `landing/` | The project website, a real YASSB site (TypeScript renderers, Tailwind CSS 4). Rules in `landing/AGENTS.md`. |
 | `test/` | `bun test` suites, fixtures and the comparison helper. |
 
 Global state lives in a few explicit stores, all reset by `resetBuildState()` at the start of every run:
