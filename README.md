@@ -32,6 +32,26 @@ npm install
 npm run watch        # http://localhost:3000
 ```
 
+## In the terminal
+
+`yassb build`: every step with its duration, problems with file and line, a summary.
+
+<img src=".github/assets/console-build.png" width="837" alt="yassb build: banner with the version, build steps with durations, warnings with file and line, DONE summary">
+
+`yassb watch`: serves the site with live reload and rebuilds only what a change needs, then verifies the warm
+build against a clean one.
+
+<img src=".github/assets/console-watch.png" width="657" alt="yassb watch: initial build, ready on http://localhost:3000, then timestamped rebuilds and verifications">
+
+`yassb check`: builds and validates the site; exit code 1 on errors.
+
+<img src=".github/assets/console-check.png" width="1025" alt="yassb check: warnings and notes grouped by level, PASS summary with counts">
+
+`yassb new` and `yassb help`:
+
+<img src=".github/assets/console-new.png" width="680" alt="yassb new my-site: project created, next steps">
+<img src=".github/assets/console-help.png" width="759" alt="yassb help: commands and flags">
+
 ## Commands
 
 | Command | What it does |
