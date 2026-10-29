@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, statSync } from 'fs';
 import Module from 'module';
 
 /**
@@ -12,6 +12,9 @@ import Module from 'module';
 const EXTENSIONS = ['.ts', '.tsx', '.mts', '.cts', '.jsx'];
 
 let installed = false;
+
+/** Compiled code of each file, with the size and modification time it was compiled from. */
+const compiled = new Map<string, { mtimeMs: number; size: number; code: string }>();
 
 /**
  * Files compiled by the hook in this process (used to know which site modules the config loaded).
@@ -50,6 +53,15 @@ export function installTsRequireHook(): void {
 
   for (const extension of EXTENSIONS)
     extensions[extension] = (module: NodeModuleWithCompile, filename: string) => {
+      // The long-lived build process of `watch` loads site modules again for every build: unchanged files are
+      // not compiled again.
+      const stats = statSync(filename);
+      const cached = compiled.get(filename);
+      if (cached && cached.mtimeMs === stats.mtimeMs && cached.size === stats.size) {
+        COMPILED_FILES.add(filename);
+        module._compile(cached.code, filename);
+        return;
+      }
       esbuild = esbuild || require('esbuild') as typeof import('esbuild');
       let result: import('esbuild').BuildResult;
       try {
@@ -73,6 +85,7 @@ export function installTsRequireHook(): void {
         throw new SourceCompileError(first.text, first.location ? first.location.file : filename, first.location?.line, first.location?.lineText);
       }
       const code = result.outputFiles && result.outputFiles[0] ? result.outputFiles[0].text : readFileSync(filename, 'utf8');
+      compiled.set(filename, { mtimeMs: stats.mtimeMs, size: stats.size, code });
       COMPILED_FILES.add(filename);
       module._compile(code, filename);
     };

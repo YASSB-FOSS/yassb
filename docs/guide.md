@@ -359,6 +359,11 @@ the output folder, `node_modules`, `.git`):
 
 - every build runs in a fresh process, so changes to the configuration, renderers, directives, `package.json`
   or `tsconfig.json` are always picked up;
+- that process is started as soon as the previous build ends: it loads Node, YASSB and the packages your
+  configuration imports (by loading the configuration once, without building) while you edit, so a save only
+  waits for the build itself. The build then loads the configuration and your code again, so keep load-time code
+  free of side effects (writing files, starting servers); it is replaced if site code, the configuration or a
+  file outside `src` changes in the meantime;
 - if site code throws, the error is printed and shown in the browser in an overlay; the server keeps running,
   and the next save rebuilds;
 - a stylesheet change only recompiles the styles and swaps them without reloading; a change to a file used only

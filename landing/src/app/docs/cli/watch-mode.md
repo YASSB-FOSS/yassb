@@ -22,6 +22,8 @@ Each rebuild runs in a new process. Nothing is cached between builds, so:
 - changes to the configuration and to the code it imports are always picked up;
 - if your code throws, the error is printed and shown in the browser, and the server keeps running: fix the file and save.
 
+The process of the next build is started as soon as a build ends. While you edit, it loads Node, YASSB and the packages your configuration imports (it loads the configuration once, without building), so a save only waits for the build itself. The build loads the configuration and your code again, so keep code that runs at load time free of side effects (writing files, starting servers). If site code, the configuration or a file outside `src` changes in the meantime, that process is replaced by a new one.
+
 ## Only what changed is rebuilt
 
 | You change | YASSB rebuilds |

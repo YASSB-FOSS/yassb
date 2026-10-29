@@ -458,13 +458,13 @@
       ],
       "source": {
         "file": "src/config/ts-require-hook.ts",
-        "line": 41,
+        "line": 44,
         "symbol": "installTsRequireHook"
       },
       "parts": [
         {
           "file": "src/config/ts-require-hook.ts",
-          "line": 91,
+          "line": 104,
           "symbol": "SourceCompileError"
         }
       ]
@@ -565,7 +565,7 @@
         },
         {
           "file": "src/config/setup.function.ts",
-          "line": 139,
+          "line": 155,
           "symbol": "undeclaredImports"
         }
       ]
@@ -724,7 +724,7 @@
       "summary": "yassb watch: build, serve with live reload, rebuild on every change.",
       "usage": "yassb watch [--port <n>] [--clean] [--strict]",
       "options": "--port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build.",
-      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; every build runs in a fresh child process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
+      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; every build runs in a fresh child process, so config, renderers, directives, package.json and tsconfig changes are always picked up; the process of the next build is started when a build ends and loads Node, the engine and the site's packages (by loading the configuration once) before the next change, and is replaced if site code, the configuration or a file outside src changes meanwhile; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
       "errors": [
         "BUILD_CRASHED"
       ],
@@ -737,18 +737,23 @@
       ],
       "source": {
         "file": "src/cli/commands/watch.ts",
-        "line": 47,
+        "line": 64,
         "symbol": "watchCommand"
       },
       "parts": [
         {
           "file": "src/cli/build-worker.ts",
-          "line": 15,
+          "line": 24,
           "symbol": "runBuildWorker"
         },
         {
           "file": "src/cli/build-worker.ts",
-          "line": 49,
+          "line": 63,
+          "symbol": "WorkerBuildRequest"
+        },
+        {
+          "file": "src/cli/build-worker.ts",
+          "line": 73,
           "symbol": "WorkerResultMessage"
         },
         {

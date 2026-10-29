@@ -24,7 +24,7 @@ export interface ProjectWatcherOptions {
   /** Extra paths to ignore (e.g. the output folder), checked on every event. */
   ignore: () => Array<string>;
   onChange: (paths: Array<string>) => void;
-  /** Milliseconds to wait for more changes before reporting. Default: 80. */
+  /** Milliseconds to wait for more changes before reporting (an editor's save is often several events). Default: 30. */
   debounceMs?: number;
 }
 
@@ -136,7 +136,7 @@ export class ProjectWatcher {
       const paths = [...this.pending];
       this.pending.clear();
       this.options.onChange(paths);
-    }, this.options.debounceMs ?? 80);
+    }, this.options.debounceMs ?? 30);
   }
 
 }
