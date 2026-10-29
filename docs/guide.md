@@ -79,7 +79,7 @@ Assets get versioned names from the site's `package.json` version: `main-1-2-0.m
 | Command | What it does |
 |---|---|
 | `yassb build` | Production build. `--strict`: exit 1 on any error. `--clean`: empty the output first. `--out <dir>`. `--json`. |
-| `yassb watch` | Build, serve on http://localhost:3000 with live reload, rebuild on every change. `--port <n>`, `--clean`. |
+| `yassb watch` | Build, serve on http://localhost:3000 with live reload, rebuild on every change. `--port <n>`, `--clean`, `--fresh`. |
 | `yassb serve` | Serve the output folder without building. `--port <n>`. |
 | `yassb new <name>` | Create a project from the starter. |
 | `yassb inspect [query]` | Describe the project without building (read-only). `--json` for a full manifest. |
@@ -174,7 +174,9 @@ renderer registered in `customRenderers`.
 
 Replaced by the absolute URL (`/en/about/index.html`) of the output file whose path contains the fragment (also
 tried in kebab-case and snake_case). With several matches the file closest to the current page wins and a
-warning is printed. Only files already in the output are visible: with i18n, pages of the language being built.
+warning is printed. Only files already written by the current build are visible: with i18n, pages of the languages
+built so far. Files left in the output by an earlier build (when it is not emptied) are not visible, so the result
+is the same as in a build into an empty folder.
 
 ### include-styles-src / include-script-src
 
@@ -355,10 +357,25 @@ with the site's `tsconfig.json` (`__dirname` and relative paths work as in Node)
 <!-- feature: behaviour.live-reload, behaviour.dev-server -->
 
 `yassb watch` builds, serves the output with live reload, and rebuilds on every change in the project (except
-the output folder, `node_modules`, `.git`):
+the output folder, `node_modules`, `.git`; events that do not change a file, such as those Bun reports on the
+source of a copy, are ignored):
 
-- every build runs in a fresh process, so changes to the configuration, renderers, directives, `package.json`
-  or `tsconfig.json` are always picked up;
+- builds run in processes started ahead of time: while you edit, the next one loads Node, YASSB and the packages
+  your configuration imports (by loading the configuration once, without building), so a save only waits for the
+  build itself. Every build loads the configuration and your code again, so keep load-time code free of side
+  effects (writing files, starting servers);
+- a change to site code, the configuration, `package.json`, `tsconfig.json` or any file outside `src` is built by
+  a new process, so it is always picked up;
+- **fast, then verified**: a content change (pages, components, data, translations, Markdown, styles) is built by
+  the process that built last, which runs already-optimized code (about a third faster), and the browser reloads
+  at once. Packages may keep state between builds of a process (Tailwind keeps the class names it has seen), so a
+  process that never built then rebuilds the same steps into `.<out name>.yassb-verify` next to the output folder;
+  files that differ are copied into the output and the browser refreshes again (stylesheets are swapped without
+  reloading). The terminal prints `✓ verified in …` or `↻ verified in … differed`. That process becomes the one used for the
+  next change. A save during a verification cancels it, and the next one covers its steps. The `afterBuild` hook
+  also runs for verification builds, with `out` set to the verification folder, which is deleted when watch
+  stops (add `*.yassb-verify/` to `.gitignore` if the output's parent folder is not ignored). `--fresh` turns this
+  off: every build in a new process;
 - if site code throws, the error is printed and shown in the browser in an overlay; the server keeps running,
   and the next save rebuilds;
 - a stylesheet change only recompiles the styles and swaps them without reloading; a change to a file used only
@@ -367,7 +384,10 @@ the output folder, `node_modules`, `.git`):
 
 The dev server (also used by `yassb serve`) maps `/<lang>/…` to `<out>/<lang>/…` and other paths to the first
 language, then to `<out>/…`; folders redirect to a trailing slash and serve `index.html`; unknown paths serve the
-home page. Port: `--port`, else `devServerPort`, else 3000 (the next free port if busy). Not for production.
+home page. Files are revalidated on every request (`Cache-Control: no-cache` with an `ETag` from size and
+modification time), so the browser never shows a stale file, and unchanged images, fonts and scripts are answered
+with `304` instead of being downloaded again. Port: `--port`, else `devServerPort`, else 3000 (the next free port
+if busy). Not for production.
 
 Watch builds are not minified and include the live-reload script; use `yassb build` for deployment.
 
@@ -468,7 +488,9 @@ Sites built for 1.x work without changes. What is different:
   `package.json`; `yassb check` lists such imports.
 - Fixed: `options` containing arrays (`{"order":["a","b"]}`) were silently ignored; `$$` and `$&` in content
   were altered; `basicElement` wrote `<undefined>` tags without a `tag` option (now `span`, as documented);
-  an element with both `data-attr-t` and `data-t` lost its text translation.
+  an element with both `data-attr-t` and `data-t` lost its text translation; a build into an output folder that was
+  not emptied (every watch rebuild, `build` without `cleanOut`) let `url-to` and `sitemap.xml` see files of the
+  previous build, so links could point to a page of another language or of a deleted source.
 - New: `yassb inspect`, `yassb check`, `yassb docs`, `--strict`, `--clean`, `--json`, `sourcePath` in renderer
   props, nested translation keys, `i18n.allowHtml`, `sitemap: false`, `cleanOut`, `beforeBuild`/`afterBuild`,
   `esbuildOptions`, error overlay and CSS hot swap in watch mode.

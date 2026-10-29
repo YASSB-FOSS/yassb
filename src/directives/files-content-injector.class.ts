@@ -9,6 +9,7 @@ import { FrontMatterHandler } from '../tools/front-matter/front-matter-handler.c
 import type { YassbConfig } from '../yassb';
 import { DirectivesParser } from './directives-parser.class';
 import { TemplateToHtmlFiles } from './pages-generator/template-to-html-files.class';
+import { markRewrittenOutputFile } from '../tools/output-files.store';
 
 /**
  * Processes every HTML page already in `out` (or `out/<lang>`): directives, then translation.
@@ -46,6 +47,7 @@ export class FilesContentInjector {
     if (this.translator)
       fileContents = this.translator.processHtml(fileContents, sourceFileOf(file));
     writeFileSync(file, fileContents);
+    markRewrittenOutputFile(file);
   }
 
   /**

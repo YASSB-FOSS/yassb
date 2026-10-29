@@ -11,7 +11,8 @@ import { LANGS } from '../i18n/langs.constant';
 import type { Translator } from '../i18n/translator.class';
 import { PostProcessFiles } from '../post-processing/post-process-files.class';
 import { SitemapGenerator } from '../sitemap/sitemap-generator.class';
-import { logDone, logInfo, logStep } from '../tools/loggers.function';
+import { logDone, logNote, logStep } from '../tools/loggers.function';
+import { c } from '../tools/terminal';
 import { acquireOutputLock, describeLock } from './output-lock';
 import type { BuildResult, YassbConfig } from '../yassb';
 
@@ -169,8 +170,6 @@ async function buildWithLock(config: YassbConfig, options: BuildOptions, result:
     configFiles: result.configFiles
   });
 
-  logInfo(watchMode ? 'Rebuilding...' : 'Building...');
-
   // A partial rebuild (watch mode) must not delete the pages it does not rebuild.
   const fullBuild = steps.html && steps.styles && steps.scripts;
   if (options.clean || (config.cleanOut && fullBuild))
@@ -192,7 +191,7 @@ async function buildWithLock(config: YassbConfig, options: BuildOptions, result:
 
     const langs = LANGS.length ? [...LANGS] : [undefined];
     for (const lang of langs) {
-      const label = lang ? `.html for lang ${lang}` : '.html';
+      const label = lang ? `html ${lang}` : 'html';
       timed(label, () => {
         copyPages(lang);
         new SitemapGenerator(config).make();
@@ -203,10 +202,10 @@ async function buildWithLock(config: YassbConfig, options: BuildOptions, result:
       });
     }
 
-    logStep('Post processing');
+    logStep('post-processing');
     const postStarted = performance.now();
     await new PostProcessFiles(config, watchMode, options.liveReloadSnippet).do();
-    logDone('Post processing', performance.now() - postStarted);
+    logDone('post-processing', performance.now() - postStarted);
   }
 
   if (steps.styles && !config.skipsStyles) {
@@ -262,7 +261,7 @@ function reportMissingTranslations(translators: Array<Translator>): void {
   const counts: Array<string> = [];
   for (const translator of translators) {
     if (translator.missingKeys.size)
-      counts.push(`${translator.lang}: ${translator.missingKeys.size}`);
+      counts.push(`${translator.lang} ${translator.missingKeys.size}`);
     for (const [key, files] of translator.missingKeys)
       report({
         level: 'warning',
@@ -273,7 +272,7 @@ function reportMissingTranslations(translators: Array<Translator>): void {
       });
   }
   if (counts.length)
-    logInfo(`  i18n: missing translations (${counts.join(', ')}); run \`yassb check\` for the list.`);
+    logNote('i18n', `missing translations: ${counts.join(', ')} ${c.dim('(yassb check lists them)')}`);
 }
 
 function computeOk(strict: boolean): boolean {

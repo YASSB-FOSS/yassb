@@ -1,12 +1,13 @@
 import { existsSync, readFileSync } from 'fs';
 import { builtinModules } from 'module';
-import { resolve } from 'path';
+import { resolve, sep } from 'path';
 import { DirectivesParser } from '../directives/directives-parser.class';
 import { clearGeneratedPages } from '../directives/pages-generator/generated-pages.store';
 import { DIAGNOSTICS, describeError, report } from '../diagnostics/diagnostics';
 import { langsSetter } from '../i18n/langs-setter.function';
 import { resetRenderersStore } from '../renderers/renderers-store.constant';
 import { clearFileCache } from '../tools/file-cache';
+import { resetOutputFiles } from '../tools/output-files.store';
 import { clearFrontMatterStore } from '../tools/front-matter/front-matter-store.const';
 import type { YassbConfig } from '../yassb';
 import { loadConfig } from './load-config';
@@ -58,6 +59,7 @@ export const FORMER_DEPENDENCIES = [
  */
 export function resetBuildState(): void {
   clearFileCache();
+  resetOutputFiles();
   clearFrontMatterStore();
   clearGeneratedPages();
   DirectivesParser.frontMatterData = {};
@@ -129,6 +131,22 @@ export function loadedSiteModules(): Array<string> {
   for (const file of Object.keys(cache))
     files.add(file);
   return [...files].filter(file => file.startsWith(root) && !file.includes('node_modules'));
+}
+
+/**
+ * Removes site modules from the `require` cache, so that the next build loads the configuration and site code
+ * again (used by the long-lived build process of `watch`). Modules in node_modules and the engine stay loaded.
+ *
+ * @internal
+ */
+export function forgetSiteModules(): void {
+  const cache = (require as NodeJS.Require).cache || {};
+  const engineDir = resolve(__dirname, '..') + sep;
+  const nodeModules = `${sep}node_modules${sep}`;
+  for (const file of Object.keys(cache))
+    if (!file.includes(nodeModules) && !file.startsWith(engineDir))
+      delete cache[file];
+  COMPILED_FILES.clear();
 }
 
 /**

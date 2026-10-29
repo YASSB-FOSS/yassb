@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "features": [
     {
       "id": "api.custom-directives",
@@ -138,7 +138,7 @@
       ],
       "source": {
         "file": "src/assets/copy-assets.function.ts",
-        "line": 51,
+        "line": 53,
         "symbol": "copyAssets"
       },
       "parts": []
@@ -217,7 +217,7 @@
       "summary": "Development server of watch and serve (not for production).",
       "usage": "http://localhost:3000/  →  <out>/<first language>/index.html",
       "options": "config.devServerPort, --port.",
-      "rules": "/<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; if the port is busy the next ones are tried.",
+      "rules": "/<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; files carry an ETag (size and modification time) and must be revalidated, so unchanged files are answered with 304 and not downloaded again; if the port is busy the next ones are tried.",
       "errors": [],
       "status": "stable",
       "since": "1.0.0",
@@ -228,13 +228,13 @@
       ],
       "source": {
         "file": "src/server/static-server.ts",
-        "line": 45,
+        "line": 46,
         "symbol": "startStaticServer"
       },
       "parts": [
         {
           "file": "src/server/static-server.ts",
-          "line": 16,
+          "line": 17,
           "symbol": "StaticServerOptions"
         }
       ]
@@ -255,28 +255,28 @@
       ],
       "source": {
         "file": "src/diagnostics/diagnostics.ts",
-        "line": 105,
+        "line": 106,
         "symbol": "DiagnosticsCollector"
       },
       "parts": [
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 16,
+          "line": 17,
           "symbol": "DiagnosticLevel"
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 21,
+          "line": 22,
           "symbol": "Diagnostic"
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 47,
+          "line": 48,
           "symbol": "DIAGNOSTIC_CODES"
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 184,
+          "line": 185,
           "symbol": "formatDiagnostic"
         },
         {
@@ -372,13 +372,13 @@
       ],
       "source": {
         "file": "src/pipeline/build.ts",
-        "line": 112,
+        "line": 113,
         "symbol": "runBuild"
       },
       "parts": [
         {
           "file": "src/assets/copy-assets.function.ts",
-          "line": 61,
+          "line": 63,
           "symbol": "copyPages"
         },
         {
@@ -388,27 +388,27 @@
         },
         {
           "file": "src/directives/files-content-injector.class.ts",
-          "line": 19,
+          "line": 20,
           "symbol": "FilesContentInjector"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 34,
+          "line": 35,
           "symbol": "BuildSteps"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 46,
+          "line": 47,
           "symbol": "BuildOptions"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 69,
+          "line": 70,
           "symbol": "SetupInfo"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 85,
+          "line": 86,
           "symbol": "DetailedBuildResult"
         }
       ]
@@ -430,7 +430,7 @@
       ],
       "source": {
         "file": "src/post-processing/post-process-file.class.ts",
-        "line": 22,
+        "line": 23,
         "symbol": "PostProcessFile"
       },
       "parts": [
@@ -458,13 +458,13 @@
       ],
       "source": {
         "file": "src/config/ts-require-hook.ts",
-        "line": 41,
+        "line": 44,
         "symbol": "installTsRequireHook"
       },
       "parts": [
         {
           "file": "src/config/ts-require-hook.ts",
-          "line": 91,
+          "line": 104,
           "symbol": "SourceCompileError"
         }
       ]
@@ -475,7 +475,7 @@
       "summary": "sitemap.xml lists every file of the output; it is also the list url-to searches.",
       "usage": "<out>/sitemap.xml with <loc>https://example.com/en/index.html</loc> entries",
       "options": "config.siteHost (keeps the file and is the host of the URLs), config.sitemap: false (never written).",
-      "rules": "Regenerated before each language is processed; includes assets and every file; without siteHost the host is http://fake.host/ and the file is deleted at the end of the build (after post-processing); post processors may replace it.",
+      "rules": "Regenerated before each language is processed; includes assets and every file written by the current build (not files left in the output by an earlier one); without siteHost the host is http://fake.host/ and the file is deleted at the end of the build (after post-processing); post processors may replace it.",
       "errors": [],
       "status": "stable",
       "since": "1.0.0",
@@ -486,13 +486,13 @@
       ],
       "source": {
         "file": "src/sitemap/sitemap-generator.class.ts",
-        "line": 32,
+        "line": 33,
         "symbol": "SitemapGenerator"
       },
       "parts": [
         {
           "file": "src/sitemap/sitemap-generator.class.ts",
-          "line": 13,
+          "line": 14,
           "symbol": "SITEMAP_URLS"
         }
       ]
@@ -515,7 +515,7 @@
       ],
       "source": {
         "file": "src/cli/commands/build.ts",
-        "line": 20,
+        "line": 21,
         "symbol": "buildCommand"
       },
       "parts": []
@@ -565,7 +565,7 @@
         },
         {
           "file": "src/config/setup.function.ts",
-          "line": 139,
+          "line": 157,
           "symbol": "undeclaredImports"
         }
       ]
@@ -605,13 +605,13 @@
       ],
       "source": {
         "file": "src/cli/cli.ts",
-        "line": 70,
+        "line": 89,
         "symbol": "main"
       },
       "parts": [
         {
           "file": "src/cli/cli.ts",
-          "line": 19,
+          "line": 18,
           "symbol": "HELP"
         }
       ]
@@ -693,7 +693,7 @@
       ],
       "source": {
         "file": "src/cli/commands/new.ts",
-        "line": 22,
+        "line": 23,
         "symbol": "newCommand"
       },
       "parts": []
@@ -713,7 +713,7 @@
       ],
       "source": {
         "file": "src/cli/commands/serve.ts",
-        "line": 20,
+        "line": 22,
         "symbol": "serveCommand"
       },
       "parts": []
@@ -722,9 +722,9 @@
       "id": "cli.watch",
       "kind": "cli",
       "summary": "yassb watch: build, serve with live reload, rebuild on every change.",
-      "usage": "yassb watch [--port <n>] [--clean] [--strict]",
-      "options": "--port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build.",
-      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; every build runs in a fresh child process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
+      "usage": "yassb watch [--port <n>] [--clean] [--strict] [--fresh]",
+      "options": "--port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build; --fresh: every build in a new process, without warm builds and verification.",
+      "rules": "The whole project is watched except the output folder, node_modules, .git and editor temp files; events that do not change a file are ignored (its ctime is unchanged and not recent: Bun reports such events on the source of a copy); builds run in child processes started ahead of time (Node, the engine and the site's packages loaded before the next change), and every build loads the configuration and site code again; a change to site code, the configuration or a file outside src is built by a new process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a content change is built by the warm process that built last (faster, reloads at once), then verified: a process that never built rebuilds the same steps into a shadow folder next to the output (.<out name>.yassb-verify, deleted when watch stops), files that differ are copied into the output and the browser refreshes again (CSS swapped if only stylesheets differ), and that process becomes the warm one; a change during a verification cancels it and its steps are verified with the next one; the afterBuild hook also runs for verification builds, with out set to the shadow folder; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.",
       "errors": [
         "BUILD_CRASHED"
       ],
@@ -737,28 +737,33 @@
       ],
       "source": {
         "file": "src/cli/commands/watch.ts",
-        "line": 47,
+        "line": 86,
         "symbol": "watchCommand"
       },
       "parts": [
         {
           "file": "src/cli/build-worker.ts",
-          "line": 15,
+          "line": 24,
           "symbol": "runBuildWorker"
         },
         {
           "file": "src/cli/build-worker.ts",
-          "line": 49,
+          "line": 60,
+          "symbol": "WorkerBuildRequest"
+        },
+        {
+          "file": "src/cli/build-worker.ts",
+          "line": 72,
           "symbol": "WorkerResultMessage"
         },
         {
           "file": "src/watch/project-watcher.ts",
-          "line": 22,
+          "line": 32,
           "symbol": "ProjectWatcherOptions"
         },
         {
           "file": "src/watch/project-watcher.ts",
-          "line": 34,
+          "line": 44,
           "symbol": "ProjectWatcher"
         }
       ]
@@ -841,7 +846,7 @@
       "parts": [
         {
           "file": "src/assets/copy-assets.function.ts",
-          "line": 85,
+          "line": 89,
           "symbol": "cleanOut"
         }
       ]
@@ -952,7 +957,7 @@
       "parts": [
         {
           "file": "src/config/setup.function.ts",
-          "line": 48,
+          "line": 49,
           "symbol": "FORMER_DEPENDENCIES"
         },
         {
@@ -1439,7 +1444,7 @@
       ],
       "source": {
         "file": "src/directives/pages-generator/template-to-html-files.class.ts",
-        "line": 36,
+        "line": 37,
         "symbol": "TemplateToHtmlFiles"
       },
       "parts": [
@@ -1538,7 +1543,7 @@
       "summary": "Replaced by the absolute URL of the output file whose path contains a fragment.",
       "usage": "<a href=\"{{ url-to=\"about\" }}\">  <a href=\"{{ url-to=\"blog-post#comments\" options=\"{\"warning\":false}\" }}\">",
       "options": "#anchor is kept; options=\"{\"warning\":false}\" silences the ambiguity warning.",
-      "rules": "The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.",
+      "rules": "The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; only files written by the current build are visible (files left in the output by an earlier build are not, so a build into a folder that was not emptied resolves like one into an empty folder); with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.",
       "errors": [
         "URL_TO_EMPTY",
         "URL_TO_NOT_FOUND",

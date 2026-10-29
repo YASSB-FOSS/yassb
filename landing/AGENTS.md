@@ -7,10 +7,14 @@ The website and documentation of YASSB (https://yassb-foss.github.io), built wit
 ```bash
 bun install          # Tailwind CSS 4, typography, highlight.js, PostCSS (the engine comes from ../)
 bun run watch        # http://localhost:3000, uses ../bin.js (build the engine first: cd .. && bun run build)
-bun run build        # → YASSB-FOSS.github.io (a separate git repository, kept by cleanOut)
+bun run build        # → YASSB-FOSS.github.io (local output, not deployed)
 bun run check        # build + validation
 bun run inspect
 ```
+
+Deploy, from the repository root: `bun run deploy-landing` (`--dry-run` to stop before the push). It builds the
+engine, checks the site into a temporary folder and pushes it to the `master` branch of
+YASSB-FOSS/YASSB-FOSS.github.io (GitHub Pages). It works while `bun run watch` is running.
 
 ## Structure
 

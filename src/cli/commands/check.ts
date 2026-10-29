@@ -1,8 +1,8 @@
 import { checkProject } from '../../check/site-checks';
-import { DIAGNOSTICS, formatDiagnostic } from '../../diagnostics/diagnostics';
+import { DIAGNOSTICS } from '../../diagnostics/diagnostics';
 import { setQuiet } from '../../tools/loggers.function';
+import { badges, c, formatCounts, formatMs, glyph, printBanner, styleDiagnostic } from '../../tools/terminal';
 import type { ParsedArgs } from '../args';
-import { formatMs } from './build';
 
 /**
  * `yassb check [--json] [--out <dir>] [--no-links]`: builds and validates the site. Exit code 1 on errors.
@@ -21,8 +21,10 @@ export async function checkCommand(args: ParsedArgs): Promise<number> {
   const json = args.flags.json === true;
   setQuiet(true);
   DIAGNOSTICS.silent = true;
-  if (!json)
-    console.log('Building and checking the site...');
+  if (!json) {
+    printBanner('check');
+    console.log(`  ${glyph.step} building and checking the site ${c.dim('…')}`);
+  }
 
   const report = await checkProject({
     outDir: typeof args.flags.out === 'string' ? args.flags.out : undefined,
@@ -38,12 +40,14 @@ export async function checkCommand(args: ParsedArgs): Promise<number> {
     const items = report.diagnostics.filter(item => item.level === level);
     if (!items.length)
       continue;
-    console.log(`\n${level === 'error' ? 'Errors' : level === 'warning' ? 'Warnings' : 'Notes'} (${items.length}):`);
+    const title = level === 'error' ? 'errors' : level === 'warning' ? 'warnings' : 'notes';
+    console.log(`\n  ${c.bold(title.toUpperCase())} ${c.dim(`(${items.length})`)}\n`);
     for (const item of items)
-      console.log(formatDiagnostic(item).split('\n').map(line => `  ${line}`).join('\n'));
+      console.log(styleDiagnostic(item));
   }
 
   const { error, warning, info } = report.counts;
-  console.log(`\n${report.ok ? '✓' : '✗'} Checked in ${formatMs(report.durationMs)}: ${error} error(s), ${warning} warning(s), ${info} note(s).`);
+  const counts = formatCounts({ errors: error, warnings: warning, notes: info });
+  console.log(`\n  ${report.ok ? badges.ok('PASS') : badges.fail('FAIL')}  checked in ${c.bold(formatMs(report.durationMs))}  ${counts}\n`);
   return report.ok ? 0 : 1;
 }

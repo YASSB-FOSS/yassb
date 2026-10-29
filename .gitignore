@@ -6,3 +6,4 @@ landing/YASSB-FOSS.github.io
 landing/node_modules
 test/.tmp
 *.log
+*.yassb-verify/

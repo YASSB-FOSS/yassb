@@ -15,12 +15,18 @@ slug: watch-mode
 
 The whole project, except the output folder, `node_modules`, `.git` and temporary files of editors. That includes the configuration, your renderers and directives, `package.json` and `tsconfig.json`.
 
-## Every build is fresh
+## Fast, then verified
 
-Each rebuild runs in a new process. Nothing is cached between builds, so:
+Builds run in processes started ahead of time. While you edit, the next one loads Node, YASSB and the packages your configuration imports (it loads the configuration once, without building), so a save only waits for the build itself. Every build loads the configuration and your code again, so keep code that runs at load time free of side effects (writing files, starting servers).
 
-- changes to the configuration and to the code it imports are always picked up;
-- if your code throws, the error is printed and shown in the browser, and the server keeps running: fix the file and save.
+- **Code changes** (configuration, renderers, directives, `package.json`, `tsconfig.json`, anything outside `src`) are built by a new process, so they are always picked up.
+- **Content changes** (pages, components, data, translations, Markdown, styles) are built by the process that built last: its code is already optimized, about a third faster, and the browser reloads at once.
+- Then **a process that never built** rebuilds the same steps into `.<out name>.yassb-verify`, next to the output folder. Packages can keep state between builds of a process (Tailwind keeps the class names it has seen), so files that differ are copied into the output and the browser refreshes again; stylesheets are swapped without reloading. The terminal prints `✓ verified in …` or `↻ verified in … differed`. That process is used for the next change.
+- A save during a verification cancels it; the next one covers its steps.
+- The `afterBuild` hook also runs for verification builds, with `out` set to the verification folder, which is deleted when watch stops. If the output's parent folder is not ignored by git, add `*.yassb-verify/` to `.gitignore`.
+- `yassb watch --fresh` turns this off: every build runs in a new process.
+
+If your code throws, the error is printed and shown in the browser, and the server keeps running: fix the file and save.
 
 ## Only what changed is rebuilt
 
@@ -50,6 +56,7 @@ The `Content-Security-Policy` meta tag is removed in watch mode so that the scri
 - `/<lang>/…` serves `<out>/<lang>/…`; other paths are looked up in the first language, then in the output root;
 - folders redirect to a trailing slash and serve their `index.html`;
 - unknown paths serve the home page.
+- every file is revalidated on each request (`no-cache` with an `ETag`), so the browser never shows a stale file and does not download unchanged images, fonts and scripts again.
 
 ## One process per output folder
 

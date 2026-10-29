@@ -26,7 +26,7 @@ export interface UrlToOptions {
  * @summary Replaced by the absolute URL of the output file whose path contains a fragment.
  * @usage <a href="{{ url-to="about" }}">  <a href="{{ url-to="blog-post#comments" options="{"warning":false}" }}">
  * @options #anchor is kept; options="{"warning":false}" silences the ambiguity warning.
- * @rules The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.
+ * @rules The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; only files written by the current build are visible (files left in the output by an earlier build are not, so a build into a folder that was not emptied resolves like one into an empty folder); with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.
  * @errors URL_TO_EMPTY, URL_TO_NOT_FOUND, URL_TO_AMBIGUOUS
  * @status stable
  * @since 1.0.0

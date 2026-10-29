@@ -1,6 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, utimesSync } from 'fs';
 import { relative, resolve } from 'path';
 import { WORKING_DIR } from '../config/working-dir.constant';
+import { markOutputFile } from '../tools/output-files.store';
 
 /**
  * Copies a folder recursively. Files whose size and modification time are unchanged are skipped,
@@ -23,6 +24,7 @@ export function copyDirIncremental(from: string, to: string): number {
       copied += copyDirIncremental(source, destination);
       continue;
     }
+    markOutputFile(destination);
     if (existsSync(destination)) {
       const current = statSync(destination);
       if (current.size === stat.size && Math.trunc(current.mtimeMs) === Math.trunc(stat.mtimeMs))
@@ -72,8 +74,10 @@ function copyAll(from: string, to: string): void {
     const destination = resolve(to, entry);
     if (statSync(source).isDirectory())
       copyAll(source, destination);
-    else
+    else {
       copyFileSync(source, destination);
+      markOutputFile(destination);
+    }
   }
 }
 

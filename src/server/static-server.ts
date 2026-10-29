@@ -1,6 +1,7 @@
 import { createReadStream, existsSync, statSync } from 'fs';
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import { extname, normalize, resolve, sep } from 'path';
+import { c, glyph } from '../tools/terminal';
 import type { LiveReloadHub } from './live-reload';
 
 /**
@@ -36,7 +37,7 @@ const MIME_TYPES: { [extension: string]: string } = {
  * @summary Development server of watch and serve (not for production).
  * @usage http://localhost:3000/  →  <out>/<first language>/index.html
  * @options config.devServerPort, --port.
- * @rules /<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; if the port is busy the next ones are tried.
+ * @rules /<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; files carry an ETag (size and modification time) and must be revalidated, so unchanged files are answered with 304 and not downloaded again; if the port is busy the next ones are tried.
  * @errors none
  * @status stable
  * @since 1.0.0
@@ -52,7 +53,7 @@ function listen(server: Server, port: number, attempts: number = 10): Promise<{ 
     const onError = (error: NodeJS.ErrnoException) => {
       server.off('listening', onListening);
       if (error.code === 'EADDRINUSE' && attempts > 1 && port !== 0) {
-        console.log(`Port ${port} is in use, trying ${port + 1}...`);
+        console.log(`  ${glyph.warn} port ${port} is in use, trying ${c.bold(String(port + 1))}`);
         resolvePromise(listen(server, port + 1, attempts - 1));
       } else
         reject(error);
@@ -140,10 +141,22 @@ function tryServe(root: string, path: string, url: URL, request: IncomingMessage
   return true;
 }
 
+/**
+ * Every response must be revalidated (`no-cache`); the ETag (size and modification time, in nanoseconds) lets the
+ * browser keep files that did not change, answered with 304 and no body. No `Last-Modified`: its one-second
+ * resolution would miss a file rewritten within the same second.
+ */
 function sendFile(file: string, request: IncomingMessage, response: ServerResponse): void {
-  const size = statSync(file).size;
+  const stat = statSync(file, { bigint: true });
+  const size = Number(stat.size);
+  const etag = `"${stat.size.toString(16)}-${stat.mtimeNs.toString(16)}"`;
   const type = MIME_TYPES[extname(file).toLowerCase()] || 'application/octet-stream';
-  const headers: { [name: string]: string | number } = { 'Content-Type': type, 'Cache-Control': 'no-cache', 'Accept-Ranges': 'bytes' };
+  const headers: { [name: string]: string | number } = { 'Content-Type': type, 'Cache-Control': 'no-cache', 'Accept-Ranges': 'bytes', ETag: etag };
+  if (!request.headers.range && matchesEtag(request.headers['if-none-match'], etag)) {
+    response.writeHead(304, { 'Cache-Control': 'no-cache', ETag: etag });
+    response.end();
+    return;
+  }
   const range = /^bytes=(\d*)-(\d*)$/.exec(String(request.headers.range || ''));
   if (range && size > 0) {
     const start = range[1] ? parseInt(range[1], 10) : Math.max(0, size - parseInt(range[2], 10));
@@ -162,4 +175,14 @@ function sendFile(file: string, request: IncomingMessage, response: ServerRespon
     response.end();
   else
     createReadStream(file).pipe(response);
+}
+
+/** `If-None-Match` (a list of tags, or `*`) with the weak comparison of RFC 9110. */
+function matchesEtag(header: string | undefined, etag: string): boolean {
+  if (!header)
+    return false;
+  return header.split(',').some(candidate => {
+    const tag = candidate.trim();
+    return tag === '*' || tag.replace(/^W\//, '') === etag;
+  });
 }

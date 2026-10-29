@@ -10,6 +10,7 @@ import { TextFormatterParser } from '../../tools/files-content-helpers/text-form
 import { FrontMatterHandler } from '../../tools/front-matter/front-matter-handler.class';
 import { FrontMatterInjector } from '../../tools/front-matter/front-matter-injector.class';
 import { mdTitleExtractor } from '../../tools/md-title-extractor.function';
+import { markOutputFile } from '../../tools/output-files.store';
 import { camelToKebabCase } from '../../tools/strings-formatters/camel-to-kebab-case.function';
 import type { YassbConfig } from '../../yassb';
 import { extractDirectives, replaceFirstLiteral } from '../tools/extract-directives.function';
@@ -97,6 +98,7 @@ export class TemplateToHtmlFiles {
     FrontMatterHandler.set(fullPath, data);
     GENERATED_PAGES.set(fullPath, { template: this.pathToTemplate, source: pathToFile });
     writeFileSync(fullPath, new FrontMatterInjector(newFileHtmlContents, FrontMatterHandler.get(fullPath) || {}, pathToFile).inject());
+    markOutputFile(fullPath);
   }
 
   private buildNewFileName(content: string, data: { [key: string]: any }, pathToFile: string): string {

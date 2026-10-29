@@ -2,6 +2,7 @@ import { cpSync, existsSync, readdirSync, readFileSync, renameSync, statSync, wr
 import { resolve } from 'path';
 import { workingDirSetter } from '../../config/working-dir-setter.function';
 import { camelToKebabCase } from '../../tools/strings-formatters/camel-to-kebab-case.function';
+import { c, failLine, glyph, printBanner } from '../../tools/terminal';
 import type { ParsedArgs } from '../args';
 import { version } from '../cli';
 
@@ -20,15 +21,16 @@ import { version } from '../cli';
  * @related config.files
  */
 export function newCommand(args: ParsedArgs): number {
+  printBanner('new');
   const name = args.positionals[0];
   if (!name) {
-    console.error('ERROR: you must provide a name for the project. Example: yassb new my-site');
+    console.error(failLine(`You must provide a name for the project. Example: ${c.bold('yassb new my-site')}`));
     return 1;
   }
   const projectName = camelToKebabCase(name);
   const target = resolve(process.cwd(), projectName);
   if (existsSync(target) && readdirSync(target).length) {
-    console.error(`ERROR: folder ${target} already exists and is not empty.`);
+    console.error(failLine(`Folder ${target} already exists and is not empty.`));
     return 1;
   }
 
@@ -40,14 +42,19 @@ export function newCommand(args: ParsedArgs): number {
   replaceInTree(target, { PROJECT_NAME: projectName, YASSB_VERSION: version() });
   workingDirSetter({ base: target }, true);
 
-  console.log(`Created ${projectName}/
-
-Next steps:
-  cd ${projectName}
-  npm install
-  npm run watch      # http://localhost:3000
-
-Coding agents: read AGENTS.md, then run \`npx yassb docs\` and \`npx yassb inspect\`.`);
+  const command = (text: string, comment = '') => `    ${c.dim('$')} ${c.accent(text)}${comment ? `  ${c.dim(comment)}` : ''}`;
+  console.log([
+    `  ${glyph.ok} created ${c.bold(`${projectName}/`)}`,
+    '',
+    `  ${c.bold('NEXT STEPS')}`,
+    '',
+    command(`cd ${projectName}`),
+    command('npm install'),
+    command('npm run watch', '→ http://localhost:3000'),
+    '',
+    `  ${c.dim('coding agents: read AGENTS.md, then run')} ${c.accent('npx yassb docs')} ${c.dim('and')} ${c.accent('npx yassb inspect')}`,
+    ''
+  ].join('\n'));
   return 0;
 }
 

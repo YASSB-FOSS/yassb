@@ -47,4 +47,4 @@ The configuration and everything it imports (renderers, directives, helpers) can
 
 A syntax error is reported with file and line; a missing package is explained, including packages YASSB 1 used to install for you (`CONFIG_MODULE_NOT_FOUND`).
 
-> **Note** In watch mode every build runs in a fresh process, so changes to the configuration and to the code it imports are always picked up.
+> **Note** In watch mode a change to the configuration or to the code it imports is built by a new process, so it is always picked up.

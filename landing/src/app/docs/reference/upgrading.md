@@ -24,7 +24,7 @@ npx yassb check
 - **Fewer dependencies.** YASSB no longer installs packages it does not need: react, react-dom, fs-extra, cheerio, lodash, moment, webpack, ts-node, typescript and others. If your code imports one of them without declaring it in `package.json`, the build stops with `CONFIG_MODULE_NOT_FOUND` and tells you what to install; `yassb check` reports them in advance as `UNDECLARED_DEPENDENCY`.
 - **esbuild instead of webpack** for scripts: same file name, no separate `.LICENSE.txt` file. A `webpackConfig` still works if webpack is installed in your site.
 - **TypeScript without ts-node**: configuration and site code are compiled with esbuild, faster, with the same `__dirname` behaviour.
-- **Watch mode** rebuilds in a fresh process, watches the whole project and shows errors in the browser.
+- **Watch mode** rebuilds code changes in a new process and content changes in a warm one (then verified), watches the whole project and shows errors in the browser.
 
 ## Fixed
 
@@ -33,6 +33,7 @@ npx yassb check
 - `basicElement` wrote `<undefined>` elements without a `tag` option; it now writes `span`, as documented.
 - An element with both `data-attr-t` and `data-t` lost its text translation.
 - Watch mode reloaded the browser before the rebuild was finished.
+- A build into an output folder that was not emptied (every watch rebuild, `yassb build` without `cleanOut`) let `url-to` and `sitemap.xml` see files left by the previous build: links could point to a page of another language, or of a source that was deleted.
 
 ## New
 

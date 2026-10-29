@@ -34,7 +34,7 @@ The anchor (`#install`) is kept.
 
 ## What can be found
 
-Every file in the output at the time the page is processed: pages, generated pages, assets. With translations, languages are built in alphabetical order and each language's pages are copied when its turn comes, so do not rely on links to pages of a later language. Within a language, links resolve to the closest file, which is the page of the same language.
+Every file the current build has written to the output by the time the page is processed: pages, generated pages, assets. Files left in the output by an earlier build (when it is not emptied) are not visible, so the result is the same as in a build into an empty folder. With translations, languages are built in alphabetical order and each language's pages are copied when its turn comes, so do not rely on links to pages of a later language. Within a language, links resolve to the closest file, which is the page of the same language.
 
 ## siteHost and sitemap.xml
 
