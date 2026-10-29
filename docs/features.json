@@ -217,7 +217,7 @@
       "summary": "Development server of watch and serve (not for production).",
       "usage": "http://localhost:3000/  →  <out>/<first language>/index.html",
       "options": "config.devServerPort, --port.",
-      "rules": "/<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; if the port is busy the next ones are tried.",
+      "rules": "/<lang>/... → <out>/<lang>/...; other paths → <out>/<first language>/..., then <out>/...; folders redirect to a trailing slash and serve index.html; not found → the home page with status 200; Range requests supported; files carry an ETag (size and modification time) and must be revalidated, so unchanged files are answered with 304 and not downloaded again; if the port is busy the next ones are tried.",
       "errors": [],
       "status": "stable",
       "since": "1.0.0",

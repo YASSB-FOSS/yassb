@@ -52,6 +52,7 @@ The `Content-Security-Policy` meta tag is removed in watch mode so that the scri
 - `/<lang>/…` serves `<out>/<lang>/…`; other paths are looked up in the first language, then in the output root;
 - folders redirect to a trailing slash and serve their `index.html`;
 - unknown paths serve the home page.
+- every file is revalidated on each request (`no-cache` with an `ETag`), so the browser never shows a stale file and does not download unchanged images, fonts and scripts again.
 
 ## One process per output folder
 

@@ -372,7 +372,10 @@ the output folder, `node_modules`, `.git`):
 
 The dev server (also used by `yassb serve`) maps `/<lang>/…` to `<out>/<lang>/…` and other paths to the first
 language, then to `<out>/…`; folders redirect to a trailing slash and serve `index.html`; unknown paths serve the
-home page. Port: `--port`, else `devServerPort`, else 3000 (the next free port if busy). Not for production.
+home page. Files are revalidated on every request (`Cache-Control: no-cache` with an `ETag` from size and
+modification time), so the browser never shows a stale file, and unchanged images, fonts and scripts are answered
+with `304` instead of being downloaded again. Port: `--port`, else `devServerPort`, else 3000 (the next free port
+if busy). Not for production.
 
 Watch builds are not minified and include the live-reload script; use `yassb build` for deployment.
 
