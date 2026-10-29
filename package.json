@@ -37,7 +37,7 @@
     "landing:build": "cd landing && node ../bin.js build",
     "landing:watch": "cd landing && node ../bin.js watch",
     "deploy": "cglg --action=newRelease && bun run build && cglg --action=closeRelease && npm publish",
-    "deploy-landing": "bun run build && bun run landing:build && cd landing/YASSB-FOSS.github.io && npm run deploy",
+    "deploy-landing": "bun scripts/deploy-landing.ts",
     "features": "bun scripts/check-features.ts"
   },
   "homepage": "https://yassb-foss.github.io/",

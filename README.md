@@ -75,7 +75,7 @@ export function newsList({ source, options }: RendererProps<Array<{ title: strin
 
 - [`docs/guide.md`](docs/guide.md) — the complete guide (also `yassb docs`): structure, pipeline, directives,
   renderers, custom directives, i18n, configuration, watch mode, diagnostics, architecture rules, recipes.
-- [Guides on the website](https://yassb-foss.github.io/guides/) and [llms.txt](https://yassb-foss.github.io/llms.txt).
+- [Documentation on the website](https://yassb-foss.github.io/docs/) and [llms.txt](https://yassb-foss.github.io/llms.txt).
 - Upgrading from 1.x: sites keep working unchanged; see the "Upgrading from 1.x" section of the guide.
 
 ## Development
