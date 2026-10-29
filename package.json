@@ -1,7 +1,7 @@
 {
   "name": "yassb-web",
   "version": "2.0.0",
-  "description": "YASSB (Yet Another Static Site Builder) processes HTML, (S)CSS, JavaScript/TypeScript, JSX/TSX, JSON, MarkDown and many other files and combines them into beautiful static websites",
+  "description": "Static site builder: HTML components, JSON data, Markdown and i18n, with TypeScript renderers. Fast (esbuild), five dependencies, and a CLI coding agents use to inspect and check a site.",
   "engines": {
     "node": ">=20.0.0"
   },
@@ -46,13 +46,20 @@
     "url": "https://github.com/YASSB-FOSS/yassb.git"
   },
   "keywords": [
+    "static site generator",
+    "static site builder",
     "static website",
-    "html",
-    "static",
-    "website",
     "website builder",
-    "website generator",
-    "serverless"
+    "html",
+    "components",
+    "markdown",
+    "i18n",
+    "typescript",
+    "esbuild",
+    "bun",
+    "cli",
+    "ai agents",
+    "agentic coding"
   ],
   "dependencies": {
     "esbuild": "^0.28.2",
