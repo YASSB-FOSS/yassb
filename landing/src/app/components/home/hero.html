@@ -3,18 +3,22 @@
   <div class="relative px-6 lg:px-8">
     <div class="relative mx-auto max-w-2xl lg:max-w-7xl">
       <!-- component="home/navbar.html" -->
-      <div aria-hidden="true" class="pointer-events-none absolute top-60 right-0 hidden w-[27rem] rotate-[1.5deg] xl:block">
-        <div class="overflow-hidden rounded-2xl bg-gray-950/85 shadow-2xl ring-1 ring-white/10 backdrop-blur">
-          <div class="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5"><span class="h-2.5 w-2.5 rounded-full bg-white/20"></span><span class="h-2.5 w-2.5 rounded-full bg-white/20"></span><span class="h-2.5 w-2.5 rounded-full bg-white/20"></span><span class="ml-3 font-mono text-[11px] text-white/40">~/my-site</span></div>
-          <pre class="px-5 py-4 font-mono text-[12px]/6 text-slate-300"><span class="text-pink-300">$</span> <span class="text-white">yassb build</span>
-<span class="rounded-sm bg-violet-600 px-1 font-bold text-white">YASSB</span> <span class="text-violet-300">v2.0.0</span> <span class="font-bold text-white">build</span>
-<span class="text-violet-300">›</span> html en           <span class="text-white/40">420 ms</span>
-<span class="text-violet-300">›</span> html it           <span class="text-white/40">380 ms</span>
-<span class="text-violet-300">›</span> styles            <span class="text-white/40">610 ms</span>
-<span class="rounded-sm bg-emerald-600 px-1 font-bold text-white">DONE</span> built in <span class="font-bold text-white">1.80 s</span> → <span class="text-violet-300">dist/public</span>
+      <div aria-hidden="true" class="pointer-events-none absolute top-60 right-0 hidden w-[28rem] rotate-[1.5deg] xl:block">
+        <div class="overflow-hidden rounded-xl bg-[#0a101f] shadow-2xl ring-1 ring-black/10">
+          <div class="flex items-center gap-1.5 border-b border-white/5 bg-[#121829] px-4 py-2.5"><span class="h-2.5 w-2.5 rounded-full bg-white/15"></span><span class="h-2.5 w-2.5 rounded-full bg-white/15"></span><span class="h-2.5 w-2.5 rounded-full bg-white/15"></span><span class="ml-3 font-mono text-[11px] text-slate-500">~/my-site</span></div>
+          <pre class="px-4 py-4 font-mono text-[11px]/5 text-slate-300"><span class="text-pink-300">$</span> <span class="text-white">yassb build</span>
+
+  <span class="rounded-[2px] bg-violet-600 font-bold text-white"> YASSB </span>  <span class="text-violet-300">v2.0.0</span>  <span class="font-bold text-white">build</span>  <span class="text-slate-500">node 22.20.0</span>
+
+  <span class="text-violet-300">›</span> html en                 <span class="text-slate-500">  310 ms</span>
+  <span class="text-violet-300">›</span> html it                 <span class="text-slate-500">  280 ms</span>
+  <span class="text-violet-300">›</span> styles                  <span class="text-slate-500">  450 ms</span>
+
+  <span class="rounded-[2px] bg-green-600 font-bold text-white"> DONE </span>  built in <span class="font-bold text-white">1.30 s</span>  <span class="text-slate-500">→</span> <span class="text-violet-300">dist/public</span>  <span class="text-slate-500">0 errors · 0 warnings</span>
 
 <span class="text-pink-300">$</span> <span class="text-white">yassb check</span>
-<span class="rounded-sm bg-emerald-600 px-1 font-bold text-white">PASS</span> checked in <span class="font-bold text-white">1.50 s</span> <span class="text-white/40">0 errors · 0 warnings</span>
+  <span class="text-violet-300">›</span> building and checking the site <span class="text-slate-500">…</span>
+  <span class="rounded-[2px] bg-green-600 font-bold text-white"> PASS </span>  checked in <span class="font-bold text-white">1.50 s</span>  <span class="text-slate-500">0 errors · 0 warnings · 0 notes</span>
 
 <span class="text-pink-300">$</span> <span class="text-white">yassb docs features</span>
 <span class="text-amber-200"><!-- create-from-data-source="../../../../docs/features.json" renderer="featureCount" --> feature(s), every one documented</span> <span class="animate-pulse text-white">▍</span></pre>
@@ -22,15 +26,14 @@
       </div>
       <div class="pt-16 pb-24 sm:pt-24 sm:pb-32 md:pt-32 md:pb-44">
         <a href="/docs/getting-started/agents.html" class="inline-flex items-center gap-2 rounded-full bg-white/40 px-3 py-0.5 text-sm/6 font-medium text-gray-950 ring-1 ring-black/5 hover:bg-white/60">
-          <span class="rounded-full bg-gray-950 px-2 text-xs/5 font-semibold text-white">2.0</span>
-          Rebuilt for coding agents
+          Built for coding agents
           <svg viewBox="0 0 16 16" aria-hidden="true" class="h-4 w-4 fill-current"><path d="m9.182 13.423-1.17-1.16 3.505-3.505H3V7.065h8.517l-3.506-3.5L9.181 2.4l5.512 5.511-5.511 5.512Z"/></svg>
         </a>
         <h1 class="mt-8 font-brand text-6xl/[0.9] font-medium tracking-tight text-balance text-gray-950 sm:text-8xl/[0.85] md:text-9xl/[0.85]">Static sites, agent&#8209;ready.</h1>
         <p class="mt-8 max-w-xl text-xl/7 font-medium text-gray-950/75 sm:text-2xl/8">Data in JSON or Markdown. UI in HTML. Logic in TypeScript. YASSB builds them into a fast static site, and explains itself to your coding agent so it can ship changes without breaking things.</p>
         <div class="mt-12 flex flex-col gap-x-4 gap-y-4 sm:flex-row sm:items-center">
           <a href="/docs/getting-started/installation.html" class="inline-flex items-center justify-center rounded-full border border-transparent bg-gray-950 px-5 py-2.5 text-base font-medium whitespace-nowrap text-white shadow-md hover:bg-gray-800">Get started</a>
-          <button type="button" data-copy="npx yassb-web new my-site" class="group relative inline-flex items-center justify-center gap-3 rounded-full border border-transparent bg-white/15 px-5 py-2.5 font-mono text-sm font-medium whitespace-nowrap text-gray-950 shadow-md ring-1 ring-[#D15052]/15 after:absolute after:inset-0 after:rounded-full after:shadow-[inset_0_0_2px_1px_#ffffff4d] hover:bg-white/25" aria-label="Copy the install command">
+          <button type="button" data-copy="npx yassb-web new my-site" class="group relative inline-flex items-center justify-center gap-3 rounded-full border border-transparent bg-white/75 px-5 py-2.5 font-mono text-sm font-medium whitespace-nowrap text-gray-950 shadow-md ring-1 ring-[#D15052]/15 after:absolute after:inset-0 after:rounded-full after:shadow-[inset_0_0_2px_1px_#ffffff4d] hover:bg-white/90" aria-label="Copy the install command">
             <span class="text-gray-950/50">$</span> npx yassb-web new my-site
             <svg viewBox="0 0 20 20" aria-hidden="true" class="h-4 w-4 fill-gray-950/50 group-hover:fill-gray-950"><path d="M7 3.5A1.5 1.5 0 0 1 8.5 2h3.879a1.5 1.5 0 0 1 1.06.44l3.122 3.12A1.5 1.5 0 0 1 17 6.622V12.5a1.5 1.5 0 0 1-1.5 1.5h-1v-3.379a3 3 0 0 0-.879-2.121L10.5 5.379A3 3 0 0 0 8.379 4.5H7v-1Z"/><path d="M4.5 6A1.5 1.5 0 0 0 3 7.5v9A1.5 1.5 0 0 0 4.5 18h7a1.5 1.5 0 0 0 1.5-1.5v-5.879a1.5 1.5 0 0 0-.44-1.06L9.44 6.439A1.5 1.5 0 0 0 8.378 6H4.5Z"/></svg>
           </button>
