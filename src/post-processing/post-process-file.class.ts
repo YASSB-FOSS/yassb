@@ -4,6 +4,7 @@ import { sourceFileOf } from '../diagnostics/source-location';
 import { FrontMatterHandler } from '../tools/front-matter/front-matter-handler.class';
 import { FrontMatterInjector } from '../tools/front-matter/front-matter-injector.class';
 import type { YassbConfig } from '../yassb';
+import { markRewrittenOutputFile } from '../tools/output-files.store';
 
 /**
  * Final step for one page: front matter placeholders, custom post processors, then minification
@@ -57,6 +58,7 @@ export class PostProcessFile {
 
     contents = this.isWatching ? this.prepareForWatch(contents) : await this.minify(contents);
     writeFileSync(this.pathToFile, contents);
+    markRewrittenOutputFile(this.pathToFile);
   }
 
   /** Adds the live-reload script and removes the Content-Security-Policy meta tag (it would block it). */

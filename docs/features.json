@@ -138,7 +138,7 @@
       ],
       "source": {
         "file": "src/assets/copy-assets.function.ts",
-        "line": 51,
+        "line": 53,
         "symbol": "copyAssets"
       },
       "parts": []
@@ -378,7 +378,7 @@
       "parts": [
         {
           "file": "src/assets/copy-assets.function.ts",
-          "line": 61,
+          "line": 63,
           "symbol": "copyPages"
         },
         {
@@ -388,7 +388,7 @@
         },
         {
           "file": "src/directives/files-content-injector.class.ts",
-          "line": 19,
+          "line": 20,
           "symbol": "FilesContentInjector"
         },
         {
@@ -430,7 +430,7 @@
       ],
       "source": {
         "file": "src/post-processing/post-process-file.class.ts",
-        "line": 22,
+        "line": 23,
         "symbol": "PostProcessFile"
       },
       "parts": [
@@ -475,7 +475,7 @@
       "summary": "sitemap.xml lists every file of the output; it is also the list url-to searches.",
       "usage": "<out>/sitemap.xml with <loc>https://example.com/en/index.html</loc> entries",
       "options": "config.siteHost (keeps the file and is the host of the URLs), config.sitemap: false (never written).",
-      "rules": "Regenerated before each language is processed; includes assets and every file; without siteHost the host is http://fake.host/ and the file is deleted at the end of the build (after post-processing); post processors may replace it.",
+      "rules": "Regenerated before each language is processed; includes assets and every file written by the current build (not files left in the output by an earlier one); without siteHost the host is http://fake.host/ and the file is deleted at the end of the build (after post-processing); post processors may replace it.",
       "errors": [],
       "status": "stable",
       "since": "1.0.0",
@@ -486,13 +486,13 @@
       ],
       "source": {
         "file": "src/sitemap/sitemap-generator.class.ts",
-        "line": 32,
+        "line": 33,
         "symbol": "SitemapGenerator"
       },
       "parts": [
         {
           "file": "src/sitemap/sitemap-generator.class.ts",
-          "line": 13,
+          "line": 14,
           "symbol": "SITEMAP_URLS"
         }
       ]
@@ -565,7 +565,7 @@
         },
         {
           "file": "src/config/setup.function.ts",
-          "line": 155,
+          "line": 157,
           "symbol": "undeclaredImports"
         }
       ]
@@ -846,7 +846,7 @@
       "parts": [
         {
           "file": "src/assets/copy-assets.function.ts",
-          "line": 85,
+          "line": 89,
           "symbol": "cleanOut"
         }
       ]
@@ -957,7 +957,7 @@
       "parts": [
         {
           "file": "src/config/setup.function.ts",
-          "line": 48,
+          "line": 49,
           "symbol": "FORMER_DEPENDENCIES"
         },
         {
@@ -1444,7 +1444,7 @@
       ],
       "source": {
         "file": "src/directives/pages-generator/template-to-html-files.class.ts",
-        "line": 36,
+        "line": 37,
         "symbol": "TemplateToHtmlFiles"
       },
       "parts": [
@@ -1543,7 +1543,7 @@
       "summary": "Replaced by the absolute URL of the output file whose path contains a fragment.",
       "usage": "<a href=\"{{ url-to=\"about\" }}\">  <a href=\"{{ url-to=\"blog-post#comments\" options=\"{\"warning\":false}\" }}\">",
       "options": "#anchor is kept; options=\"{\"warning\":false}\" silences the ambiguity warning.",
-      "rules": "The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.",
+      "rules": "The fragment is matched case-insensitively against every URL of the output (also as kebab-case and snake_case); with several matches the file closest to the current page wins, ties go to an index.html; only files written by the current build are visible (files left in the output by an earlier build are not, so a build into a folder that was not emptied resolves like one into an empty folder); with i18n only pages of languages already built are visible; the host (siteHost or the internal one) is stripped, so the result is root-relative (/en/about/index.html); no match inserts nothing and suggests the closest URL.",
       "errors": [
         "URL_TO_EMPTY",
         "URL_TO_NOT_FOUND",

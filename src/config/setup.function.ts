@@ -7,6 +7,7 @@ import { DIAGNOSTICS, describeError, report } from '../diagnostics/diagnostics';
 import { langsSetter } from '../i18n/langs-setter.function';
 import { resetRenderersStore } from '../renderers/renderers-store.constant';
 import { clearFileCache } from '../tools/file-cache';
+import { resetOutputFiles } from '../tools/output-files.store';
 import { clearFrontMatterStore } from '../tools/front-matter/front-matter-store.const';
 import type { YassbConfig } from '../yassb';
 import { loadConfig } from './load-config';
@@ -58,6 +59,7 @@ export const FORMER_DEPENDENCIES = [
  */
 export function resetBuildState(): void {
   clearFileCache();
+  resetOutputFiles();
   clearFrontMatterStore();
   clearGeneratedPages();
   DirectivesParser.frontMatterData = {};

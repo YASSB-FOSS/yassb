@@ -33,6 +33,7 @@ npx yassb check
 - `basicElement` wrote `<undefined>` elements without a `tag` option; it now writes `span`, as documented.
 - An element with both `data-attr-t` and `data-t` lost its text translation.
 - Watch mode reloaded the browser before the rebuild was finished.
+- A build into an output folder that was not emptied (every watch rebuild, `yassb build` without `cleanOut`) let `url-to` and `sitemap.xml` see files left by the previous build: links could point to a page of another language, or of a source that was deleted.
 
 ## New
 

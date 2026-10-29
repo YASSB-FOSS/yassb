@@ -174,7 +174,9 @@ renderer registered in `customRenderers`.
 
 Replaced by the absolute URL (`/en/about/index.html`) of the output file whose path contains the fragment (also
 tried in kebab-case and snake_case). With several matches the file closest to the current page wins and a
-warning is printed. Only files already in the output are visible: with i18n, pages of the language being built.
+warning is printed. Only files already written by the current build are visible: with i18n, pages of the languages
+built so far. Files left in the output by an earlier build (when it is not emptied) are not visible, so the result
+is the same as in a build into an empty folder.
 
 ### include-styles-src / include-script-src
 
@@ -485,7 +487,9 @@ Sites built for 1.x work without changes. What is different:
   `package.json`; `yassb check` lists such imports.
 - Fixed: `options` containing arrays (`{"order":["a","b"]}`) were silently ignored; `$$` and `$&` in content
   were altered; `basicElement` wrote `<undefined>` tags without a `tag` option (now `span`, as documented);
-  an element with both `data-attr-t` and `data-t` lost its text translation.
+  an element with both `data-attr-t` and `data-t` lost its text translation; a build into an output folder that was
+  not emptied (every watch rebuild, `build` without `cleanOut`) let `url-to` and `sitemap.xml` see files of the
+  previous build, so links could point to a page of another language or of a deleted source.
 - New: `yassb inspect`, `yassb check`, `yassb docs`, `--strict`, `--clean`, `--json`, `sourcePath` in renderer
   props, nested translation keys, `i18n.allowHtml`, `sitemap: false`, `cleanOut`, `beforeBuild`/`afterBuild`,
   `esbuildOptions`, error overlay and CSS hot swap in watch mode.

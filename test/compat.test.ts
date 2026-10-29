@@ -4,8 +4,8 @@
  * DOM (elements, attributes, visible text). The only allowed differences are the documented 1.x bugs below.
  */
 import { afterAll, describe, expect, test } from 'bun:test';
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { join, relative } from 'path';
 import { compareSites } from './helpers/compare-sites';
 import { copyFixture, removeFixture, ROOT, runCli, Runtime } from './helpers/fixture';
 
@@ -58,3 +58,40 @@ describe.each(['node', 'bun'] as Array<Runtime>)('kitchen-sink vs 1.4.3 (%s)', r
     expect(existsSync(join(dir, 'dist/public/sitemap.xml'))).toBe(false);
   }, 120000);
 });
+
+describe.each(['node', 'bun'] as Array<Runtime>)('build into an output folder that was not emptied (%s)', runtime => {
+  test('gives the same output as a build into an empty folder', () => {
+    const dir = copyFixture('kitchen-sink');
+    dirs.push(dir);
+    // siteHost: the sitemap is written too.
+    const env = { NODE_CONFIG: JSON.stringify({ siteHost: 'https://example.com/' }) };
+    const out = join(dir, 'dist/public');
+    expect(runCli(dir, ['build'], runtime, env).status).toBe(0);
+    const clean = readTree(out);
+
+    // Left over from an earlier build: a page whose source was deleted.
+    writeFileSync(join(out, 'en/deleted-page.html'), '<p>old</p>');
+    expect(runCli(dir, ['build'], runtime, env).status).toBe(0);
+    const again = readTree(out);
+    delete again['en/deleted-page.html'];
+
+    // url-to resolved the same links (1.x saw the pages of the previous build: /it/about from English pages).
+    expect(again['en/about/index.html']).toContain('href="/en/about/index.html"');
+    expect(again['sitemap.xml']).not.toContain('deleted-page');
+    expect(Object.keys(again).sort()).toEqual(Object.keys(clean).sort());
+    for (const file of Object.keys(clean))
+      expect({ file, contents: again[file] }).toEqual({ file, contents: clean[file] });
+  }, 120000);
+});
+
+/** Every file of a folder: relative path → contents. */
+function readTree(root: string, dir: string = root, tree: Record<string, string> = {}): Record<string, string> {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory())
+      readTree(root, path, tree);
+    else
+      tree[relative(root, path)] = readFileSync(path, 'utf8');
+  }
+  return tree;
+}
