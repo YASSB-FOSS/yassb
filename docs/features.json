@@ -228,13 +228,13 @@
       ],
       "source": {
         "file": "src/server/static-server.ts",
-        "line": 45,
+        "line": 46,
         "symbol": "startStaticServer"
       },
       "parts": [
         {
           "file": "src/server/static-server.ts",
-          "line": 16,
+          "line": 17,
           "symbol": "StaticServerOptions"
         }
       ]
@@ -255,28 +255,28 @@
       ],
       "source": {
         "file": "src/diagnostics/diagnostics.ts",
-        "line": 105,
+        "line": 106,
         "symbol": "DiagnosticsCollector"
       },
       "parts": [
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 16,
+          "line": 17,
           "symbol": "DiagnosticLevel"
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 21,
+          "line": 22,
           "symbol": "Diagnostic"
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 47,
+          "line": 48,
           "symbol": "DIAGNOSTIC_CODES"
         },
         {
           "file": "src/diagnostics/diagnostics.ts",
-          "line": 184,
+          "line": 185,
           "symbol": "formatDiagnostic"
         },
         {
@@ -372,7 +372,7 @@
       ],
       "source": {
         "file": "src/pipeline/build.ts",
-        "line": 112,
+        "line": 113,
         "symbol": "runBuild"
       },
       "parts": [
@@ -393,22 +393,22 @@
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 34,
+          "line": 35,
           "symbol": "BuildSteps"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 46,
+          "line": 47,
           "symbol": "BuildOptions"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 69,
+          "line": 70,
           "symbol": "SetupInfo"
         },
         {
           "file": "src/pipeline/build.ts",
-          "line": 85,
+          "line": 86,
           "symbol": "DetailedBuildResult"
         }
       ]
@@ -515,7 +515,7 @@
       ],
       "source": {
         "file": "src/cli/commands/build.ts",
-        "line": 20,
+        "line": 21,
         "symbol": "buildCommand"
       },
       "parts": []
@@ -605,13 +605,13 @@
       ],
       "source": {
         "file": "src/cli/cli.ts",
-        "line": 71,
+        "line": 89,
         "symbol": "main"
       },
       "parts": [
         {
           "file": "src/cli/cli.ts",
-          "line": 19,
+          "line": 18,
           "symbol": "HELP"
         }
       ]
@@ -693,7 +693,7 @@
       ],
       "source": {
         "file": "src/cli/commands/new.ts",
-        "line": 22,
+        "line": 23,
         "symbol": "newCommand"
       },
       "parts": []
@@ -713,7 +713,7 @@
       ],
       "source": {
         "file": "src/cli/commands/serve.ts",
-        "line": 20,
+        "line": 22,
         "symbol": "serveCommand"
       },
       "parts": []
@@ -737,7 +737,7 @@
       ],
       "source": {
         "file": "src/cli/commands/watch.ts",
-        "line": 85,
+        "line": 86,
         "symbol": "watchCommand"
       },
       "parts": [

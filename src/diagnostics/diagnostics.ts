@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import { relative } from 'path';
+import { c, styleDiagnostic } from '../tools/terminal';
 
 /**
  * Problems found while loading, building or checking a project.
@@ -190,7 +191,7 @@ export function formatDiagnostic(diagnostic: Diagnostic): string {
 }
 
 function printDiagnostic(diagnostic: Diagnostic): void {
-  const text = formatDiagnostic(diagnostic);
+  const text = styleDiagnostic(diagnostic);
   if (diagnostic.level === 'info')
     console.log(text);
   else
@@ -200,7 +201,7 @@ function printDiagnostic(diagnostic: Diagnostic): void {
 }
 
 function indent(text: string): string {
-  return text.split('\n').map(line => `    ${line}`).join('\n');
+  return text.split('\n').map(line => `      ${c.dim(line)}`).join('\n');
 }
 
 const sourceCache = new Map<string, string>();

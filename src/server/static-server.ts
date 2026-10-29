@@ -1,6 +1,7 @@
 import { createReadStream, existsSync, statSync } from 'fs';
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import { extname, normalize, resolve, sep } from 'path';
+import { c, glyph } from '../tools/terminal';
 import type { LiveReloadHub } from './live-reload';
 
 /**
@@ -52,7 +53,7 @@ function listen(server: Server, port: number, attempts: number = 10): Promise<{ 
     const onError = (error: NodeJS.ErrnoException) => {
       server.off('listening', onListening);
       if (error.code === 'EADDRINUSE' && attempts > 1 && port !== 0) {
-        console.log(`Port ${port} is in use, trying ${port + 1}...`);
+        console.log(`  ${glyph.warn} port ${port} is in use, trying ${c.bold(String(port + 1))}`);
         resolvePromise(listen(server, port + 1, attempts - 1));
       } else
         reject(error);

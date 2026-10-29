@@ -18,7 +18,7 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
     try {
       let base = '';
       await waitFor(() => {
-        const match = /on (http:\/\/localhost:\d+)/.exec(watch.output());
+        const match = /ready\s+(http:\/\/localhost:\d+)/.exec(watch.output());
         if (match)
           base = match[1];
         return !!match;
@@ -76,7 +76,7 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
       // 6. A stylesheet change only recompiles the styles.
       const styles = join(dir, 'src/app/styles/styles.scss');
       writeFileSync(styles, `${readFileSync(styles, 'utf8')}\n.watch-test { color: red; }\n`);
-      await waitFor(() => /✓ Built in \d+ ms \(styles\)/.test(watch.output()), 30000, 'styles-only rebuild');
+      await waitFor(() => /✓ built in [\d.]+ m?s \(styles\)/.test(watch.output()), 30000, 'styles-only rebuild');
       expect(readFileSync(join(dir, 'dist/public/assets/css/styles-1-2-3.min.css'), 'utf8')).toContain('.watch-test');
     } finally {
       watch.child.kill('SIGINT');
@@ -103,14 +103,14 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
 
     const watch = startCli(dir, ['watch', '--port', '0'], runtime);
     try {
-      await waitFor(() => /on http:\/\/localhost:\d+/.test(watch.output()), 60000, 'dev server');
+      await waitFor(() => /ready\s+http:\/\/localhost:\d+/.test(watch.output()), 60000, 'dev server');
       // The first build runs in a process that never built.
       expect(page()).toContain('data-count="1"');
       expect(existsSync(join(dir, 'dist/.public.yassb-verify'))).toBe(false);
 
       // A content change is built by the warm process (count 2), then verified by a new one (count 1).
       writeFileSync(en, enOriginal.replace('"Hello & welcome"', '"Hello & warm welcome"'));
-      await waitFor(() => /Verified in \d+ ms: \d+ file\(s\) differed/.test(watch.output()), 30000, 'verification');
+      await waitFor(() => /verified in [\d.]+ m?s · \d+ files? differed/.test(watch.output()), 30000, 'verification');
       await waitFor(() => page().includes('Hello &amp; warm welcome') && page().includes('data-count="1"'), 30000, 'verified output');
       expect(existsSync(join(dir, 'dist/.public.yassb-verify/en/index.html'))).toBe(true);
     } finally {
@@ -124,12 +124,12 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
     writeFileSync(en, enOriginal);
     const fresh = startCli(dir, ['watch', '--port', '0', '--fresh'], runtime);
     try {
-      await waitFor(() => /on http:\/\/localhost:\d+/.test(fresh.output()), 60000, 'dev server (--fresh)');
+      await waitFor(() => /ready\s+http:\/\/localhost:\d+/.test(fresh.output()), 60000, 'dev server (--fresh)');
       writeFileSync(en, enOriginal.replace('"Hello & welcome"', '"Hello & fresh welcome"'));
       await waitFor(() => page().includes('Hello &amp; fresh welcome'), 30000, 'fresh rebuild');
       expect(page()).toContain('data-count="1"');
       await new Promise(resolvePromise => setTimeout(resolvePromise, 1500));
-      expect(fresh.output()).not.toContain('Verified');
+      expect(fresh.output()).not.toContain('verified in');
     } finally {
       fresh.child.kill('SIGINT');
       await new Promise(resolvePromise => fresh.child.once('exit', resolvePromise));
@@ -143,7 +143,7 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
     const indexFile = join(dir, 'dist/public/en/index.html');
     const page = () => readFileSync(indexFile, 'utf8');
     try {
-      await waitFor(() => /on http:\/\/localhost:\d+/.test(watch.output()), 60000, 'dev server');
+      await waitFor(() => /ready\s+http:\/\/localhost:\d+/.test(watch.output()), 60000, 'dev server');
 
       // 1. A directive is changed.
       const directives = join(dir, 'builder/directives.ts');

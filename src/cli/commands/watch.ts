@@ -8,6 +8,7 @@ import type { SetupInfo } from '../../pipeline/build';
 import { LOCK_OWNER_ENV, releaseOutputLock } from '../../pipeline/output-lock';
 import { LiveReloadHub } from '../../server/live-reload';
 import { startStaticServer } from '../../server/static-server';
+import { badges, c, COLOR, formatCounts, formatMs, glyph, printBanner, timestamp } from '../../tools/terminal';
 import { ProjectWatcher } from '../../watch/project-watcher';
 import { syncOutput } from '../../watch/sync-output';
 import type { ParsedArgs } from '../args';
@@ -83,7 +84,19 @@ interface Job {
  * @related behaviour.dev-server, behaviour.live-reload, behaviour.site-code
  */
 export async function watchCommand(args: ParsedArgs): Promise<void> {
+  printBanner('watch');
   await new WatchSession(args).start();
+}
+
+/**
+ * `● ready  http://localhost:3000` and what the server does (watch and serve).
+ *
+ * @internal
+ */
+export function printReady(port: number, out: string, watching: boolean): void {
+  const rel = out.startsWith(process.cwd()) ? out.slice(process.cwd().length + 1) || '.' : out;
+  const tail = c.dim([' ', watching ? 'watching for changes' : 'no rebuilds', 'ctrl+c to stop'].join(' · ').slice(1));
+  console.log(`\n  ${glyph.ready} ${c.bold('ready')}  ${c.underline(c.cyan(`http://localhost:${port}`))}\n           ${c.accent(rel)}${tail}\n`);
 }
 
 class WatchSession {
@@ -127,7 +140,7 @@ class WatchSession {
     await this.build(FULL, this.args.flags.clean === true);
 
     if (this.lastDiagnostics.some(item => item.code === 'OUTPUT_LOCKED')) {
-      console.error('\n✗ Not starting: another YASSB process is writing the same output folder (see above).');
+      console.error(`\n  ${badges.fail('FAIL')}  not starting: another YASSB process is writing the same output folder (see above)\n`);
       process.exit(1);
     }
 
@@ -139,8 +152,7 @@ class WatchSession {
       site: () => ({ out: this.out(), langs: this.info?.langs || [] })
     });
     this.server = server;
-    console.log(`\nServing ${this.out()} on http://localhost:${actualPort}`);
-    console.log('Watching for changes (Ctrl+C to stop)\n');
+    printReady(actualPort, this.out(), true);
 
     this.watcher = new ProjectWatcher({
       roots: this.roots(),
@@ -177,7 +189,8 @@ class WatchSession {
     if (this.changesCode(paths))
       this.generation++;
     const names = paths.map(path => path.startsWith(process.cwd()) ? path.slice(process.cwd().length + 1) : path);
-    console.log(`\nChanged: ${names.slice(0, 5).join(', ')}${names.length > 5 ? ` (+${names.length - 5})` : ''}`);
+    const list = names.slice(0, 5).map(name => c.accent(name)).join(c.dim(', ')) + (names.length > 5 ? c.dim(` +${names.length - 5}`) : '');
+    console.log(`\n${timestamp()} ${c.bold('change')} ${list}`);
     void this.build(plan, false);
   }
 
@@ -304,7 +317,9 @@ class WatchSession {
   private startWorker(): Worker {
     const cli = resolve(__dirname, '..', `cli${extname(__filename)}`);
     // Builds share the lock of the output folder held by this process.
-    const child = fork(cli, ['__build'], { stdio: ['ignore', 'pipe', 'pipe', 'ipc'], env: { ...process.env, [LOCK_OWNER_ENV]: String(process.pid) } });
+    // Its output is piped: it gets colours when this process has them.
+    const colors = COLOR ? { FORCE_COLOR: '1' } : {};
+    const child = fork(cli, ['__build'], { stdio: ['ignore', 'pipe', 'pipe', 'ipc'], env: { ...process.env, ...colors, [LOCK_OWNER_ENV]: String(process.pid) } });
     const worker: Worker = { child, generation: this.generation, builds: 0 };
     // A send to a process that just exited: the 'exit' handler reports the build.
     child.on('error', () => undefined);
@@ -390,7 +405,7 @@ class WatchSession {
     if (!result) {
       this.shadowReady = false;
       this.discard(worker);
-      console.error(`  ✗ Verification crashed (exit code ${code}); the next one rebuilds everything.${job.stderrTail ? `\n${job.stderrTail}` : ''}`);
+      console.error(`${timestamp()} ${glyph.fail} ${c.red(`verification crashed (exit code ${code})`)} ${c.dim('the next one rebuilds everything')}${job.stderrTail ? `\n${job.stderrTail}` : ''}`);
       this.prepareSpare();
       return;
     }
@@ -399,17 +414,17 @@ class WatchSession {
     try {
       changed = syncOutput(this.shadowDir(), this.out());
     } catch (error) {
-      console.error(`  ✗ Could not copy the verified files: ${(error as Error).message}`);
+      console.error(`${timestamp()} ${glyph.fail} ${c.red('could not copy the verified files:')} ${(error as Error).message}`);
     }
     this.shadowReady = true;
     this.shadowBehind = { ...NONE };
     this.unverified = { ...NONE };
 
     if (changed.length) {
-      const names = changed.slice(0, 3).join(', ') + (changed.length > 3 ? ` (+${changed.length - 3})` : '');
-      console.log(`  ↻ Verified in ${durationMs} ms: ${changed.length} file(s) differed from the warm build and were updated (${names})`);
+      const names = changed.slice(0, 3).map(name => c.accent(name)).join(c.dim(', ')) + (changed.length > 3 ? c.dim(` +${changed.length - 3}`) : '');
+      console.log(`${timestamp()} ${glyph.sync} verified in ${c.bold(formatMs(durationMs))} ${c.dim('·')} ${changed.length} file${changed.length === 1 ? '' : 's'} differed from the warm build, updated: ${names}`);
     } else
-      console.log(`  ✓ Verified in ${durationMs} ms`);
+      console.log(`${timestamp()} ${glyph.ok} verified in ${c.bold(formatMs(durationMs))} ${c.dim('· same output as yassb build')}`);
     this.lastDiagnostics = result.diagnostics;
     const refresh = !changed.length ? 'none' : changed.every(file => file.endsWith('.css')) ? 'css' : 'reload';
     this.liveReload.publish(result.diagnostics, refresh);
@@ -432,7 +447,7 @@ class WatchSession {
         message: `The build process exited unexpectedly (code ${code}).`,
         detail: stderrTail
       }];
-      console.error(`✗ Build crashed (exit code ${code}). The server keeps running; fix the problem and save again.`);
+      console.error(`${timestamp()} ${badges.fail('CRASH')} ${c.red(`build process exited (code ${code})`)} ${c.dim('· the server keeps running; fix the problem and save again')}`);
       this.liveReload.publish(this.lastDiagnostics, 'none');
       return;
     }
@@ -447,8 +462,8 @@ class WatchSession {
     const errors = result.diagnostics.filter(item => item.level === 'error').length;
     const warnings = result.diagnostics.filter(item => item.level === 'warning').length;
     const steps = (Object.keys(plan) as Array<keyof Plan>).filter(step => plan[step]).join(', ');
-    const summary = `${Math.round(durationMs)} ms (${steps}) — ${errors} error(s), ${warnings} warning(s)`;
-    console.log(errors ? `✗ Built with errors in ${summary}` : `✓ Built in ${summary}`);
+    const summary = `built in ${c.bold(formatMs(durationMs))} ${c.dim(`(${steps})`)}  ${formatCounts({ errors, warnings })}`;
+    console.log(`${timestamp()} ${errors ? glyph.fail : glyph.ok} ${summary}`);
 
     const configFailed = result.diagnostics.some(item => item.code === 'CONFIG_LOAD_FAILED' || item.code === 'CONFIG_MODULE_NOT_FOUND');
     const refresh = configFailed ? 'none' : (plan.html || plan.scripts ? 'reload' : 'css');

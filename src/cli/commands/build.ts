@@ -2,6 +2,7 @@ import { relative } from 'path';
 import { DIAGNOSTICS } from '../../diagnostics/diagnostics';
 import { runBuild } from '../../pipeline/build';
 import { setQuiet } from '../../tools/loggers.function';
+import { badges, c, formatCounts, formatMs, printBanner } from '../../tools/terminal';
 import type { ParsedArgs } from '../args';
 
 /**
@@ -22,7 +23,8 @@ export async function buildCommand(args: ParsedArgs): Promise<number> {
   if (json) {
     setQuiet(true);
     DIAGNOSTICS.silent = true;
-  }
+  } else
+    printBanner('build');
 
   const result = await runBuild({
     strict: args.flags.strict === true,
@@ -45,19 +47,12 @@ export async function buildCommand(args: ParsedArgs): Promise<number> {
 export function printSummary(ok: boolean, durationMs: number, out: string, diagnostics: Array<{ level: string; fatal?: boolean }>): void {
   const errors = diagnostics.filter(item => item.level === 'error').length;
   const warnings = diagnostics.filter(item => item.level === 'warning').length;
-  const where = out ? ` → ${relative(process.cwd(), out) || '.'}` : '';
-  const counts = `${errors} error(s), ${warnings} warning(s)`;
+  const where = out ? `  ${c.dim('→')} ${c.accent(relative(process.cwd(), out) || '.')}` : '';
+  const counts = formatCounts({ errors, warnings });
   if (!ok)
-    console.error(`\n✗ Build failed in ${formatMs(durationMs)}${where} — ${counts}`);
+    console.error(`\n  ${badges.fail('FAIL')}  build failed in ${c.bold(formatMs(durationMs))}${where}  ${counts}\n`);
   else if (errors)
-    console.log(`\n⚠ Built in ${formatMs(durationMs)}${where} — ${counts} (use --strict to fail on errors)`);
+    console.log(`\n  ${badges.warn('DONE')}  built in ${c.bold(formatMs(durationMs))}${where}  ${counts}  ${c.dim('(--strict fails on errors)')}\n`);
   else
-    console.log(`\n✓ Built in ${formatMs(durationMs)}${where} — ${counts}`);
-}
-
-/**
- * @internal
- */
-export function formatMs(ms: number): string {
-  return ms >= 1000 ? `${(ms / 1000).toFixed(2)} s` : `${Math.round(ms)} ms`;
+    console.log(`\n  ${badges.ok('DONE')}  built in ${c.bold(formatMs(durationMs))}${where}  ${counts}\n`);
 }

@@ -370,7 +370,7 @@ the output folder, `node_modules`, `.git`):
   at once. Packages may keep state between builds of a process (Tailwind keeps the class names it has seen), so a
   process that never built then rebuilds the same steps into `.<out name>.yassb-verify` next to the output folder;
   files that differ are copied into the output and the browser refreshes again (stylesheets are swapped without
-  reloading). The terminal prints `✓ Verified` or `↻ Verified … differed`. That process becomes the one used for the
+  reloading). The terminal prints `✓ verified in …` or `↻ verified in … differed`. That process becomes the one used for the
   next change. A save during a verification cancels it, and the next one covers its steps. The `afterBuild` hook
   also runs for verification builds, with `out` set to the verification folder, which is deleted when watch
   stops (add `*.yassb-verify/` to `.gitignore` if the output's parent folder is not ignored). `--fresh` turns this

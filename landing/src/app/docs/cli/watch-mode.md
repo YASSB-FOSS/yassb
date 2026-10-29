@@ -21,7 +21,7 @@ Builds run in processes started ahead of time. While you edit, the next one load
 
 - **Code changes** (configuration, renderers, directives, `package.json`, `tsconfig.json`, anything outside `src`) are built by a new process, so they are always picked up.
 - **Content changes** (pages, components, data, translations, Markdown, styles) are built by the process that built last: its code is already optimized, about a third faster, and the browser reloads at once.
-- Then **a process that never built** rebuilds the same steps into `.<out name>.yassb-verify`, next to the output folder. Packages can keep state between builds of a process (Tailwind keeps the class names it has seen), so files that differ are copied into the output and the browser refreshes again; stylesheets are swapped without reloading. The terminal prints `✓ Verified` or `↻ Verified … differed`. That process is used for the next change.
+- Then **a process that never built** rebuilds the same steps into `.<out name>.yassb-verify`, next to the output folder. Packages can keep state between builds of a process (Tailwind keeps the class names it has seen), so files that differ are copied into the output and the browser refreshes again; stylesheets are swapped without reloading. The terminal prints `✓ verified in …` or `↻ verified in … differed`. That process is used for the next change.
 - A save during a verification cancels it; the next one covers its steps.
 - The `afterBuild` hook also runs for verification builds, with `out` set to the verification folder, which is deleted when watch stops. If the output's parent folder is not ignored by git, add `*.yassb-verify/` to `.gitignore`.
 - `yassb watch --fresh` turns this off: every build runs in a new process.
