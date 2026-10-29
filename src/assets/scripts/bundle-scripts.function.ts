@@ -1,6 +1,6 @@
 import { createRequire } from 'module';
 import { mkdirSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { relative, resolve } from 'path';
 import { WORKING_DIR } from '../../config/working-dir.constant';
 import { describeError, report } from '../../diagnostics/diagnostics';
 import type { YassbConfig } from '../../yassb';
@@ -35,7 +35,7 @@ export interface ScriptsBundle {
  * @since 1.0.0
  * @related directive.include-script-src, assets.file-names
  */
-export async function bundleScripts(config: YassbConfig, watchMode: boolean): Promise<ScriptsBundle | undefined> {
+export async function bundleScripts(config: YassbConfig, watchMode: boolean, referenceOut?: string): Promise<ScriptsBundle | undefined> {
   mkdirSync(WORKING_DIR.scriptsOutFolder, { recursive: true });
   const filename = assetsFileNameMaker('scripts');
 
@@ -44,6 +44,9 @@ export async function bundleScripts(config: YassbConfig, watchMode: boolean): Pr
 
   const esbuild = require('esbuild') as typeof import('esbuild');
   const outfile = resolve(WORKING_DIR.scriptsOutFolder, filename);
+  // Source map paths are relative to the output file: built into another folder (verification), they are
+  // computed as if the file were in the reference output folder, so the bundle is the same.
+  const layoutFile = referenceOut ? resolve(referenceOut, relative(WORKING_DIR.out, outfile)) : outfile;
   try {
     const result = await esbuild.build({
       entryPoints: [WORKING_DIR.scripts],
@@ -57,7 +60,7 @@ export async function bundleScripts(config: YassbConfig, watchMode: boolean): Pr
       metafile: true,
       logLevel: 'silent',
       absWorkingDir: process.cwd(),
-      outfile,
+      outfile: layoutFile,
       define: { 'process.env.NODE_ENV': '"production"' },
       ...(config.esbuildOptions || {})
     });

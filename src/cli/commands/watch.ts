@@ -1,7 +1,8 @@
 import { ChildProcess, fork } from 'child_process';
-import { rmSync } from 'fs';
+import { createHash } from 'crypto';
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'fs';
 import type { Server } from 'http';
-import { basename, dirname, extname, join, resolve, sep } from 'path';
+import { dirname, extname, join, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 import type { Diagnostic } from '../../diagnostics/diagnostics';
 import type { SetupInfo } from '../../pipeline/build';
@@ -27,8 +28,8 @@ import type { WorkerBuildRequest, WorkerResultMessage } from '../build-worker';
  * built runs the code V8 has optimized, about a third faster. So:
  * - a content change (pages, data, translations, styles…) is built by the warm process, the one that built last,
  *   and the browser reloads at once;
- * - then a process that never built (started in advance) builds the same steps into a shadow folder (next to the
- *   output, so the browser never sees a half-written page); files that differ from the output are
+ * - then a process that never built (started in advance) builds the same steps into a shadow folder
+ *   (`.yassb/verify/<id>` in the project root, so the browser never sees a half-written page); files that differ from the output are
  *   copied into it and the browser refreshes again (CSS swapped if only stylesheets differ);
  * - that process becomes the warm process: what a process carries over is at most one clean build;
  * - a change to site code, the configuration or a file outside the sources (package.json, tsconfig…) is built by a
@@ -46,6 +47,9 @@ interface Plan {
   styles: boolean;
   scripts: boolean;
 }
+
+/** Folder of YASSB's own files in the project root. */
+const YASSB_DIR = '.yassb';
 
 const FULL: Plan = { html: true, styles: true, scripts: true };
 const NONE: Plan = { html: false, styles: false, scripts: false };
@@ -77,7 +81,7 @@ interface Job {
  * @summary yassb watch: build, serve with live reload, rebuild on every change.
  * @usage yassb watch [--port <n>] [--clean] [--strict] [--fresh]
  * @options --port <n>: dev server port (default devServerPort or 3000; 0 = any free port); --clean: empty the output before the first build; --strict: passed to every build; --fresh: every build in a new process, without warm builds and verification.
- * @rules The whole project is watched except the output folder, node_modules, .git and editor temp files; events that do not change a file are ignored (its ctime is unchanged and not recent: Bun reports such events on the source of a copy); builds run in child processes started ahead of time (Node, the engine and the site's packages loaded before the next change), and every build loads the configuration and site code again; a change to site code, the configuration or a file outside src is built by a new process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a content change is built by the warm process that built last (faster, reloads at once), then verified: a process that never built rebuilds the same steps into a shadow folder next to the output (.<out name>.yassb-verify, deleted when watch stops), files that differ are copied into the output and the browser refreshes again (CSS swapped if only stylesheets differ), and that process becomes the warm one; a change during a verification cancels it and its steps are verified with the next one; the afterBuild hook also runs for verification builds, with out set to the shadow folder; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.
+ * @rules The whole project is watched except the output folder, node_modules, .git and editor temp files; events that do not change a file are ignored (its ctime is unchanged and not recent: Bun reports such events on the source of a copy); builds run in child processes started ahead of time (Node, the engine and the site's packages loaded before the next change), and every build loads the configuration and site code again; a change to site code, the configuration or a file outside src is built by a new process, so config, renderers, directives, package.json and tsconfig changes are always picked up; a content change is built by the warm process that built last (faster, reloads at once), then verified: a process that never built rebuilds the same steps into a shadow folder, .yassb/verify/<id> in the project root (.yassb holds a .gitignore with *, so git always ignores it; source map paths are computed as if the files were in the output; deleted when watch stops), files that differ are copied into the output and the browser refreshes again (CSS swapped if only stylesheets differ), and that process becomes the warm one; a change during a verification cancels it and its steps are verified with the next one; the afterBuild hook also runs for verification builds, with out set to the shadow folder; a stylesheet change only recompiles styles (CSS swapped without reload), a change to a file used only by the scripts only rebundles them, other changes rebuild pages (and styles with a custom stylesParser), changes outside src or to site code rebuild everything; errors are printed and shown in the browser overlay while the server keeps running; changes during a build are queued into one more build; pages are not minified.
  * @errors BUILD_CRASHED
  * @status stable
  * @since 1.0.0
@@ -156,7 +160,7 @@ class WatchSession {
 
     this.watcher = new ProjectWatcher({
       roots: this.roots(),
-      ignore: () => [this.out(), this.shadowDir()],
+      ignore: () => [this.out(), this.yassbDir()],
       onChange: paths => this.onChange(paths)
     });
     this.watcher.start();
@@ -166,13 +170,42 @@ class WatchSession {
     return this.info?.out || resolve(process.cwd(), 'dist/public');
   }
 
+  /** `.yassb` in the project root: files of YASSB itself, always ignored by git (it holds a `.gitignore` with `*`). */
+  private yassbDir(): string {
+    return resolve(process.cwd(), YASSB_DIR);
+  }
+
   /**
-   * Where verification builds are written: next to the output folder, so that paths relative to it (source maps,
-   * site code) are the same. Ignored by the watcher, deleted when watch stops.
+   * Where verification builds are written: `.yassb/verify/<id>`, one folder per output folder. Source map paths
+   * are computed as if the files were in the output (`referenceOutDir`). Ignored by the watcher, deleted when
+   * watch stops.
    */
   private shadowDir(): string {
-    const out = this.out();
-    return join(dirname(out), `.${basename(out)}.yassb-verify`);
+    return join(this.yassbDir(), 'verify', createHash('sha1').update(this.out()).digest('hex').slice(0, 10));
+  }
+
+  /** Creates `.yassb` with its `.gitignore`, so git never shows what YASSB writes there. */
+  private ensureYassbDir(): void {
+    const dir = this.yassbDir();
+    mkdirSync(dir, { recursive: true });
+    const gitignore = join(dir, '.gitignore');
+    if (!existsSync(gitignore))
+      writeFileSync(gitignore, '# Written by YASSB (yassb watch); safe to delete.\n*\n');
+  }
+
+  /** Deletes the verification folder, then `.yassb` if nothing else is left in it. */
+  private removeShadowDir(): void {
+    try {
+      rmSync(this.shadowDir(), { recursive: true, force: true });
+      const verify = join(this.yassbDir(), 'verify');
+      if (existsSync(verify) && !readdirSync(verify).length)
+        rmSync(verify, { recursive: true, force: true });
+      const rest = existsSync(this.yassbDir()) ? readdirSync(this.yassbDir()) : [];
+      if (rest.every(name => name === '.gitignore'))
+        rmSync(this.yassbDir(), { recursive: true, force: true });
+    } catch {
+      // left for the next session, which rebuilds it from scratch
+    }
   }
 
   /** The project folder, plus the site's base folder when it is outside of it. */
@@ -270,10 +303,11 @@ class WatchSession {
     if (this.stopping || this.verifier || isEmpty(this.unverified))
       return;
     const shadow = this.shadowDir();
+    this.ensureYassbDir();
     const plan = this.shadowReady ? this.shadowBehind : { ...FULL };
     const worker = this.verifier = this.takeSpare();
     this.outputs.add(shadow);
-    this.run(worker, { kind: 'verify', plan, startedAt: performance.now(), stderrTail: '', done: () => undefined }, { type: 'build', steps: plan, clean: !this.shadowReady, strict: this.args.flags.strict === true, outDir: shadow });
+    this.run(worker, { kind: 'verify', plan, startedAt: performance.now(), stderrTail: '', done: () => undefined }, { type: 'build', steps: plan, clean: !this.shadowReady, strict: this.args.flags.strict === true, outDir: shadow, referenceOutDir: this.out() });
   }
 
   private run(worker: Worker, job: Job, request: WorkerBuildRequest): void {
@@ -479,11 +513,7 @@ class WatchSession {
     this.server?.close();
     for (const worker of [this.building, this.verifier, this.keeper, this.spare])
       this.discard(worker);
-    try {
-      rmSync(this.shadowDir(), { recursive: true, force: true });
-    } catch {
-      // left for the next session, which rebuilds it from scratch
-    }
+    this.removeShadowDir();
     process.exit(0);
   }
 

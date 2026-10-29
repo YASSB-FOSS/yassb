@@ -54,6 +54,11 @@ export interface BuildOptions {
   clean?: boolean;
   /** Replaces `workingDir.out`. */
   outDir?: string;
+  /**
+   * With `outDir`: the output folder that paths written into the output (source maps of the scripts) are computed
+   * against, so the files are the same as in a build into that folder. Used by the verification builds of watch.
+   */
+  referenceOutDir?: string;
   /** HTML injected before `</body>` in watch mode. */
   liveReloadSnippet?: string;
   /** Called as soon as the configuration is loaded. */
@@ -103,7 +108,7 @@ export interface DetailedBuildResult extends BuildResult {
  * @feature behaviour.pipeline
  * @summary The fixed order in which a build processes a site.
  * @usage yassb build, yassb watch, or programmatically: await runBuild({ strict: true }) in the project folder.
- * @options BuildOptions: watchMode, steps { html, styles, scripts }, strict, clean, outDir.
+ * @options BuildOptions: watchMode, steps { html, styles, scripts }, strict, clean, outDir, referenceOutDir (with outDir: the folder source map paths are computed against).
  * @rules config → beforeBuild → assets copy → scripts bundling starts → generate-from-files → for each language: copy pages (all files of pages/), list output files (url-to, sitemap), then per HTML page: components → front matter → built-in directives → custom directives → translation → post-processing of every HTML file of the output → styles → scripts written → afterBuild; directives left in a page after processing are reported.
  * @errors DIRECTIVE_UNPROCESSED
  * @status stable
@@ -183,7 +188,7 @@ async function buildWithLock(config: YassbConfig, options: BuildOptions, result:
   let scriptsTask: Promise<ScriptsBundle | undefined> | undefined;
   if (steps.scripts) {
     logStep('scripts');
-    scriptsTask = bundleScripts(config, watchMode);
+    scriptsTask = bundleScripts(config, watchMode, options.referenceOutDir);
   }
 
   if (steps.html) {

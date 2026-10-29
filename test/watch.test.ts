@@ -3,7 +3,7 @@
  * the server, and fixing them recovers.
  */
 import { afterAll, describe, expect, test } from 'bun:test';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { copyFixture, removeFixture, runCli, Runtime, startCli, waitFor } from './helpers/fixture';
 
@@ -106,19 +106,27 @@ describe.each(['node', 'bun'] as Array<Runtime>)('yassb watch (%s)', runtime => 
       await waitFor(() => /ready\s+http:\/\/localhost:\d+/.test(watch.output()), 60000, 'dev server');
       // The first build runs in a process that never built.
       expect(page()).toContain('data-count="1"');
-      expect(existsSync(join(dir, 'dist/.public.yassb-verify'))).toBe(false);
+      expect(existsSync(join(dir, '.yassb'))).toBe(false);
 
       // A content change is built by the warm process (count 2), then verified by a new one (count 1).
       writeFileSync(en, enOriginal.replace('"Hello & welcome"', '"Hello & warm welcome"'));
       await waitFor(() => /verified in [\d.]+ m?s · \d+ files? differed/.test(watch.output()), 30000, 'verification');
       await waitFor(() => page().includes('Hello &amp; warm welcome') && page().includes('data-count="1"'), 30000, 'verified output');
-      expect(existsSync(join(dir, 'dist/.public.yassb-verify/en/index.html'))).toBe(true);
+      // The verification folder is in .yassb, always ignored by git; nothing is written next to the output.
+      const verify = join(dir, '.yassb/verify');
+      expect(readdirSync(verify).length).toBe(1);
+      expect(existsSync(join(verify, readdirSync(verify)[0], 'en/index.html'))).toBe(true);
+      expect(readFileSync(join(dir, '.yassb/.gitignore'), 'utf8')).toContain('*');
+      expect(readdirSync(join(dir, 'dist'))).toEqual(['public']);
+      // Source maps are the same as in the output: the scripts bundle does not differ.
+      const bundle = 'assets/js/main-1-2-3.min.js';
+      expect(readFileSync(join(verify, readdirSync(verify)[0], bundle), 'utf8')).toBe(readFileSync(join(dir, 'dist/public', bundle), 'utf8'));
     } finally {
       watch.child.kill('SIGINT');
       await new Promise(resolvePromise => watch.child.once('exit', resolvePromise));
     }
     // The shadow folder is deleted when watch stops.
-    expect(existsSync(join(dir, 'dist/.public.yassb-verify'))).toBe(false);
+    expect(existsSync(join(dir, '.yassb'))).toBe(false);
 
     // --fresh: every build in a new process, nothing to verify.
     writeFileSync(en, enOriginal);

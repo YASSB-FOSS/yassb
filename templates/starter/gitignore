@@ -1,4 +1,2 @@
 node_modules/
 dist/
-# verification folder of yassb watch
-*.yassb-verify/
