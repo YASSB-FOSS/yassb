@@ -15,8 +15,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  check-version:
     if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      should_deploy: ${{ steps.version.outputs.should_deploy }}
+    steps:
+      - name: Check out the publication commit
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Compare source and published landing versions
+        id: version
+        run: node scripts/landing-version.cjs
+
+  deploy:
+    needs: check-version
+    if: needs.check-version.outputs.should_deploy == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
