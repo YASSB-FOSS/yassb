@@ -1,0 +1,80 @@
+name: Deploy website on version tag
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+
+permissions:
+  contents: read
+
+# The destination is shared by all releases; never run two deploys together.
+concurrency:
+  group: deploy-landing
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event.created && !github.event.deleted
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the tagged version
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Verify the release tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [[ "$RELEASE_TAG" != "v$version" ]]; then
+            echo "::error::Tag $RELEASE_TAG does not match package.json version v$version."
+            exit 1
+          fi
+
+      - name: Check deployment credentials
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+        run: |
+          if [[ -z "$PAGES_DEPLOY_TOKEN" ]]; then
+            echo '::error::Configure PAGES_DEPLOY_TOKEN with Contents write access to YASSB-FOSS/YASSB-FOSS.github.io. See .github/DEPLOYMENT.md.'
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.4'
+
+      - name: Install engine dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install website dependencies
+        working-directory: landing
+        run: bun install --frozen-lockfile
+
+      - name: Build and test the engine
+        run: bun run test
+
+      - name: Build, validate and publish the website
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          # Scope authentication to the Pages repository and keep it out of URLs/files.
+          auth="$(printf 'x-access-token:%s' "$PAGES_DEPLOY_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.https://github.com/YASSB-FOSS/YASSB-FOSS.github.io.git.extraheader
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          bun run deploy-landing
