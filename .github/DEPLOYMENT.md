@@ -1,17 +1,19 @@
 # Automatic website deployment
 
-Pushing a new version tag to `YASSB-FOSS/yassb` starts `deploy-landing.yml`:
+Every push to `master` in **YASSB-FOSS/yassb** starts `deploy-landing.yml`,
+including the commit created by merging a pull request into `master`. That branch
+contains the source approved for publication; development stays on `develop`.
 
-- `landing-v2.0.1` publishes a website release and must match `landing-v` followed
-  by the version in `landing/package.json`.
-- `v2.1.2` publishes the website for an engine release and must match `v` followed
-  by the version in the root `package.json`.
+To publish website changes, update them on `develop` (increment the patch in
+`landing/package.json` when making a website release), then merge into `master`.
+No tag is required. The engine version does not need to change.
 
-For a website-only release, increment the patch version in `landing/package.json`
-on `develop`, merge the changes into `master`, then tag that master commit with
-`landing-v<version>`. The engine version does not need to change.
-The tagged commit must contain the workflow. Updating an existing tag does not
-start a deployment.
+The workflow can also be started from **Actions → Deploy website from master →
+Run workflow**, selecting `master`. Other branches cannot deploy manually.
+
+The destination is the separate **YASSB-FOSS/YASSB-FOSS.github.io** repository.
+The workflow writes the generated site to its `master` branch; that push does not
+restart this source-repository workflow.
 
 The workflow installs the engine and website dependencies from their Bun
 lockfiles, builds and tests the engine, then runs `bun run deploy-landing`.
