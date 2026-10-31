@@ -1,8 +1,8 @@
 <div class="mx-2 mt-2 rounded-4xl bg-gray-900 py-32" id="agents">
   <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
     <h2 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">Agent-ready</h2>
-    <p class="mt-2 max-w-3xl font-brand text-4xl font-medium tracking-tighter text-pretty text-white sm:text-6xl">Built to be read by coding agents.</p>
-    <p class="mt-6 max-w-2xl text-lg/8 text-gray-400">An agent needs a map, the rules and a way to know it got it right. YASSB ships all three in the command line, in plain text and JSON.</p>
+    <p class="mt-2 max-w-3xl font-brand text-4xl font-medium tracking-tighter text-pretty text-white sm:text-6xl">Give your coding agent a map, documentation and checks.</p>
+    <p class="mt-6 max-w-2xl text-lg/8 text-gray-400">Inspect the project structure, read documentation for the installed version, and validate changes from the command line. Structured output and source locations help agents find the files to edit and diagnose build errors.</p>
     <div class="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6">
       <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 max-lg:rounded-t-4xl lg:col-span-4 lg:rounded-tl-4xl">
         <div class="relative h-80 shrink-0 overflow-hidden px-8 pt-8"><pre class="overflow-x-auto font-mono text-[12.5px]/6 text-slate-300"><span class="text-pink-300">$</span> <span class="text-white">npx yassb inspect</span>
@@ -22,7 +22,7 @@ Renderers:
         <div class="relative p-10">
           <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">yassb inspect</h3>
           <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">A map of any site in one command</p>
-          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Pages, components, data sources, renderers and every directive with file and line. Read-only, half a second, and <code class="text-pink-300">--json</code> for a full manifest.</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Pages, components, data sources, renderers and every directive with file and line. Read-only, with <code class="text-pink-300">--json</code> for a full manifest.</p>
         </div>
       </div>
       <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 lg:col-span-2 lg:rounded-tr-4xl">
@@ -35,8 +35,8 @@ Renderers:
 <span class="text-rose-400">✗ 1 error(s), 0 warning(s)  → exit 1</span></pre><div class="absolute inset-0 bg-linear-to-t from-gray-800 from-5% to-40%"></div></div>
         <div class="relative p-10">
           <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">yassb check</h3>
-          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Knows when a change is right</p>
-          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Builds and validates: directives, data, translations, links, undeclared packages. Exit code 0 means done.</p>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Check the build after a change</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Builds and validates: directives, data, translations, links, undeclared packages. Returns a non-zero exit code when validation fails.</p>
         </div>
       </div>
       <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 lg:col-span-2 lg:rounded-bl-4xl">
@@ -64,18 +64,18 @@ config (21)   cli (8)   i18n (2)   …</pre><div class="absolute inset-0 bg-line
         <div class="relative p-10">
           <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">yassb docs</h3>
           <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">The manual, in the terminal</p>
-          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">The whole guide ships with the package and always matches the installed version. No browsing, no hallucinated APIs.</p>
+          <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">The complete guide ships with the package, matching the installed version and available directly in the terminal.</p>
         </div>
       </div>
       <div class="group relative flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15 max-lg:rounded-b-4xl lg:col-span-2 lg:rounded-br-4xl">
         <div class="relative flex h-64 shrink-0 flex-col items-center justify-center overflow-hidden">
           <div aria-hidden="true" class="absolute inset-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(236,72,153,0.25),transparent)]"></div>
           <p class="relative font-brand text-8xl font-semibold tracking-tighter text-brand"><!-- create-from-data-source="../../../../docs/features.json" renderer="featureCount" --></p>
-          <p class="relative mt-2 font-mono text-xs tracking-widest text-gray-400 uppercase">features · 100% documented</p>
+          <p class="relative mt-2 font-mono text-xs tracking-widest text-gray-400 uppercase">features · documentation coverage checked</p>
         </div>
         <div class="relative p-10">
           <h3 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-400 uppercase">Feature catalogue</h3>
-          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Docs that can't fall behind</p>
+          <p class="mt-1 text-2xl/8 font-medium tracking-tight text-white">Documentation coverage checked during development</p>
           <p class="mt-2 max-w-[600px] text-sm/6 text-gray-400">Every feature is tagged in the code. If one is missing from the docs, YASSB's own build fails.</p>
         </div>
       </div>
