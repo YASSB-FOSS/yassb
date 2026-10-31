@@ -1,10 +1,17 @@
 # Automatic website deployment
 
-Pushing a new version tag such as `v2.1.2` to `YASSB-FOSS/yassb` starts
-`deploy-landing.yml`. The tag must match `v` followed by the version in
-`package.json`. The tagged commit must contain the workflow, so merge this
-change into the release branch before creating the next tag. Updating an
-existing tag does not start a deployment.
+Pushing a new version tag to `YASSB-FOSS/yassb` starts `deploy-landing.yml`:
+
+- `landing-v2.0.1` publishes a website release and must match `landing-v` followed
+  by the version in `landing/package.json`.
+- `v2.1.2` publishes the website for an engine release and must match `v` followed
+  by the version in the root `package.json`.
+
+For a website-only release, increment the patch version in `landing/package.json`
+on `develop`, merge the changes into `master`, then tag that master commit with
+`landing-v<version>`. The engine version does not need to change.
+The tagged commit must contain the workflow. Updating an existing tag does not
+start a deployment.
 
 The workflow installs the engine and website dependencies from their Bun
 lockfiles, builds and tests the engine, then runs `bun run deploy-landing`.
