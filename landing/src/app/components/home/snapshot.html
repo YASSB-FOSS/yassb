@@ -1,15 +1,15 @@
 <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
   <h2 class="font-mono text-xs/5 font-semibold tracking-widest text-gray-500 uppercase">The mental model</h2>
-  <p class="mt-2 max-w-3xl font-brand text-4xl font-medium tracking-tighter text-pretty text-gray-950 sm:text-6xl">One file per job. Readable at a glance.</p>
-  <p class="mt-6 max-w-2xl text-lg/8 text-gray-600">Data lives in JSON, the page declares what it shows, a typed function renders it. No template language to learn, no magic to reverse-engineer: you, your teammates and your coding agent can read every page and know where everything comes from.</p>
+  <p class="mt-2 max-w-3xl font-brand text-4xl font-medium tracking-tighter text-pretty text-gray-950 sm:text-6xl">Content, markup and logic. Each in its place.</p>
+  <p class="mt-6 max-w-2xl text-lg/8 text-gray-600">Store content in JSON or Markdown, compose pages in HTML, and use TypeScript functions to turn data into markup. HTML comment directives connect the pieces, making it clear where content comes from and how each page is built.</p>
   <div class="relative mt-16 space-y-16 sm:mt-20 lg:space-y-20">
     <div aria-hidden="true" class="absolute -inset-x-20 -top-16 -bottom-16 bg-[radial-gradient(35%_30%_at_75%_15%,#fde68a_0%,transparent_100%),radial-gradient(35%_30%_at_70%_50%,#fbcfe8_0%,transparent_100%),radial-gradient(35%_30%_at_75%_85%,#ddd6fe_0%,transparent_100%)] opacity-50 blur-2xl"></div>
 
     <div class="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-14">
       <div>
         <p class="flex items-center gap-3 font-mono text-xs/5 font-semibold tracking-widest text-amber-700 uppercase"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-700">1</span>Data</p>
-        <h3 class="mt-4 font-brand text-2xl/8 font-medium tracking-tight text-gray-950 sm:text-3xl/9">Content in plain JSON.</h3>
-        <p class="mt-4 text-base/7 text-gray-600">Content lives in JSON or Markdown files, apart from markup and code. Change the data, and no page needs editing.</p>
+        <h3 class="mt-4 font-brand text-2xl/8 font-medium tracking-tight text-gray-950 sm:text-3xl/9">Content in JSON or Markdown.</h3>
+        <p class="mt-4 text-base/7 text-gray-600">Content lives in JSON or Markdown files, apart from markup and code. Update the data file, and rebuild every page that uses it.</p>
       </div>
       <div class="rounded-3xl bg-gray-950/5 p-1.5 ring-1 ring-black/5">
         <div class="overflow-hidden rounded-[1.25rem] bg-[#0b1120] shadow-2xl ring-1 ring-white/10">
@@ -26,7 +26,7 @@
     <div class="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-14">
       <div>
         <p class="flex items-center gap-3 font-mono text-xs/5 font-semibold tracking-widest text-pink-600 uppercase"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-pink-100 text-pink-600">2</span>UI</p>
-        <h3 class="mt-4 font-brand text-2xl/8 font-medium tracking-tight text-gray-950 sm:text-3xl/9">Simple HTML, made of components.</h3>
+        <h3 class="mt-4 font-brand text-2xl/8 font-medium tracking-tight text-gray-950 sm:text-3xl/9">HTML pages with reusable components.</h3>
         <p class="mt-4 text-base/7 text-gray-600">Pages are plain HTML. Write a block once as a component and reuse it anywhere. A directive marks where data goes: it names the data file and the renderer that turns it into HTML.</p>
       </div>
       <div class="rounded-3xl bg-gray-950/5 p-1.5 ring-1 ring-black/5">
@@ -46,7 +46,7 @@
     <div class="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-14">
       <div>
         <p class="flex items-center gap-3 font-mono text-xs/5 font-semibold tracking-widest text-violet-600 uppercase"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-violet-100 text-violet-600">3</span>Logic</p>
-        <h3 class="mt-4 font-brand text-2xl/8 font-medium tracking-tight text-gray-950 sm:text-3xl/9">TypeScript, run at build time.</h3>
+        <h3 class="mt-4 font-brand text-2xl/8 font-medium tracking-tight text-gray-950 sm:text-3xl/9">Render data with TypeScript at build time.</h3>
         <p class="mt-4 text-base/7 text-gray-600">A renderer is a typed function: it gets the data and options from the directive and returns HTML, with any loop or condition you need. Custom directives are TypeScript too. All of it runs at build time: visitors get static HTML.</p>
       </div>
       <div class="rounded-3xl bg-gray-950/5 p-1.5 ring-1 ring-black/5">
