@@ -1,12 +1,24 @@
 # Automatic website deployment
 
-Every push to `master` in **YASSB-FOSS/yassb** starts `deploy-landing.yml`,
+Every push to `master` in **YASSB-FOSS/yassb** starts the version check in `deploy-landing.yml`,
 including the commit created by merging a pull request into `master`. That branch
 contains the source approved for publication; development stays on `develop`.
 
 To publish website changes, update them on `develop` (increment the patch in
 `landing/package.json` when making a website release), then merge into `master`.
 No tag is required. The engine version does not need to change.
+
+Before installing dependencies or running tests/builds, a separate job reads
+`landing/package.json` from the source commit and the root `package.json` on
+`master` in the destination repository. It compares their SemVer versions:
+
+- Source greater than published: run tests, build, validation and deployment.
+- Source equal to or lower than published: skip the entire deployment job.
+- Missing/invalid versions or a failed destination request: fail the check without deploying.
+
+This also applies to manual workflow runs. App-only changes need no landing
+version increment and therefore skip publication. Any change intended for the
+website, including one that depends on engine changes, needs a landing version bump.
 
 The workflow can also be started from **Actions → Deploy website from master →
 Run workflow**, selecting `master`. Other branches cannot deploy manually.
@@ -17,10 +29,13 @@ restart this source-repository workflow.
 
 The workflow installs the engine and website dependencies from their Bun
 lockfiles, builds and tests the engine, then runs `bun run deploy-landing`.
-That script builds and validates the website before committing its output to
+That script rechecks the published version, then builds and validates the website before committing its output to
 `master` in `YASSB-FOSS/YASSB-FOSS.github.io`. GitHub Pages publishes that branch.
 Deployments run one at a time. Build, test or validation errors stop publication.
-The workflow publishes the website only; it does not publish an npm package.
+The same destination commit updates `package.json.version` to the source landing
+version, preserving the destination package's other fields. Failed builds or
+pushes do not mark a version as published. The workflow publishes the website
+only; it does not publish an npm package.
 
 ## One-time setup
 

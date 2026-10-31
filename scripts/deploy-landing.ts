@@ -5,9 +5,10 @@
  *   bun run deploy-landing             build, validate, commit and push
  *   bun run deploy-landing --dry-run   same, but stop before the push and print where the commit is
  *
- * Steps: build the engine, `yassb check` the landing into a temporary folder (stops on errors), clone the Pages
- * repository into another temporary folder, replace its content with the build (keeping the files listed in
- * KEEP), commit and push. The landing output folder is not used, so this works while `bun run watch` is running.
+ * Steps: clone the Pages repository and skip if the landing version is not newer. Build the engine,
+ * `yassb check` the landing into a temporary folder (stops on errors), replace the published site, update
+ * its package version (keeping other metadata and the files listed in KEEP), commit and push. The landing
+ * output folder is not used, so this works while `bun run watch` is running.
  */
 import { execFileSync } from 'child_process';
 import { cpSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
@@ -16,6 +17,7 @@ import { join, resolve } from 'path';
 
 const PAGES_REPO = 'https://github.com/YASSB-FOSS/YASSB-FOSS.github.io.git';
 const BRANCH = 'master';
+const { compareVersions } = require('./landing-version.cjs');
 /** Files of the Pages repository that are not part of the build. */
 const KEEP = new Set(['.git', 'README.md', 'package.json', 'CNAME']);
 
@@ -31,16 +33,25 @@ function step(message: string): void {
   console.log(`\n▸ ${message}`);
 }
 
+const landingVersion = JSON.parse(readFileSync(join(landing, 'package.json'), 'utf8')).version;
+
+// Recheck the destination even after the workflow's early gate (or a manual invocation).
+step(`Cloning ${PAGES_REPO}`);
+const clone = mkdtempSync(join(tmpdir(), 'yassb-pages-'));
+run('git', ['clone', '--quiet', '--depth', '1', '--branch', BRANCH, PAGES_REPO, clone], root);
+const publishedPackage = JSON.parse(readFileSync(join(clone, 'package.json'), 'utf8'));
+if (compareVersions(landingVersion, publishedPackage.version) <= 0) {
+  console.log(`\nLanding ${landingVersion} is not newer than published ${publishedPackage.version}: nothing to deploy.`);
+  rmSync(clone, { recursive: true, force: true });
+  process.exit(0);
+}
+
 step('Building the engine');
 execFileSync('bun', ['run', 'build'], { cwd: root, stdio: 'inherit' });
 
 step('Building and checking the landing');
 const output = mkdtempSync(join(tmpdir(), 'yassb-site-'));
 execFileSync('node', ['../bin.js', 'check', '--out', output], { cwd: landing, stdio: 'inherit' });
-
-step(`Cloning ${PAGES_REPO}`);
-const clone = mkdtempSync(join(tmpdir(), 'yassb-pages-'));
-run('git', ['clone', '--quiet', '--depth', '1', '--branch', BRANCH, PAGES_REPO, clone], root);
 
 step('Replacing the site');
 for (const entry of readdirSync(clone))
@@ -50,6 +61,9 @@ cpSync(output, clone, { recursive: true });
 rmSync(output, { recursive: true, force: true });
 // Serve folders starting with _ and skip the Jekyll build.
 writeFileSync(join(clone, '.nojekyll'), '');
+// Publish the version atomically with the site, preserving destination metadata.
+publishedPackage.version = landingVersion;
+writeFileSync(join(clone, 'package.json'), `${JSON.stringify(publishedPackage, null, 2)}\n`);
 
 run('git', ['add', '-A'], clone);
 if (!run('git', ['status', '--porcelain'], clone)) {
@@ -60,7 +74,7 @@ if (!run('git', ['status', '--porcelain'], clone)) {
 
 const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
 const sha = run('git', ['rev-parse', '--short', 'HEAD'], root);
-run('git', ['commit', '--quiet', '-m', `Deploy website (yassb-web ${version}, ${sha})`], clone);
+run('git', ['commit', '--quiet', '-m', `Deploy website (landing ${landingVersion}, yassb-web ${version}, ${sha})`], clone);
 console.log(run('git', ['show', '--stat', '--format=%h %s', 'HEAD'], clone).split('\n').slice(-1)[0]);
 
 if (dryRun) {
