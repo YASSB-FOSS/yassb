@@ -9,7 +9,8 @@
  *    options and errors); ids are `<kind>.<name>`, unique; `@featurePart`/`@related` point to existing ids.
  * 3. Surfaces are complete: built-in directives, built-in renderers, `YassbConfig` options and CLI commands each
  *    have their feature; every CLI flag read by a command is listed in that command's `@options`; every
- *    diagnostic code is listed in the `@errors` of a feature, and every listed code exists.
+ *    diagnostic code is listed in the `@errors` of a feature, and every listed code exists; every preset of
+ *    `yassb new` is listed after its `--<axis>` flag in the `@options` of `cli.new`.
  * 4. Every feature id is referenced in each docs target with `<!-- feature: id -->`; references to unknown ids
  *    are errors.
  */
@@ -65,6 +66,8 @@ export interface Surfaces {
   configOptions: Array<string>;
   commands: Array<{ name: string; flags: Array<string> }>;
   diagnosticCodes: Array<string>;
+  /** Presets of `yassb new` (templates/<axis>/<name>), each listed after `--<axis>` in the @options of cli.new. */
+  presets: Array<{ axis: string; name: string }>;
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -275,6 +278,12 @@ export function checkFeatures(root: string, config: FeatureCheckConfig, surfaces
     for (const flag of command.flags)
       if (!new RegExp(`--${flag}\\b`).test(feature.options))
         errors.push(`CLI command "${command.name}" reads --${flag}, which is not listed in @options of "cli.${command.name}".`);
+  }
+  const newOptions = features.get('cli.new')?.options || '';
+  for (const { axis, name } of surfaces.presets) {
+    const section = newOptions.split(/(?=--[a-z])/).find(part => part.startsWith(`--${axis} `)) || '';
+    if (!new RegExp(`(^|[\\s,(])${name}([\\s,.)]|$)`).test(section))
+      errors.push(`Preset "${axis}/${name}" of yassb new is not listed after --${axis} in @options of "cli.new".`);
   }
   const assigned = new Set<string>();
   for (const feature of features.values())

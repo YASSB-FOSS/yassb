@@ -10,6 +10,7 @@
     "inspect": "yassb inspect"
   },
   "devDependencies": {
+    "@types/node": "^24.0.0",
     "yassb-web": "^YASSB_VERSION"
   }
 }

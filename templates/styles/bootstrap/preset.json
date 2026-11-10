@@ -1,0 +1,9 @@
+{
+  "description": "Bootstrap 5, compiled from its Sass sources",
+  "devDependencies": {
+    "bootstrap": "^5.3.8"
+  },
+  "agents": [
+    "Styles: Bootstrap 5. Entry `src/app/styles/styles.scss`, compiled by YASSB's Sass from `node_modules/bootstrap/scss`; change Bootstrap's variables in the `with (...)` of the `@use`. Use Bootstrap's classes in the HTML. Components that need JavaScript (collapse, dropdown, modal) need `import 'bootstrap';` in the browser script entry."
+  ]
+}

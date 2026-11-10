@@ -10,7 +10,7 @@ export interface ParsedArgs {
 }
 
 /** Flags that take a value when written as `--key value`. */
-const VALUE_FLAGS = new Set(['port', 'out', 'steps', 'section']);
+const VALUE_FLAGS = new Set(['port', 'out', 'steps', 'section', 'styles', 'scripts', 'deploy']);
 
 /**
  * @internal

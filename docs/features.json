@@ -193,7 +193,7 @@
       "summary": "The stylesheet entry is compiled with Sass, or with the site's stylesParser.",
       "usage": "src/app/styles/styles.scss → <out>/assets/css/styles-<version>.min.css",
       "options": "config.stylesParser, config.skipsStyles, workingDir.styles / stylesOutFolder.",
-      "rules": "Sass output is compressed, imports resolved from the file and from the project root; compiled after the pages; a Sass error or a throwing stylesParser fails the build; an empty entry is created if missing.",
+      "rules": "With config.relativeUrls, root-relative url() and @import become relative to the stylesheet's folder; Sass output is compressed, imports resolved from the file and from the project root; compiled after the pages; a Sass error or a throwing stylesParser fails the build; an empty entry is created if missing.",
       "errors": [
         "STYLES_FAILED"
       ],
@@ -206,7 +206,7 @@
       ],
       "source": {
         "file": "src/assets/styles/compile-styles.function.ts",
-        "line": 35,
+        "line": 36,
         "symbol": "compileStyles"
       },
       "parts": []
@@ -419,18 +419,19 @@
       "summary": "Last step for every HTML file of the output.",
       "usage": "automatic; customize with config.postProcessors and config.htmlMinificationOptions",
       "options": "none",
-      "rules": "For every .html/.htm in the output (assets included): { key } placeholders → postProcessors in order → minification in build, or in watch the live-reload script before </body> and removal of the Content-Security-Policy meta; runs after translation.",
+      "rules": "For every .html/.htm in the output (assets included): { key } placeholders → postProcessors in order → relative URLs (config.relativeUrls) → minification in build, or in watch the live-reload script before </body> and removal of the Content-Security-Policy meta; runs after translation.",
       "errors": [],
       "status": "stable",
       "since": "1.0.0",
       "related": [
         "config.postProcessors",
         "config.htmlMinificationOptions",
+        "config.relativeUrls",
         "behaviour.live-reload"
       ],
       "source": {
         "file": "src/post-processing/post-process-file.class.ts",
-        "line": 23,
+        "line": 26,
         "symbol": "PostProcessFile"
       },
       "parts": [
@@ -605,7 +606,7 @@
       ],
       "source": {
         "file": "src/cli/cli.ts",
-        "line": 89,
+        "line": 92,
         "symbol": "main"
       },
       "parts": [
@@ -681,19 +682,21 @@
     {
       "id": "cli.new",
       "kind": "cli",
-      "summary": "yassb new <name>: creates a project from the starter.",
-      "usage": "yassb new my-site",
-      "options": "name (required): converted to kebab-case for the folder and package name.",
-      "rules": "Refuses a non-empty existing folder; the starter has config/default.ts, a renderer in builder/, a data source, components, Sass and TypeScript entries, AGENTS.md and CLAUDE.md for coding agents, and yassb-web as devDependency.",
+      "summary": "yassb new <name>: creates a project from the starter, with a styles, scripts and deploy preset.",
+      "usage": "yassb new my-site --styles tailwind --scripts alpine --deploy github-pages",
+      "options": "name (required): converted to kebab-case for the folder and package name. --styles sass (default), tailwind, css, bootstrap, pico. --scripts typescript (default), alpine. --deploy github-pages, netlify (default: none).",
+      "rules": "Refuses a non-empty existing folder and unknown presets (the error lists the available ones); without flags the project uses Sass and TypeScript and has no deploy files. Every project has config/default.ts, a renderer in builder/, builder/styles.ts (spread into the configuration), a data source, components, AGENTS.md and CLAUDE.md for coding agents, and yassb-web as devDependency. A styles preset brings its own pages and components; github-pages sets relativeUrls: true in config/default.ts; the presets' packages are added to devDependencies (run npm install); AGENTS.md lists the chosen setup. Template names starting with dot- become dot files (dot-gitignore → .gitignore).",
       "errors": [],
       "status": "stable",
       "since": "1.0.0",
       "related": [
-        "config.files"
+        "config.files",
+        "config.stylesParser",
+        "config.relativeUrls"
       ],
       "source": {
         "file": "src/cli/commands/new.ts",
-        "line": 23,
+        "line": 50,
         "symbol": "newCommand"
       },
       "parts": []
@@ -785,7 +788,7 @@
       ],
       "source": {
         "file": "src/yassb.ts",
-        "line": 532,
+        "line": 547,
         "symbol": "YassbConfig.afterBuild"
       },
       "parts": [
@@ -813,7 +816,7 @@
       ],
       "source": {
         "file": "src/yassb.ts",
-        "line": 518,
+        "line": 533,
         "symbol": "YassbConfig.beforeBuild"
       },
       "parts": [
@@ -1030,7 +1033,7 @@
       ],
       "source": {
         "file": "src/yassb.ts",
-        "line": 501,
+        "line": 516,
         "symbol": "YassbConfig.i18n"
       },
       "parts": []
@@ -1062,6 +1065,29 @@
           "symbol": "PostProcessor"
         }
       ]
+    },
+    {
+      "id": "config.relativeUrls",
+      "kind": "config",
+      "summary": "Rewrites root-relative URLs of the output as relative ones, so the site works from any folder.",
+      "usage": "relativeUrls: true  → on /en/about.html, href=\"/assets/a.css\" becomes href=\"../assets/a.css\"",
+      "options": "boolean, default false",
+      "rules": "After postProcessors and before minification, every HTML file of the output is rewritten: href, src, action, formaction, poster, data, cite, background, manifest, xlink:href, srcset/imagesrcset, inline style attributes, <style> blocks and the markup inside <noscript>; the compiled stylesheet's url() and @import are rewritten relative to its folder. Only URLs starting with a single / change (not //host, https:, #, mailto:); query and fragment are kept; a page with <base href> is left unchanged. Not rewritten: scripts (URLs built in JavaScript), files copied from src/assets, sitemap.xml (absolute, from siteHost). A 404.html served by the host at any depth (GitHub Pages) cannot resolve relative URLs correctly. Works in watch too.",
+      "errors": [],
+      "status": "stable",
+      "since": "2.2.0",
+      "related": [
+        "behaviour.post-processing",
+        "assets.styles",
+        "directive.url-to",
+        "cli.new"
+      ],
+      "source": {
+        "file": "src/yassb.ts",
+        "line": 488,
+        "symbol": "YassbConfig.relativeUrls"
+      },
+      "parts": []
     },
     {
       "id": "config.showdownConverterOptions",
@@ -1159,7 +1185,7 @@
       ],
       "source": {
         "file": "src/yassb.ts",
-        "line": 487,
+        "line": 502,
         "symbol": "YassbConfig.strict"
       },
       "parts": []
@@ -1419,7 +1445,7 @@
       "parts": [
         {
           "file": "src/yassb.ts",
-          "line": 553,
+          "line": 568,
           "symbol": "DataSourceModel"
         }
       ]
@@ -1532,7 +1558,7 @@
       "parts": [
         {
           "file": "src/yassb.ts",
-          "line": 543,
+          "line": 558,
           "symbol": "FilePathsForPublicFileList"
         }
       ]
@@ -1662,12 +1688,12 @@
         },
         {
           "file": "src/yassb.ts",
-          "line": 577,
+          "line": 592,
           "symbol": "BasicElement"
         },
         {
           "file": "src/yassb.ts",
-          "line": 588,
+          "line": 603,
           "symbol": "BasicElementWithI18n"
         }
       ]
@@ -1704,17 +1730,17 @@
         },
         {
           "file": "src/yassb.ts",
-          "line": 564,
+          "line": 579,
           "symbol": "DateModel"
         },
         {
           "file": "src/yassb.ts",
-          "line": 601,
+          "line": 616,
           "symbol": "LiDateDescription"
         },
         {
           "file": "src/yassb.ts",
-          "line": 612,
+          "line": 627,
           "symbol": "LiDateDescriptionWithI18n"
         }
       ]

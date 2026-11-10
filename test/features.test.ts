@@ -44,7 +44,7 @@ function project(files: { [path: string]: string }, docs: string = ''): string {
 }
 
 const config: FeatureCheckConfig = { sources: 'src', manifest: 'features.json', docs: [{ path: 'guide.md', enforce: true }] };
-const noSurfaces: Surfaces = { directiveClasses: [], rendererNames: [], configOptions: [], commands: [], diagnosticCodes: [] };
+const noSurfaces: Surfaces = { directiveClasses: [], rendererNames: [], configOptions: [], commands: [], diagnosticCodes: [], presets: [] };
 
 describe('feature catalogue rules', () => {
   test('every export must declare @feature, @featurePart or @internal', () => {
@@ -86,6 +86,18 @@ describe('feature catalogue rules', () => {
     expect(errors).toContain('Configuration option siteHost must define a @feature (on YassbConfig.siteHost).');
     expect(errors).toContain('CLI command "build" reads --json, which is not listed in @options of "cli.build".');
     expect(errors.some(error => error.includes('--strict'))).toBe(false);
+  });
+
+  test('every preset of yassb new is listed after its flag', () => {
+    const root = project({ 'src/a.ts': `${FEATURE('cli.new', 'none', '--styles sass (default), tailwind. --deploy netlify')}\nexport function newCommand() {}\n` }, '<!-- feature: cli.new -->');
+    const errors = checkFeatures(root, config, {
+      ...noSurfaces,
+      presets: [{ axis: 'styles', name: 'tailwind' }, { axis: 'styles', name: 'netlify' }, { axis: 'styles', name: 'pico' }, { axis: 'deploy', name: 'netlify' }]
+    }).errors;
+    expect(errors).toEqual([
+      'Preset "styles/netlify" of yassb new is not listed after --styles in @options of "cli.new".',
+      'Preset "styles/pico" of yassb new is not listed after --styles in @options of "cli.new".'
+    ]);
   });
 
   test('every diagnostic code belongs to a feature, and listed codes exist', () => {

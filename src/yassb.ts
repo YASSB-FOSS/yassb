@@ -472,6 +472,21 @@ export interface YassbConfig {
    */
   cleanOut?: boolean;
   /**
+   * Write links and asset URLs relative to each page instead of starting with `/`, so the site also works when it
+   * is served from a sub-folder (a GitHub Pages project site, `https://<user>.github.io/<repository>/`). New in 2.2.
+   *
+   * @feature config.relativeUrls
+   * @summary Rewrites root-relative URLs of the output as relative ones, so the site works from any folder.
+   * @usage relativeUrls: true  → on /en/about.html, href="/assets/a.css" becomes href="../assets/a.css"
+   * @options boolean, default false
+   * @rules After postProcessors and before minification, every HTML file of the output is rewritten: href, src, action, formaction, poster, data, cite, background, manifest, xlink:href, srcset/imagesrcset, inline style attributes, <style> blocks and the markup inside <noscript>; the compiled stylesheet's url() and @import are rewritten relative to its folder. Only URLs starting with a single / change (not //host, https:, #, mailto:); query and fragment are kept; a page with <base href> is left unchanged. Not rewritten: scripts (URLs built in JavaScript), files copied from src/assets, sitemap.xml (absolute, from siteHost). A 404.html served by the host at any depth (GitHub Pages) cannot resolve relative URLs correctly. Works in watch too.
+   * @errors none
+   * @status stable
+   * @since 2.2.0
+   * @related behaviour.post-processing, assets.styles, directive.url-to, cli.new
+   */
+  relativeUrls?: boolean;
+  /**
    * Treat every reported error as fatal: the build exits with code 1. New in 2.0.
    *
    * @feature config.strict

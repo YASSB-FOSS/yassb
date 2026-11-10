@@ -19,7 +19,8 @@ npx yassb docs     # the YASSB guide: directives, renderers, i18n, configuration
 - `src/app/data-sources/*.json` — data only (records, texts that are content). Never page placement or labels.
 - `builder/` — renderers (TypeScript) that turn data into HTML, registered in `config/default.ts`.
   A page shows data with `<!-- create-from-data-source="file.json" renderer="name" -->`.
-- `src/app/styles/styles.scss`, `src/app/scripts/main.ts` — stylesheet and browser script entries.
+- `builder/styles.ts` — how the stylesheet is compiled, spread into `config/default.ts`.
+  The stylesheet and browser script entries are listed under "Setup".
 - `src/assets/` — copied as is.
 
 ## Rules
@@ -30,3 +31,7 @@ npx yassb docs     # the YASSB guide: directives, renderers, i18n, configuration
 - For a multi-language site, add `src/i18n/<lang>.json` files and mark text with `data-t="KEY"`
   (`npx yassb docs translations`).
 - After changes run `npm run check` and fix what it reports.
+
+## Setup
+
+SETUP_NOTES

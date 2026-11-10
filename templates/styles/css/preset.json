@@ -1,0 +1,9 @@
+{
+  "description": "Plain modern CSS (nesting, custom properties), no extra dependencies",
+  "workingDir": {
+    "styles": "styles/styles.css"
+  },
+  "agents": [
+    "Styles: plain CSS. Entry `src/app/styles/styles.css`, passed through YASSB's compiler as CSS: nesting, custom properties and `@layer` stay as they are, the output is minified. Keep the styles in this one file: an `@import` of another CSS file stays a request made by the browser (put such files in `src/assets/`)."
+  ]
+}

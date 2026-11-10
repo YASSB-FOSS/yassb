@@ -59,7 +59,7 @@ build against a clean one.
 | `yassb build` | Production build into `dist/public`. `--strict`, `--clean`, `--out <dir>`, `--json`. |
 | `yassb watch` | Build, serve with live reload, rebuild on every change (config and code included). |
 | `yassb serve` | Serve the output without building. |
-| `yassb new <name>` | Create a project. |
+| `yassb new <name>` | Create a project. `--styles tailwind\|css\|bootstrap\|pico`, `--scripts alpine`, `--deploy github-pages\|netlify`. |
 | `yassb inspect [query]` | What the site is made of (pages, components, data, renderers, directives, translations), with file:line. `--json`. |
 | `yassb check` | Build and validate (directives, data, translations, links, dependencies). Exit code 1 on errors. |
 | `yassb docs [topic]` | The complete guide, offline. |

@@ -21,6 +21,7 @@ export enum OptionsKeys {
   devServerPort = 'devServerPort',
   sitemap = 'sitemap',
   cleanOut = 'cleanOut',
+  relativeUrls = 'relativeUrls',
   strict = 'strict',
   i18n = 'i18n',
   beforeBuild = 'beforeBuild',

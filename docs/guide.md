@@ -81,7 +81,7 @@ Assets get versioned names from the site's `package.json` version: `main-1-2-0.m
 | `yassb build` | Production build. `--strict`: exit 1 on any error. `--clean`: empty the output first. `--out <dir>`. `--json`. |
 | `yassb watch` | Build, serve on http://localhost:3000 with live reload, rebuild on every change. `--port <n>`, `--clean`, `--fresh`. |
 | `yassb serve` | Serve the output folder without building. `--port <n>`. |
-| `yassb new <name>` | Create a project from the starter. |
+| `yassb new <name>` | Create a project from the starter. `--styles`, `--scripts`, `--deploy` choose the presets (below). |
 | `yassb inspect [query]` | Describe the project without building (read-only). `--json` for a full manifest. |
 | `yassb check` | Build, then validate. Exit code 1 if anything is an error. `--json`, `--out <dir>`, `--no-links`. |
 | `yassb docs [topic]` | This guide. `yassb docs diagnostics` lists the error codes. |
@@ -90,6 +90,32 @@ Exit codes: `build` exits 1 when site code throws (renderer, directive, post pro
 configuration cannot be loaded, or when a data source/stylesheet is invalid. Other errors (missing data source,
 unknown renderer, unresolved `url-to`…) are printed with file and line but only fail the build with `--strict`
 or `strict: true`.
+
+### New projects and presets
+
+```bash
+yassb new my-site --styles tailwind --scripts alpine --deploy github-pages
+```
+
+A project is the common base (configuration, a renderer, a data source, `AGENTS.md`) plus one preset per axis:
+
+| Flag | Presets | What it sets up |
+|---|---|---|
+| `--styles` | `sass` (default) | `styles/styles.scss`, compiled by YASSB. |
+| | `tailwind` | Tailwind CSS 4 through PostCSS: `styles/styles.css` and a `stylesParser` in `builder/styles.ts`. |
+| | `css` | Plain CSS in `styles/styles.css`; nesting and custom properties pass through, the output is minified. |
+| | `bootstrap` | Bootstrap 5 from its Sass sources, variables set in the `@use … with (…)`. |
+| | `pico` | Pico CSS 2: classless styles for semantic HTML. |
+| `--scripts` | `typescript` (default) | `scripts/main.ts`, bundled with esbuild. |
+| | `alpine` | Alpine.js imported and started in `scripts/main.ts`. |
+| `--deploy` | `github-pages` | `.github/workflows/deploy.yml`: check, then publish `dist/public` to GitHub Pages; sets `relativeUrls: true`, so the site also works under `/<repository>/`. |
+| | `netlify` | `netlify.toml`: check, then publish `dist/public`. |
+
+Without flags the project is Sass + TypeScript, no deploy files. A styles preset brings its own pages and
+components, written for that framework; `builder/styles.ts` holds the styles configuration and is spread into
+`config/default.ts`. The presets' packages are added to `devDependencies` (run `npm install`), and the "Setup"
+section of the project's `AGENTS.md` describes the chosen presets. An unknown preset is refused with the list of
+the available ones.
 
 ## Build pipeline
 
@@ -341,6 +367,7 @@ export default defineConfig({
 | `siteHost` | — | Public host; when set, `sitemap.xml` (every output file) is kept. |
 | `sitemap` | `true` | `false`: never write `sitemap.xml` (`url-to` still works). |
 | `cleanOut` | `false` | Empty the output (dot files kept) before building. |
+| `relativeUrls` | `false` | Write links and asset URLs relative to each page, so the site works from a sub-folder (below). |
 | `strict` | `false` | Any error fails the build. |
 | `i18n.allowHtml` | `false` | Insert translations as HTML. |
 | `devServerPort` | `3000` | Port of `watch`/`serve`. |
@@ -348,6 +375,25 @@ export default defineConfig({
 | `beforeBuild` / `afterBuild` | — | Hooks run in `build` and `watch`; `afterBuild` receives `{ ok, diagnostics, out, … }`. |
 
 <!-- feature: config.customRenderers, config.customDirectives, config.postProcessors, config.htmlMinificationOptions, config.stylesParser, config.skipsStyles, config.esbuildOptions, config.webpackConfig, config.showdownConverterOptions, config.grayMatterOption, config.siteHost, config.sitemap, config.cleanOut, config.strict, config.devServerPort, config.username, config.beforeBuild, config.afterBuild -->
+
+### relativeUrls
+
+<!-- feature: config.relativeUrls -->
+
+Pages link to `/assets/…` and `/about/`, which only works when the site is served from the root of a host. A
+GitHub Pages project site lives at `https://<user>.github.io/<repository>/`: there, set `relativeUrls: true`
+(the `github-pages` preset of `yassb new` does it). Every URL that starts with a single `/` is then written
+relative to the page that contains it: on `en/about.html`, `/assets/css/styles.css` becomes
+`../assets/css/styles.css` and `/` becomes `../`. The same output works at the root, in any sub-folder and in
+`watch`.
+
+- Rewritten, after `postProcessors` and before minification: `href`, `src`, `action`, `formaction`, `poster`,
+  `data`, `cite`, `background`, `manifest`, `xlink:href`, `srcset`, inline `style`, `<style>` blocks and the
+  markup inside `<noscript>`; in the compiled stylesheet, `url(/…)` and `@import "/…"`.
+- Unchanged: `//host`, `https:`, `#`, `mailto:` URLs; pages with a `<base href>`; URLs built in JavaScript
+  (`fetch('/data.json')`); files copied from `src/assets`; `sitemap.xml` (absolute, from `siteHost`).
+- A `404.html` that the host serves at any depth (GitHub Pages does) cannot resolve relative URLs: keep it
+  self-contained or use absolute URLs with the full host in it.
 
 Configuration and site code (renderers, directives) can be TypeScript or TSX: each file is compiled on its own
 with the site's `tsconfig.json` (`__dirname` and relative paths work as in Node).
@@ -467,8 +513,9 @@ also built in `<out>/de/`. Run `yassb check` to find missing keys.
 `src/app/pages-to-generate/blog/post.html` containing `<!-- generate-from-files="blog" -->` and `{ title }`.
 Multi-language: one template per language folder (`pages-to-generate/en/blog/…`).
 
-**Use Tailwind.** Set `workingDir.styles: 'styles/styles.css'` and a `stylesParser` that runs PostCSS with
-Tailwind and returns the CSS.
+**Use Tailwind.** New project: `yassb new my-site --styles tailwind`. Existing site: set
+`workingDir.styles: 'styles/styles.css'` and a `stylesParser` that runs PostCSS with Tailwind and returns the CSS
+(the preset's `builder/styles.ts` is a ready example).
 
 ## Feature catalogue
 

@@ -1,0 +1,6 @@
+{
+  "description": "Sass, compiled by YASSB (no extra dependencies)",
+  "agents": [
+    "Styles: Sass. Entry `src/app/styles/styles.scss`, compiled by YASSB; imports resolve from the file and from the project root."
+  ]
+}

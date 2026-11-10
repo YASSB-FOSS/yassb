@@ -1,0 +1,26 @@
+:root {
+  --text: #222;
+  --muted: #666;
+  --accent: #0b5fff;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 48rem;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+  color: var(--text);
+}
+
+nav a {
+  margin-right: 1rem;
+  color: var(--accent);
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.features li {
+  margin-block: 0.5rem;
+}

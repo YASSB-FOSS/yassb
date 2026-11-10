@@ -1,0 +1,7 @@
+# Netlify: build the site and publish dist/public.
+[build]
+  command = "npm run check"
+  publish = "dist/public"
+
+[build.environment]
+  NODE_VERSION = "24"

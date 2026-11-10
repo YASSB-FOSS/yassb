@@ -69,8 +69,15 @@
     "showdown": "^2.1.0"
   },
   "devDependencies": {
+    "@picocss/pico": "^2.1.1",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/alpinejs": "^3.17.0",
     "@types/bun": "^1.4.4",
     "@types/node": "^22.0.0",
+    "alpinejs": "^3.17.5",
+    "bootstrap": "^5.3.8",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^4.3.5",
     "typescript": "^7.0.2"
   },
   "author": "ilDon",
