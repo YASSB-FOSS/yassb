@@ -7,6 +7,14 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 
 ---
 
+## [2.2.0] - 2026-11-10
+### Added
+- yassb new: presets chosen with --styles (sass, tailwind, css, bootstrap, pico), --scripts (typescript, alpine) and --deploy (github-pages, netlify); each preset brings its files, packages and a note in the project's AGENTS.md; without flags the project is still Sass + TypeScript.
+- relativeUrls: links and asset URLs are written relative to each page, so the site also works from a sub-folder such as a GitHub Pages project site; the github-pages preset turns it on.
+
+### Changed
+- new projects have builder/styles.ts (styles configuration, spread into config/default.ts) and @types/node with "types": ["node"] in tsconfig.json.
+
 ## [2.1.1] - 2026-10-29
 ### Changed
 - watch: the verification folder moved from .<out>.yassb-verify, next to the output, to .yassb/verify in the project root; .yassb holds its own .gitignore, so git always ignores it, and the scripts' source maps are computed as if the files were in the output.
@@ -42,15 +50,15 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 - translation edits only translated elements instead of re-serializing pages with cheerio.
 - builds about 2.5x faster.
 
+### Removed
+- dependencies no longer installed: react, react-dom, fs-extra, cheerio, lodash, moment, webpack, ts-node, typescript and others; sites importing them must declare them (yassb check lists them).
+
 ### Fixed
 - options containing arrays were silently ignored.
 - $$ and $& in content were altered when inserted into pages.
 - basicElement wrote <undefined> elements without a tag option.
 - an element with both data-attr-t and data-t lost its text translation.
 - watch reloaded the browser before the rebuild finished and ignored changes to code outside src.
-
-### Removed
-- dependencies no longer installed: react, react-dom, fs-extra, cheerio, lodash, moment, webpack, ts-node, typescript and others; sites importing them must declare them (yassb check lists them).
 
 ## [1.4.3] - 2024-07-26
 ### Fixed
@@ -143,7 +151,7 @@ This file has been automatially generated with [@bohr/changelogger](https://gith
 ## [1.1.1] - 2021-11-05
 ### Fixed
 - fixed typo in comment.
-- exporting YassbBaseDirective so custom directives can import it and extend it .
+- exporting YassbBaseDirective so custom directives can import it and extend it.
 
 ## [1.1.0] - 2021-11-03
 ### Added
