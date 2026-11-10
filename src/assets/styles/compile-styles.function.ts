@@ -1,9 +1,10 @@
 import { mkdirSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { relative, resolve, sep } from 'path';
 import { fileURLToPath } from 'url';
 import { WORKING_DIR } from '../../config/working-dir.constant';
 import { describeError, report } from '../../diagnostics/diagnostics';
 import type { YassbConfig } from '../../yassb';
+import { relativizeCss } from '../../post-processing/relative-urls';
 import { assetsFileNameMaker } from '../assets-file-name-maker.function';
 
 /**
@@ -26,7 +27,7 @@ export interface StylesResult {
  * @summary The stylesheet entry is compiled with Sass, or with the site's stylesParser.
  * @usage src/app/styles/styles.scss → <out>/assets/css/styles-<version>.min.css
  * @options config.stylesParser, config.skipsStyles, workingDir.styles / stylesOutFolder.
- * @rules Sass output is compressed, imports resolved from the file and from the project root; compiled after the pages; a Sass error or a throwing stylesParser fails the build; an empty entry is created if missing.
+ * @rules With config.relativeUrls, root-relative url() and @import become relative to the stylesheet's folder; Sass output is compressed, imports resolved from the file and from the project root; compiled after the pages; a Sass error or a throwing stylesParser fails the build; an empty entry is created if missing.
  * @errors STYLES_FAILED
  * @status stable
  * @since 1.0.0
@@ -40,7 +41,7 @@ export async function compileStyles(config: YassbConfig): Promise<StylesResult> 
   if (config.stylesParser) {
     try {
       const css = await config.stylesParser(pathToStyle, pathToStyle, pathToFinalCss);
-      writeFileSync(pathToFinalCss, css);
+      writeFileSync(pathToFinalCss, config.relativeUrls ? relativeCss(css.toString()) : css);
     } catch (error) {
       const { message, detail } = describeError(error);
       report({ level: 'error', code: 'STYLES_FAILED', fatal: true, file: pathToStyle, message: `stylesParser failed: ${message}`, detail });
@@ -55,7 +56,7 @@ export async function compileStyles(config: YassbConfig): Promise<StylesResult> 
       loadPaths: [process.cwd()],
       quietDeps: true
     });
-    writeFileSync(pathToFinalCss, result.css);
+    writeFileSync(pathToFinalCss, config.relativeUrls ? relativeCss(result.css) : result.css);
     return { inputs: result.loadedUrls.filter(url => url.protocol === 'file:').map(url => fileURLToPath(url)) };
   } catch (error) {
     const failure = error as { sassMessage?: string; span?: { url?: URL; start?: { line: number } } };
@@ -69,4 +70,9 @@ export async function compileStyles(config: YassbConfig): Promise<StylesResult> 
     });
     return { inputs: [pathToStyle] };
   }
+}
+
+/** With `relativeUrls`: root-relative url() and @import of the stylesheet, relative to its folder. */
+function relativeCss(css: string): string {
+  return relativizeCss(css, relative(WORKING_DIR.out, WORKING_DIR.stylesOutFolder).split(sep).join('/'));
 }

@@ -1,0 +1,6 @@
+{
+  "description": "netlify.toml for Netlify",
+  "agents": [
+    "Deploy: Netlify. `netlify.toml` tells Netlify to run `npm run check` and publish `dist/public`; connect the repository in Netlify and every push is deployed."
+  ]
+}

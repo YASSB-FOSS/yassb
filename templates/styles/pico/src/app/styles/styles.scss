@@ -1,0 +1,4 @@
+// Pico CSS from its Sass sources. header, main and footer directly inside body are centred containers.
+@use "node_modules/@picocss/pico/scss/pico" with (
+  $enable-semantic-container: true
+);

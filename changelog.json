@@ -4,6 +4,24 @@
   "temp": [],
   "changes": [
     {
+      "version": "2.2.0",
+      "date": "2026-11-10",
+      "items": [
+        {
+          "type": "added",
+          "value": "yassb new: presets chosen with --styles (sass, tailwind, css, bootstrap, pico), --scripts (typescript, alpine) and --deploy (github-pages, netlify); each preset brings its files, packages and a note in the project's AGENTS.md; without flags the project is still Sass + TypeScript"
+        },
+        {
+          "type": "added",
+          "value": "relativeUrls: links and asset URLs are written relative to each page, so the site also works from a sub-folder such as a GitHub Pages project site; the github-pages preset turns it on"
+        },
+        {
+          "type": "changed",
+          "value": "new projects have builder/styles.ts (styles configuration, spread into config/default.ts) and @types/node with \"types\": [\"node\"] in tsconfig.json"
+        }
+      ]
+    },
+    {
       "version": "2.1.1",
       "date": "2026-10-29",
       "items": [

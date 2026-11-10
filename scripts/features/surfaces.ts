@@ -2,7 +2,7 @@
  * Reads the user-facing surfaces of the engine from its own registries, so the catalogue check knows what must
  * have a feature without guessing.
  */
-import { readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { BUILT_IN_DIRECTIVES } from '../../src/config/supported-directives.const';
 import { DIAGNOSTIC_CODES } from '../../src/diagnostics/diagnostics';
@@ -35,6 +35,9 @@ export function readSurfaces(root: string): Surfaces {
     rendererNames: Object.keys(BUILT_IN_RENDERERS),
     configOptions,
     commands,
-    diagnosticCodes: Object.keys(DIAGNOSTIC_CODES)
+    diagnosticCodes: Object.keys(DIAGNOSTIC_CODES),
+    presets: ['styles', 'scripts', 'deploy'].flatMap(axis => readdirSync(join(root, 'templates', axis))
+      .filter(name => existsSync(join(root, 'templates', axis, name, 'preset.json')))
+      .map(name => ({ axis, name })))
   };
 }

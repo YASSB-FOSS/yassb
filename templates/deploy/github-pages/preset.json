@@ -1,0 +1,9 @@
+{
+  "description": "GitHub Actions workflow that publishes to GitHub Pages",
+  "config": {
+    "relativeUrls": true
+  },
+  "agents": [
+    "Deploy: GitHub Pages. `.github/workflows/deploy.yml` runs `npm run check` (build + validation) and publishes `dist/public` on every push to `main` (or by hand from the Actions tab). In the repository settings set Pages → Source to \"GitHub Actions\". `relativeUrls: true` in `config/default.ts` writes every link relative to its page, so the site works both at `<user>.github.io/<repository>/` and on a custom domain; keep writing links as `/about/` and `/assets/…`. URLs built in JavaScript are not rewritten."
+  ]
+}

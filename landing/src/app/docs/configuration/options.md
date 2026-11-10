@@ -7,7 +7,7 @@ order: 3
 slug: options
 ---
 
-<!-- feature: config.workingDir, config.customRenderers, config.customDirectives, config.postProcessors, config.htmlMinificationOptions, config.stylesParser, config.skipsStyles, config.esbuildOptions, config.webpackConfig, config.showdownConverterOptions, config.grayMatterOption, config.siteHost, config.sitemap, config.cleanOut, config.strict, config.devServerPort, config.username, config.i18n, config.beforeBuild, config.afterBuild -->
+<!-- feature: config.workingDir, config.customRenderers, config.customDirectives, config.postProcessors, config.htmlMinificationOptions, config.stylesParser, config.skipsStyles, config.esbuildOptions, config.webpackConfig, config.showdownConverterOptions, config.grayMatterOption, config.siteHost, config.sitemap, config.cleanOut, config.relativeUrls, config.strict, config.devServerPort, config.username, config.i18n, config.beforeBuild, config.afterBuild -->
 
 <p class="lead">Every option is optional. Types come with the package: <code>YassbConfig</code>, or <code>defineConfig()</code>.</p>
 
@@ -27,6 +27,7 @@ slug: options
 | `siteHost` | — | public host; keeps `sitemap.xml` (end it with `/`) |
 | `sitemap` | `true` | `false` never writes `sitemap.xml` |
 | `cleanOut` | `false` | empty the output before building (dot files such as `.git` are kept) |
+| `relativeUrls` | `false` | links and asset URLs relative to each page, so the site works from a sub-folder |
 | `strict` | `false` | any reported error fails the build |
 | `i18n.allowHtml` | `false` | insert translations as HTML |
 | `devServerPort` | `3000` | port of `watch` and `serve` |
@@ -37,6 +38,12 @@ slug: options
 ## cleanOut
 
 Without it, files you delete from the sources stay in the output. With `cleanOut: true` (or `yassb build --clean`) the output folder is emptied first, keeping dot files at its root, so a deployment repository in the output folder survives. In watch mode only full rebuilds clean; a styles-only rebuild keeps the pages.
+
+## relativeUrls
+
+Links such as `/assets/css/styles.css` or `/about/` only work when the site is served from the root of a host. A GitHub Pages project site lives under `https://<user>.github.io/<repository>/`: set `relativeUrls: true` (the `github-pages` preset of `yassb new` does it) and every URL that starts with a single `/` is written relative to its page. On `en/about.html`, `/assets/css/styles.css` becomes `../assets/css/styles.css`. The same output works at the root, in any sub-folder and in `watch`.
+
+YASSB rewrites URL attributes (`href`, `src`, `action`, `poster`, `srcset`…), inline `style`, `<style>` blocks, the markup inside `<noscript>`, and `url()` and `@import` in the compiled stylesheet, after your `postProcessors`. It leaves alone URLs with a host or a scheme, pages with a `<base href>`, URLs built in JavaScript, files copied from `src/assets` and `sitemap.xml`. A `404.html` that the host serves at any depth cannot resolve relative URLs: keep it self-contained.
 
 ## strict
 

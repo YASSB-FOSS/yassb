@@ -1,0 +1,6 @@
+{
+  "description": "TypeScript, bundled by YASSB with esbuild (no extra dependencies)",
+  "agents": [
+    "Scripts: TypeScript. Entry `src/app/scripts/main.ts`, bundled with esbuild for the browser and included by `<!-- include-script-src -->`."
+  ]
+}

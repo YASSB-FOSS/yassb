@@ -1,0 +1,14 @@
+{
+  "description": "Tailwind CSS 4 through PostCSS",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^4.3.5"
+  },
+  "workingDir": {
+    "styles": "styles/styles.css"
+  },
+  "agents": [
+    "Styles: Tailwind CSS 4. Entry `src/app/styles/styles.css` (`@import \"tailwindcss\";`, theme with `@theme`), compiled by the `stylesParser` in `builder/styles.ts` after the pages. Style with utility classes in the HTML and in the renderers' output; Tailwind finds them in the project files (what `.gitignore` ignores is skipped)."
+  ]
+}

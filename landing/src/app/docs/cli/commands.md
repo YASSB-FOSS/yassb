@@ -38,10 +38,10 @@ Serves the output folder as it is, without building, with the same routing as `w
 ## yassb new
 
 ```bash
-yassb new <name>
+yassb new <name> [--styles <preset>] [--scripts <preset>] [--deploy <preset>]
 ```
 
-Creates a project in `./<name>` (kebab-case). See [Installation](/docs/getting-started/installation.html).
+Creates a project in `./<name>` (kebab-case), with one preset per axis: `--styles` sass (default), tailwind, css, bootstrap, pico; `--scripts` typescript (default), alpine; `--deploy` github-pages, netlify. See [Installation](/docs/getting-started/installation.html).
 
 ## yassb inspect
 

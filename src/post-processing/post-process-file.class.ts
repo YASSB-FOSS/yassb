@@ -1,10 +1,13 @@
 import { readFileSync, writeFileSync } from 'fs';
+import { dirname, relative, sep } from 'path';
+import { WORKING_DIR } from '../config/working-dir.constant';
 import { describeError, report } from '../diagnostics/diagnostics';
 import { sourceFileOf } from '../diagnostics/source-location';
 import { FrontMatterHandler } from '../tools/front-matter/front-matter-handler.class';
 import { FrontMatterInjector } from '../tools/front-matter/front-matter-injector.class';
 import type { YassbConfig } from '../yassb';
 import { markRewrittenOutputFile } from '../tools/output-files.store';
+import { relativizeHtml } from './relative-urls';
 
 /**
  * Final step for one page: front matter placeholders, custom post processors, then minification
@@ -14,11 +17,11 @@ import { markRewrittenOutputFile } from '../tools/output-files.store';
  * @summary Last step for every HTML file of the output.
  * @usage automatic; customize with config.postProcessors and config.htmlMinificationOptions
  * @options none
- * @rules For every .html/.htm in the output (assets included): { key } placeholders → postProcessors in order → minification in build, or in watch the live-reload script before </body> and removal of the Content-Security-Policy meta; runs after translation.
+ * @rules For every .html/.htm in the output (assets included): { key } placeholders → postProcessors in order → relative URLs (config.relativeUrls) → minification in build, or in watch the live-reload script before </body> and removal of the Content-Security-Policy meta; runs after translation.
  * @errors none
  * @status stable
  * @since 1.0.0
- * @related config.postProcessors, config.htmlMinificationOptions, behaviour.live-reload
+ * @related config.postProcessors, config.htmlMinificationOptions, config.relativeUrls, behaviour.live-reload
  */
 export class PostProcessFile {
 
@@ -55,6 +58,9 @@ export class PostProcessFile {
         });
       }
     }
+
+    if (this.config.relativeUrls)
+      contents = relativizeHtml(contents, relative(WORKING_DIR.out, dirname(this.pathToFile)).split(sep).join('/'));
 
     contents = this.isWatching ? this.prepareForWatch(contents) : await this.minify(contents);
     writeFileSync(this.pathToFile, contents);

@@ -1,6 +1,6 @@
 {
   "name": "yassb-web",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Static site builder: HTML components, JSON data, Markdown and i18n, with TypeScript renderers. Fast (esbuild), five dependencies, and a CLI coding agents use to inspect and check a site.",
   "engines": {
     "node": ">=20.0.0"
@@ -69,8 +69,15 @@
     "showdown": "^2.1.0"
   },
   "devDependencies": {
+    "@picocss/pico": "^2.1.1",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/alpinejs": "^3.17.0",
     "@types/bun": "^1.4.4",
     "@types/node": "^22.0.0",
+    "alpinejs": "^3.17.5",
+    "bootstrap": "^5.3.8",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^4.3.5",
     "typescript": "^7.0.2"
   },
   "author": "ilDon",

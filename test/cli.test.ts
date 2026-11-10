@@ -1,7 +1,8 @@
 import { afterAll, describe, expect, test } from 'bun:test';
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'fs';
+import { spawnSync } from 'child_process';
+import { appendFileSync, existsSync, readdirSync, readFileSync, statSync, symlinkSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { copyFixture, removeFixture, runCli } from './helpers/fixture';
+import { copyFixture, removeFixture, ROOT, runCli } from './helpers/fixture';
 
 const dirs: Array<string> = [];
 afterAll(() => dirs.forEach(removeFixture));
@@ -107,6 +108,85 @@ describe('yassb new / docs', () => {
     const result = runCli(site, ['build']);
     expect(result.status).toBe(0);
     expect(readFileSync(join(site, 'dist/public/index.html'), 'utf8')).toContain('<strong>Components</strong>');
+    // Without flags: the Sass + TypeScript starter, no extra packages.
+    expect(readdirSync(join(site, 'src/app/styles'))).toEqual(['styles.scss']);
+    expect(Object.keys(JSON.parse(readFileSync(join(site, 'package.json'), 'utf8')).devDependencies)).toEqual(['@types/node', 'yassb-web']);
+    const agents = readFileSync(join(site, 'AGENTS.md'), 'utf8');
+    expect(agents).toContain('- Styles: Sass.');
+    expect(agents).toContain('- Scripts: TypeScript.');
+    expect(agents).not.toContain('SETUP_NOTES');
+    expect(readFileSync(join(site, 'config/default.ts'), 'utf8')).not.toContain('PRESET_OPTIONS');
+  });
+
+  // Each styles preset with Alpine, built for real. The packages are devDependencies of this repository; the
+  // site's node_modules points to them, as after `npm install` (Sass resolves node_modules/ from the site).
+  for (const styles of ['sass', 'tailwind', 'css', 'bootstrap', 'pico'])
+    test(`--styles ${styles} --scripts alpine builds`, () => {
+      const dir = fixture();
+      expect(runCli(dir, ['new', 'site', '--styles', styles, '--scripts', 'alpine']).status).toBe(0);
+      const site = join(dir, 'site');
+      symlinkSync(join(ROOT, 'node_modules'), join(site, 'node_modules'), 'dir');
+      expect(readdirSync(join(site, 'src/app/styles'))).toHaveLength(1);
+      const typecheck = spawnSync(join(ROOT, 'node_modules/.bin/tsc'), ['-p', 'tsconfig.json'], { cwd: site, encoding: 'utf8' });
+      expect(typecheck.stdout).toBe('');
+      const result = runCli(site, ['check']);
+      expect(result.stdout + result.stderr).toContain('0 errors');
+      expect(result.status).toBe(0);
+      expect(readFileSync(join(site, 'dist/public/index.html'), 'utf8')).toContain('<strong>Components</strong>');
+      const css = readFileSync(join(site, 'dist/public/assets/css/styles-0-0-1.min.css'), 'utf8');
+      expect(css.length).toBeGreaterThan(100);
+      if (styles === 'tailwind')
+        expect(css).toContain('max-w-3xl');
+      expect(readFileSync(join(site, 'dist/public/assets/js/main-0-0-1.min.js'), 'utf8')).toContain('alpine:init');
+      const pkg = JSON.parse(readFileSync(join(site, 'package.json'), 'utf8'));
+      expect(pkg.devDependencies.alpinejs).toBeDefined();
+    });
+
+  test('--deploy adds the deploy files', () => {
+    const dir = fixture();
+    expect(runCli(dir, ['new', 'pages', '--deploy', 'github-pages']).status).toBe(0);
+    expect(readFileSync(join(dir, 'pages/.github/workflows/deploy.yml'), 'utf8')).toContain('path: dist/public');
+    expect(readFileSync(join(dir, 'pages/AGENTS.md'), 'utf8')).toContain('- Deploy: GitHub Pages.');
+    // github-pages turns relativeUrls on, so the site also works under /<repository>/.
+    expect(readFileSync(join(dir, 'pages/config/default.ts'), 'utf8')).toContain('  // From the github-pages preset (see AGENTS.md → Setup).\n  relativeUrls: true,\n');
+    expect(runCli(join(dir, 'pages'), ['build']).status).toBe(0);
+    const index = readFileSync(join(dir, 'pages/dist/public/index.html'), 'utf8');
+    expect(index).toContain('href="assets/css/styles-0-0-1.min.css"');
+    expect(index).toContain('src="assets/js/main-0-0-1.min.js"');
+    expect(runCli(dir, ['new', 'netlify', '--deploy', 'netlify']).status).toBe(0);
+    expect(readFileSync(join(dir, 'netlify/netlify.toml'), 'utf8')).toContain('publish = "dist/public"');
+  });
+
+  test('an unknown preset is refused before anything is written', () => {
+    const dir = fixture();
+    const result = runCli(dir, ['new', 'site', '--styles', 'nope']);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('--styles "nope" is not a preset. Available: bootstrap, css, pico, sass, tailwind.');
+    expect(existsSync(join(dir, 'site'))).toBe(false);
+    expect(runCli(dir, ['new', 'site', '--deploy']).stderr).toContain('--deploy needs a value');
+  });
+
+  test('presets never write the same file as another layer', () => {
+    const files = (root: string, dir: string = root): Array<string> => readdirSync(dir).flatMap(entry => {
+      const path = join(dir, entry);
+      if (statSync(path).isDirectory())
+        return files(root, path);
+      return path === join(root, 'preset.json') ? [] : [path.slice(root.length + 1)];
+    });
+    const templates = join(ROOT, 'templates');
+    const base = new Set(files(join(templates, 'base')));
+    const layers: { [axis: string]: Array<Set<string>> } = {};
+    for (const axis of ['styles', 'scripts', 'deploy'])
+      layers[axis] = readdirSync(join(templates, axis)).map(name => new Set(files(join(templates, axis, name))));
+    // Every file of an axis must be absent from the base and from every other axis.
+    for (const [axis, sets] of Object.entries(layers))
+      for (const set of sets)
+        for (const file of set) {
+          expect(base.has(file)).toBe(false);
+          for (const [other, otherSets] of Object.entries(layers))
+            if (other !== axis)
+              expect(otherSets.some(otherSet => otherSet.has(file))).toBe(false);
+        }
   });
 
   test('prints the guide by topic', () => {

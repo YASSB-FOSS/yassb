@@ -19,7 +19,7 @@ Styles are compiled after the pages, so tools that scan your HTML see everything
 
 ## Tailwind CSS or any PostCSS pipeline
 
-Replace Sass with `stylesParser`, a function that returns the CSS:
+For a new project, `yassb new my-site --styles tailwind` sets this up. In an existing site, replace Sass with `stylesParser`, a function that returns the CSS:
 
 ```ts
 import tailwindcss from '@tailwindcss/postcss';

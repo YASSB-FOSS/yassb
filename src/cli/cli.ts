@@ -32,6 +32,9 @@ Commands:
   serve              Serve the output folder without building
       --port <n>
   new <name>         Create a new project in ./<name>
+      --styles <p>     sass (default), tailwind, css, bootstrap, pico
+      --scripts <p>    typescript (default), alpine
+      --deploy <p>     github-pages, netlify (default: none)
   inspect [query]    Describe the project: pages, components, data sources, renderers,
                      directives, translations. Read-only; does not build.
       --json           machine-readable manifest

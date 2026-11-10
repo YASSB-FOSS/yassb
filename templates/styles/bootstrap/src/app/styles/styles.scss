@@ -1,0 +1,13 @@
+// Bootstrap 5 from its Sass sources. Set its variables here, e.g. ($primary: #6f42c1, $border-radius: .5rem).
+@use "node_modules/bootstrap/scss/bootstrap" with (
+  $enable-shadows: false
+);
+
+// The renderer writes plain <li> elements: give them the list-group look.
+.features {
+  @extend .list-group;
+
+  li {
+    @extend .list-group-item;
+  }
+}

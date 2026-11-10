@@ -212,6 +212,7 @@ class Inspector {
         devServerPort: this.config.devServerPort ?? 3000,
         strict: !!this.config.strict,
         cleanOut: !!this.config.cleanOut,
+        relativeUrls: !!this.config.relativeUrls,
         sitemap: this.config.sitemap !== false,
         skipsStyles: !!this.config.skipsStyles,
         i18nAllowHtml: !!this.config.i18n?.allowHtml,

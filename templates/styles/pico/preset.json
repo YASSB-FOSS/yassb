@@ -1,0 +1,9 @@
+{
+  "description": "Pico CSS 2, classless styles for semantic HTML",
+  "devDependencies": {
+    "@picocss/pico": "^2.1.1"
+  },
+  "agents": [
+    "Styles: Pico CSS 2. Entry `src/app/styles/styles.scss`, compiled by YASSB's Sass from `node_modules/@picocss/pico/scss`. Pico styles semantic HTML without classes: `header`, `main` and `footer` directly inside `body` are centred containers; write plain elements (`nav > ul`, `article`, `button`, forms) and add classes only when needed."
+  ]
+}

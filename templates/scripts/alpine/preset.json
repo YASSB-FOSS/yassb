@@ -1,0 +1,10 @@
+{
+  "description": "Alpine.js, bundled by YASSB with esbuild",
+  "devDependencies": {
+    "@types/alpinejs": "^3.17.0",
+    "alpinejs": "^3.17.5"
+  },
+  "agents": [
+    "Scripts: Alpine.js. Entry `src/app/scripts/main.ts` imports and starts Alpine; esbuild bundles it for the browser and `<!-- include-script-src -->` includes it. Write behaviour in the HTML (`x-data`, `@click`, `x-show`, `x-text`); to hide elements until Alpine runs, add `x-cloak` to them and `[x-cloak] { display: none; }` to the stylesheet."
+  ]
+}
