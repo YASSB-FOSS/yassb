@@ -1,0 +1,21 @@
+{
+  "axes": [
+    {
+      "axis": "styles",
+      "title": "Styles",
+      "fallback": "sass",
+      "labels": { "sass": "Sass", "tailwind": "Tailwind CSS", "css": "Plain CSS", "bootstrap": "Bootstrap", "pico": "Pico CSS" }
+    },
+    {
+      "axis": "scripts",
+      "title": "Scripts",
+      "fallback": "typescript",
+      "labels": { "typescript": "TypeScript", "alpine": "Alpine.js" }
+    },
+    {
+      "axis": "deploy",
+      "title": "Deploy",
+      "labels": { "github-pages": "GitHub Pages", "netlify": "Netlify" }
+    }
+  ]
+}

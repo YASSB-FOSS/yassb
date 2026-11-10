@@ -3,6 +3,7 @@ import { finalizePage } from '../builder/post-processors';
 import { diagnosticsReference, docsNav, docsPager, featureCount, featureReference } from '../builder/renderers';
 import { buildSearchIndex } from '../builder/search-index';
 import { escapeBracesInCode } from '../builder/showdown';
+import { starterPicker } from '../builder/starters';
 import { tailwind } from '../builder/tailwind';
 
 /**
@@ -16,7 +17,7 @@ export default {
   siteHost: 'https://yassb-foss.github.io/',
   cleanOut: true,
   stylesParser: tailwind,
-  customRenderers: { docsNav, docsPager, featureReference, diagnosticsReference, featureCount },
+  customRenderers: { docsNav, docsPager, featureReference, diagnosticsReference, featureCount, starterPicker },
   postProcessors: [finalizePage],
   showdownConverterOptions: {
     tables: true,
